@@ -1,7 +1,15 @@
+"use client"
+
 import type React from "react"
+import { useState } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { UserNav } from "@/components/user-nav"
 import { ModeToggle } from "@/components/mode-toggle"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
+import { Menu, X, LayoutDashboard, FileText, ListChecks, Calendar, Map } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 const sidebarNavItems = [
   {
@@ -46,30 +54,73 @@ const sidebarNavItems = [
   },
 ]
 
+// Map for bottom navigation icons
+const bottomNavIconMap = {
+  LayoutDashboard,
+  FileText,
+  ListChecks,
+  Calendar,
+  Map,
+}
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold">Concursos Study App</h1>
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b bg-background shadow-sm">
+        <div className="container flex h-16 items-center px-6 py-4">
+          {/* Hamburger on far left */}
+          <div className="flex items-center">
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" className="md:hidden [&_svg]:!h-8 [&_svg]:!w-8">
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+                <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
+                <div className="flex items-center justify-between mb-6">
+                  <h1 className="text-lg font-bold">Menu</h1>
+                </div>
+                <SidebarNav items={sidebarNavItems} className="flex-col space-y-1" />
+              </SheetContent>
+            </Sheet>
           </div>
-          <div className="flex items-center gap-4">
-            <ModeToggle />
+
+          {/* Logo in the center */}
+          <div className="flex-grow flex justify-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/aprova_facil_logo.png"
+                alt="AprovaFácil Logo"
+                width={72}
+                height={72}
+                priority
+                className="object-contain"
+              />
+            </Link>
+          </div>
+
+          {/* UserNav on far right */}
+          <div className="flex items-center">
             <UserNav />
           </div>
         </div>
       </header>
-      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
-        <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
-          <SidebarNav items={sidebarNavItems} className="p-4" />
-        </aside>
+      
+      {/* Main content */}
+      <div className="container flex-1 items-start">
+        {/* Main content */}
         <main className="flex w-full flex-col overflow-hidden py-6">{children}</main>
       </div>
+
+      
     </div>
   )
 }

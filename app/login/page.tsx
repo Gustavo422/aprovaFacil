@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import Link from "next/link"
+import Image from "next/image"
 
 const formSchema = z.object({
   email: z.string().email({
@@ -74,6 +75,16 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/aprova_facil_logo.png"
+              alt="AprovaFácil Logo"
+              width={150}
+              height={150}
+              priority
+              className="object-contain"
+            />
+          </div>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>Entre com seu e-mail e senha para acessar sua conta.</CardDescription>
         </CardHeader>

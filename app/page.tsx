@@ -1,129 +1,205 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
+"use client"
 
-export default function Home() {
+import Link from "next/link"
+import Image from "next/image"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import {
+  LayoutDashboard,
+  FileText,
+  ListChecks,
+  Calendar,
+  Map,
+  Layers,
+  BookOpen,
+  Settings,
+} from "lucide-react"
+import { useState } from "react"
+import { SidebarNav } from "@/components/sidebar-nav"
+import { UserNav } from "@/components/user-nav"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
+import { Menu } from "lucide-react"
+
+const sidebarNavItems = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: "LayoutDashboard",
+  },
+  {
+    title: "Simulados",
+    href: "/dashboard/simulados",
+    icon: "FileText",
+  },
+  {
+    title: "Questões Semanais",
+    href: "/dashboard/questoes-semanais",
+    icon: "ListChecks",
+  },
+  {
+    title: "Plano de Estudos",
+    href: "/dashboard/plano-estudos",
+    icon: "Calendar",
+  },
+  {
+    title: "Mapa de Assuntos",
+    href: "/dashboard/mapa-assuntos",
+    icon: "Map",
+  },
+  {
+    title: "Flashcards",
+    href: "/dashboard/flashcards",
+    icon: "Layers",
+  },
+  {
+    title: "Apostilas",
+    href: "/dashboard/apostilas",
+    icon: "BookOpen",
+  },
+  {
+    title: "Configurações",
+    href: "/dashboard/configuracoes",
+    icon: "Settings",
+  },
+]
+
+const featureItems = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: "LayoutDashboard",
+    description: "Visão geral do seu progresso e atividades.",
+  },
+  {
+    title: "Simulados",
+    href: "/dashboard/simulados",
+    icon: "FileText",
+    description: "Teste seus conhecimentos com simulados personalizados.",
+  },
+  {
+    title: "Questões Semanais",
+    href: "/dashboard/questoes-semanais",
+    icon: "ListChecks",
+    description: "Pratique com questões selecionadas semanalmente.",
+  },
+  {
+    title: "Plano de Estudos",
+    href: "/dashboard/plano-estudos",
+    icon: "Calendar",
+    description: "Organize sua rotina de estudos de forma eficiente.",
+  },
+  {
+    title: "Mapa de Assuntos",
+    href: "/dashboard/mapa-assuntos",
+    icon: "Map",
+    description: "Visualize e domine os tópicos importantes.",
+  },
+  {
+    title: "Flashcards",
+    href: "/dashboard/flashcards",
+    icon: "Layers",
+    description: "Memorize conteúdo de forma rápida e eficaz.",
+  },
+  {
+    title: "Apostilas",
+    href: "/dashboard/apostilas",
+    icon: "BookOpen",
+    description: "Acesse materiais de estudo completos e atualizados.",
+  },
+  {
+    title: "Configurações",
+    href: "/dashboard/configuracoes",
+    icon: "Settings",
+    description: "Ajuste as preferências do seu aplicativo.",
+  },
+]
+
+const iconMap = {
+  LayoutDashboard,
+  FileText,
+  ListChecks,
+  Calendar,
+  Map,
+  Layers,
+  BookOpen,
+  Settings,
+}
+
+export default function HomePage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold">Concursos Study App</h1>
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b bg-background shadow-sm">
+        <div className="container flex h-16 items-center px-6 py-4">
+          {/* Hamburger on far left */}
+          <div className="flex items-center">
+            <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" className="md:hidden [&_svg]:!h-8 [&_svg]:!w-8">
+                  <Menu className="h-8 w-8" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+                <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
+                <div className="flex items-center justify-between mb-6">
+                  <h1 className="text-lg font-bold">Menu</h1>
+                </div>
+                <SidebarNav items={sidebarNavItems} className="flex-col space-y-1" />
+              </SheetContent>
+            </Sheet>
           </div>
-          <div className="flex items-center gap-2">
-            <Link href="/login">
-              <Button variant="outline">Login</Button>
+
+          {/* Logo in the center */}
+          <div className="flex-grow flex justify-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/aprova_facil_logo.png"
+                alt="AprovaFácil Logo"
+                width={72}
+                height={72}
+                priority
+                className="object-contain"
+              />
             </Link>
-            <Link href="/register">
-              <Button>Cadastrar</Button>
-            </Link>
+          </div>
+
+          {/* UserNav on far right */}
+          <div className="flex items-center">
+            <UserNav />
           </div>
         </div>
       </header>
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-                  Sua plataforma completa para concursos públicos
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Simulados, questões semanais, planos de estudo personalizados e muito mais para você conquistar sua
-                  aprovação.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Link href="/register">
-                  <Button size="lg">Começar agora</Button>
-                </Link>
-                <Link href="/about">
-                  <Button size="lg" variant="outline">
-                    Saiba mais
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Recursos principais</h2>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Tudo o que você precisa para se preparar para concursos públicos.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Simulados</CardTitle>
-                    <CardDescription>Pratique com simulados completos</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>Simulados personalizados com timer e correção automática.</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Link href="/login" className="w-full">
-                      <Button className="w-full">Acessar</Button>
-                    </Link>
-                  </CardFooter>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>100 Questões Semanais</CardTitle>
-                    <CardDescription>Pratique com questões selecionadas</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>Questões selecionadas para praticar semanalmente.</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Link href="/login" className="w-full">
-                      <Button className="w-full">Acessar</Button>
-                    </Link>
-                  </CardFooter>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Plano de Estudos</CardTitle>
-                    <CardDescription>Plano personalizado para você</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>Plano de estudos inteligente baseado no seu tempo disponível.</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Link href="/login" className="w-full">
-                      <Button className="w-full">Acessar</Button>
-                    </Link>
-                  </CardFooter>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Flashcards</CardTitle>
-                    <CardDescription>Memorize conceitos importantes</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>Flashcards dinâmicos baseados nos seus pontos fracos.</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Link href="/login" className="w-full">
-                      <Button className="w-full">Acessar</Button>
-                    </Link>
-                  </CardFooter>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      <footer className="border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            &copy; {new Date().getFullYear()} Concursos Study App. Todos os direitos reservados.
-          </p>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col items-center justify-center p-4">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-2">Bem-vindo ao AprovaFácil!</h1>
+          <p className="text-lg text-muted-foreground">Sua plataforma completa para estudos e aprovação.</p>
         </div>
-      </footer>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full">
+          {featureItems.map((item) => {
+            const IconComponent = iconMap[item.icon as keyof typeof iconMap]
+            return (
+              <Link href={item.href} key={item.title}>
+                <Card className="h-full flex flex-col items-center text-center p-6 hover:shadow-lg transition-shadow duration-300">
+                  <CardHeader className="pb-4">
+                    {IconComponent && <IconComponent className="h-12 w-12 text-primary" />}
+                  </CardHeader>
+                  <CardContent className="flex-grow flex flex-col justify-center items-center">
+                    <CardTitle className="text-xl font-semibold mb-2">{item.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
     </div>
   )
 }
