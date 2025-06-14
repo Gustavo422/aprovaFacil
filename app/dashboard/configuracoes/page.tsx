@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, User, Bell, Shield, Palette } from "lucide-react"
+import { Settings, User, Bell, Shield } from "lucide-react"
 import { useState } from "react"
 
 export default function ConfiguracoesPage() {
@@ -18,7 +18,6 @@ export default function ConfiguracoesPage() {
   })
 
   const preferences = {
-    theme: "system",
     language: "pt-BR",
     timezone: "America/Sao_Paulo"
   }
@@ -126,34 +125,6 @@ export default function ConfiguracoesPage() {
                 checked={notifications.daily} 
                 onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, daily: checked }))}
               />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Aparência */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5" />
-              Aparência
-            </CardTitle>
-            <CardDescription>
-              Personalize a aparência da aplicação.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="theme">Tema</Label>
-              <Select defaultValue="system">
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um tema" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Claro</SelectItem>
-                  <SelectItem value="dark">Escuro</SelectItem>
-                  <SelectItem value="system">Sistema</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </CardContent>
         </Card>

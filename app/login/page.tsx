@@ -58,7 +58,7 @@ export default function LoginPage() {
         title: "Login realizado com sucesso",
         description: "Redirecionando para o dashboard...",
       })
-      router.push("/dashboard")
+      router.push("/")
     } catch (error) {
       toast({
         variant: "destructive",
@@ -85,7 +85,7 @@ export default function LoginPage() {
                   priority
                   className="object-contain"
                 />
-                <span className="text-2xl font-bold">AprovaFácil</span>
+                <span className="text-2xl font-black text-[#1e40af]">AprovaFácil</span>
               </div>
             </div>
             <div className="space-y-2">
