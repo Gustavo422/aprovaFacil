@@ -20,9 +20,7 @@ O `ErrorBoundary` captura erros de React e exibe uma interface amigável:
 
 ```tsx
 // Já configurado no app/layout.tsx
-<ErrorBoundary>
-  {children}
-</ErrorBoundary>
+<ErrorBoundary>{children}</ErrorBoundary>
 ```
 
 ### 2. Páginas de Erro Globais
@@ -36,23 +34,23 @@ O `ErrorBoundary` captura erros de React e exibe uma interface amigável:
 #### Hook Genérico
 
 ```tsx
-import { useErrorHandler } from "@/hooks/use-error-handler"
+import { useErrorHandler } from '@/hooks/use-error-handler';
 
 function MyComponent() {
   const { data, error, isLoading, execute, reset } = useErrorHandler({
     showToast: true,
-    toastTitle: "Erro",
-    fallbackMessage: "Ocorreu um erro inesperado."
-  })
+    toastTitle: 'Erro',
+    fallbackMessage: 'Ocorreu um erro inesperado.',
+  });
 
   const handleOperation = async () => {
     await execute(async () => {
       // Sua operação aqui
-      const result = await fetch('/api/data')
-      if (!result.ok) throw new Error('Falha na requisição')
-      return result.json()
-    })
-  }
+      const result = await fetch('/api/data');
+      if (!result.ok) throw new Error('Falha na requisição');
+      return result.json();
+    });
+  };
 
   return (
     <div>
@@ -61,100 +59,104 @@ function MyComponent() {
       {data && <p>Sucesso: {JSON.stringify(data)}</p>}
       <button onClick={handleOperation}>Executar</button>
     </div>
-  )
+  );
 }
 ```
 
 #### Hooks Especializados
 
 ```tsx
-import { 
-  useAuthErrorHandler, 
-  useDataErrorHandler, 
-  useFormErrorHandler 
-} from "@/hooks/use-error-handler"
+import {
+  useAuthErrorHandler,
+  useDataErrorHandler,
+  useFormErrorHandler,
+} from '@/hooks/use-error-handler';
 
 // Para autenticação
-const authHandler = useAuthErrorHandler()
+const authHandler = useAuthErrorHandler();
 
 // Para operações de dados
-const dataHandler = useDataErrorHandler()
+const dataHandler = useDataErrorHandler();
 
 // Para formulários
-const formHandler = useFormErrorHandler()
+const formHandler = useFormErrorHandler();
 ```
 
 ### 4. Utilitários de Erro
 
 ```tsx
-import { 
+import {
   createError,
   createValidationError,
   createAuthError,
   createNotFoundError,
   createRateLimitError,
   createServerError,
-  withErrorHandling
-} from "@/lib/error-utils"
+  withErrorHandling,
+} from '@/lib/error-utils';
 
 // Criar erros padronizados
-throw createValidationError('Campo obrigatório', 'email')
+throw createValidationError('Campo obrigatório', 'email');
 
 // Wrapper para operações
-const result = await withErrorHandling(async () => {
-  // Sua operação aqui
-  return await someAsyncOperation()
-}, { context: 'userOperation' })
+const result = await withErrorHandling(
+  async () => {
+    // Sua operação aqui
+    return await someAsyncOperation();
+  },
+  { context: 'userOperation' }
+);
 ```
 
 ### 5. Middleware para APIs
 
 ```tsx
-import { 
-  composeMiddleware, 
-  withApiErrorHandler, 
-  withAuthValidation, 
-  withRateLimit, 
-  withInputValidation 
-} from '@/middleware/error-handler'
+import {
+  composeMiddleware,
+  withApiErrorHandler,
+  withAuthValidation,
+  withRateLimit,
+  withInputValidation,
+} from '@/middleware/error-handler';
 
 // Handler da API
 async function handleRequest(request: NextRequest) {
   // Sua lógica aqui
-  return NextResponse.json({ data: 'success' })
+  return NextResponse.json({ data: 'success' });
 }
 
 // Exportar com middlewares
-export const GET = composeMiddleware(
-  handleRequest,
-  [
-    withApiErrorHandler,
-    withAuthValidation,
-    withRateLimit({ maxRequests: 100 }),
-    withInputValidation(validator)
-  ]
-)
+export const GET = composeMiddleware(handleRequest, [
+  withApiErrorHandler,
+  withAuthValidation,
+  withRateLimit({ maxRequests: 100 }),
+  withInputValidation(validator),
+]);
 ```
 
 ## Tipos de Erro Suportados
 
 ### Erros de Autenticação
+
 - Credenciais inválidas
 - Email não confirmado
 - Usuário já cadastrado
 - Sessão expirada
 
 ### Erros de Validação
+
 - Campos obrigatórios
 - Formato inválido
 - Dados incorretos
 
 ### Erros de Rede
+
 - Falha de conexão
 - Timeout
 - Rate limit
 
 ### Erros de Servidor
+
 - Erro interno (500)
 - Serviço indisponível
 - Banco de dados
@@ -165,10 +167,10 @@ O sistema automaticamente traduz erros técnicos em mensagens amigáveis:
 
 ```tsx
 // Erro técnico
-"Request rate limit reached"
+'Request rate limit reached';
 
 // Mensagem amigável
-"Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
+'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.';
 ```
 
 ## Logging e Monitoramento
@@ -192,22 +194,22 @@ Todos os erros são automaticamente logados com contexto:
 
 ```tsx
 function LoginForm() {
-  const authHandler = useAuthErrorHandler()
+  const authHandler = useAuthErrorHandler();
 
   const handleLogin = async (email: string, password: string) => {
     await authHandler.execute(async () => {
       const result = await supabase.auth.signInWithPassword({
         email,
-        password
-      })
-      
+        password,
+      });
+
       if (result.error) {
-        throw result.error
+        throw result.error;
       }
-      
-      return result.data
-    })
-  }
+
+      return result.data;
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -215,12 +217,12 @@ function LoginForm() {
       <button disabled={authHandler.isLoading}>
         {authHandler.isLoading ? 'Entrando...' : 'Entrar'}
       </button>
-      
+
       {authHandler.error && (
         <p className="text-red-500">{authHandler.error.message}</p>
       )}
     </form>
-  )
+  );
 }
 ```
 
@@ -228,68 +230,73 @@ function LoginForm() {
 
 ```tsx
 // app/api/users/route.ts
-import { createError, withErrorHandling } from '@/lib/error-utils'
-import { composeMiddleware, withApiErrorHandler } from '@/middleware/error-handler'
+import { createError, withErrorHandling } from '@/lib/error-utils';
+import {
+  composeMiddleware,
+  withApiErrorHandler,
+} from '@/middleware/error-handler';
 
 async function handleGet(request: NextRequest) {
   return await withErrorHandling(async () => {
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-    
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
     if (!id) {
-      throw createError('ID é obrigatório', 'MISSING_REQUIRED_FIELD', 400)
+      throw createError('ID é obrigatório', 'MISSING_REQUIRED_FIELD', 400);
     }
-    
-    const user = await getUserById(id)
+
+    const user = await getUserById(id);
     if (!user) {
-      throw createError('Usuário não encontrado', 'RESOURCE_NOT_FOUND', 404)
+      throw createError('Usuário não encontrado', 'RESOURCE_NOT_FOUND', 404);
     }
-    
-    return NextResponse.json(user)
-  })
+
+    return NextResponse.json(user);
+  });
 }
 
-export const GET = composeMiddleware(handleGet, [withApiErrorHandler])
+export const GET = composeMiddleware(handleGet, [withApiErrorHandler]);
 ```
 
 ### Exemplo 3: Componente com Múltiplos Hooks
 
 ```tsx
 function UserDashboard() {
-  const dataHandler = useDataErrorHandler()
-  const formHandler = useFormErrorHandler()
+  const dataHandler = useDataErrorHandler();
+  const formHandler = useFormErrorHandler();
 
   // Carregar dados do usuário
   useEffect(() => {
     dataHandler.execute(async () => {
-      const response = await fetch('/api/user/profile')
-      if (!response.ok) throw new Error('Falha ao carregar perfil')
-      return response.json()
-    })
-  }, [])
+      const response = await fetch('/api/user/profile');
+      if (!response.ok) throw new Error('Falha ao carregar perfil');
+      return response.json();
+    });
+  }, []);
 
   // Atualizar perfil
   const handleUpdateProfile = async (data: any) => {
     await formHandler.execute(async () => {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
-        body: JSON.stringify(data)
-      })
-      if (!response.ok) throw new Error('Falha ao atualizar perfil')
-      return response.json()
-    })
-  }
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Falha ao atualizar perfil');
+      return response.json();
+    });
+  };
 
   return (
     <div>
       {dataHandler.isLoading && <p>Carregando perfil...</p>}
       {dataHandler.error && <p>Erro: {dataHandler.error.message}</p>}
-      {dataHandler.data && <ProfileForm data={dataHandler.data} onSubmit={handleUpdateProfile} />}
-      
+      {dataHandler.data && (
+        <ProfileForm data={dataHandler.data} onSubmit={handleUpdateProfile} />
+      )}
+
       {formHandler.isLoading && <p>Salvando...</p>}
       {formHandler.error && <p>Erro ao salvar: {formHandler.error.message}</p>}
     </div>
-  )
+  );
 }
 ```
 
@@ -300,32 +307,32 @@ function UserDashboard() {
 ```tsx
 // ❌ Ruim
 try {
-  const data = await fetch('/api/data')
+  const data = await fetch('/api/data');
 } catch (error) {
-  console.error(error)
+  console.error(error);
   // Usuário não vê o erro
 }
 
 // ✅ Bom
-const dataHandler = useDataErrorHandler()
+const dataHandler = useDataErrorHandler();
 await dataHandler.execute(async () => {
-  const response = await fetch('/api/data')
-  if (!response.ok) throw new Error('Falha na requisição')
-  return response.json()
-})
+  const response = await fetch('/api/data');
+  if (!response.ok) throw new Error('Falha na requisição');
+  return response.json();
+});
 ```
 
 ### 2. Use Hooks Especializados
 
 ```tsx
 // ✅ Para autenticação
-const authHandler = useAuthErrorHandler()
+const authHandler = useAuthErrorHandler();
 
 // ✅ Para dados
-const dataHandler = useDataErrorHandler()
+const dataHandler = useDataErrorHandler();
 
 // ✅ Para formulários
-const formHandler = useFormErrorHandler()
+const formHandler = useFormErrorHandler();
 ```
 
 ### 3. Forneça Contexto nos Erros
@@ -334,18 +341,18 @@ const formHandler = useFormErrorHandler()
 // ✅ Bom
 throw createError('Usuário não encontrado', 'RESOURCE_NOT_FOUND', 404, {
   userId: id,
-  operation: 'getUser'
-})
+  operation: 'getUser',
+});
 ```
 
 ### 4. Use Middleware em APIs
 
 ```tsx
 // ✅ Sempre use middleware para APIs
-export const GET = composeMiddleware(
-  handler,
-  [withApiErrorHandler, withAuthValidation]
-)
+export const GET = composeMiddleware(handler, [
+  withApiErrorHandler,
+  withAuthValidation,
+]);
 ```
 
 ## Configuração Avançada
@@ -355,13 +362,13 @@ export const GET = composeMiddleware(
 ```tsx
 const customHandler = useErrorHandler({
   showToast: true,
-  toastTitle: "Erro Personalizado",
-  fallbackMessage: "Algo deu errado na operação.",
-  onError: (error) => {
+  toastTitle: 'Erro Personalizado',
+  fallbackMessage: 'Algo deu errado na operação.',
+  onError: error => {
     // Lógica customizada de erro
-    console.log('Erro customizado:', error)
-  }
-})
+    console.log('Erro customizado:', error);
+  },
+});
 ```
 
 ### Integração com Monitoramento
@@ -373,11 +380,11 @@ export function logError(error: any, context?: Record<string, any>) {
     message: error?.message,
     stack: error?.stack,
     context,
-    timestamp: new Date().toISOString()
-  }
-  
-  console.error('Erro registrado:', errorInfo)
-  
+    timestamp: new Date().toISOString(),
+  };
+
+  console.error('Erro registrado:', errorInfo);
+
   // Integrar com Sentry, LogRocket, etc.
   // Sentry.captureException(error, { extra: context })
 }
@@ -388,13 +395,14 @@ export function logError(error: any, context?: Record<string, any>) {
 Use o componente `ErrorExample` para testar diferentes cenários:
 
 ```tsx
-import { ErrorExample } from "@/components/error-example"
+import { ErrorExample } from '@/components/error-example';
 
 // Em qualquer página
-<ErrorExample />
+<ErrorExample />;
 ```
 
 Este componente permite testar:
+
 - Erros de autenticação
 - Erros de rede
 - Rate limits
@@ -411,4 +419,4 @@ Com este sistema implementado, seu aplicativo agora:
 - ✅ **Loga tudo** para monitoramento
 - ✅ **É consistente** em toda a aplicação
 
-O sistema é extensível e pode ser facilmente adaptado para suas necessidades específicas. 
+O sistema é extensível e pode ser facilmente adaptado para suas necessidades específicas.

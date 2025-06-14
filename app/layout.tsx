@@ -1,30 +1,28 @@
-import type React from "react"
-import { Toaster } from "@/components/ui/toaster"
-import { ErrorBoundary } from "@/components/error-boundary"
-import { Inter } from "next/font/google"
-import "./globals.css"
+import type React from 'react';
+import { Toaster } from '@/components/ui/toaster';
+import { ErrorBoundary } from '@/components/error-boundary';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: "Concursos Study App",
-  description: "Plataforma de estudos para concursos públicos",
-    generator: 'v0.dev'
-}
+  title: 'Concursos Study App',
+  description: 'Plataforma de estudos para concursos públicos',
+  generator: 'v0.dev',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        <ErrorBoundary>{children}</ErrorBoundary>
         <Toaster />
       </body>
     </html>
-  )
+  );
 }

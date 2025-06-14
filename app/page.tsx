@@ -1,10 +1,9 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import Image from "next/image"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import Link from 'next/link';
+import Image from 'next/image';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard,
   FileText,
@@ -14,110 +13,109 @@ import {
   Layers,
   BookOpen,
   Settings,
-  ArrowRight,
-} from "lucide-react"
-import { useState } from "react"
-import { SidebarNav } from "@/components/sidebar-nav"
-import { UserNav } from "@/components/user-nav"
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { Menu } from "lucide-react"
+} from 'lucide-react';
+import { useState } from 'react';
+import { SidebarNav } from '@/components/sidebar-nav';
+import { UserNav } from '@/components/user-nav';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
 
 const sidebarNavItems = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: "LayoutDashboard",
+    title: 'Dashboard',
+    href: '/dashboard',
+    icon: 'LayoutDashboard',
   },
   {
-    title: "Simulados",
-    href: "/dashboard/simulados",
-    icon: "FileText",
+    title: 'Simulados',
+    href: '/dashboard/simulados',
+    icon: 'FileText',
   },
   {
-    title: "Questões Semanais",
-    href: "/dashboard/questoes-semanais",
-    icon: "ListChecks",
+    title: 'Questões Semanais',
+    href: '/dashboard/questoes-semanais',
+    icon: 'ListChecks',
   },
   {
-    title: "Plano de Estudos",
-    href: "/dashboard/plano-estudos",
-    icon: "Calendar",
+    title: 'Plano de Estudos',
+    href: '/dashboard/plano-estudos',
+    icon: 'Calendar',
   },
   {
-    title: "Mapa de Assuntos",
-    href: "/dashboard/mapa-assuntos",
-    icon: "Map",
+    title: 'Mapa de Assuntos',
+    href: '/dashboard/mapa-assuntos',
+    icon: 'Map',
   },
   {
-    title: "Flashcards",
-    href: "/dashboard/flashcards",
-    icon: "Layers",
+    title: 'Flashcards',
+    href: '/dashboard/flashcards',
+    icon: 'Layers',
   },
   {
-    title: "Apostilas",
-    href: "/dashboard/apostilas",
-    icon: "BookOpen",
+    title: 'Apostilas',
+    href: '/dashboard/apostilas',
+    icon: 'BookOpen',
   },
   {
-    title: "Configurações",
-    href: "/dashboard/configuracoes",
-    icon: "Settings",
+    title: 'Configurações',
+    href: '/dashboard/configuracoes',
+    icon: 'Settings',
   },
-]
+];
 
 const featureItems = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
+    title: 'Dashboard',
+    href: '/dashboard',
     icon: LayoutDashboard,
-    description: "Visão geral do seu progresso e atividades.",
+    description: 'Visão geral do seu progresso e atividades.',
   },
   {
-    title: "Simulados",
-    href: "/dashboard/simulados",
+    title: 'Simulados',
+    href: '/dashboard/simulados',
     icon: FileText,
-    description: "Teste seus conhecimentos com simulados personalizados.",
+    description: 'Teste seus conhecimentos com simulados personalizados.',
   },
   {
-    title: "Questões Semanais",
-    href: "/dashboard/questoes-semanais",
+    title: 'Questões Semanais',
+    href: '/dashboard/questoes-semanais',
     icon: ListChecks,
-    description: "Pratique com questões selecionadas semanalmente.",
+    description: 'Pratique com questões selecionadas semanalmente.',
   },
   {
-    title: "Plano de Estudos",
-    href: "/dashboard/plano-estudos",
+    title: 'Plano de Estudos',
+    href: '/dashboard/plano-estudos',
     icon: Calendar,
-    description: "Organize sua rotina de estudos de forma eficiente.",
+    description: 'Organize sua rotina de estudos de forma eficiente.',
   },
   {
-    title: "Mapa de Assuntos",
-    href: "/dashboard/mapa-assuntos",
+    title: 'Mapa de Assuntos',
+    href: '/dashboard/mapa-assuntos',
     icon: Map,
-    description: "Visualize e domine os tópicos importantes.",
+    description: 'Visualize e domine os tópicos importantes.',
   },
   {
-    title: "Flashcards",
-    href: "/dashboard/flashcards",
+    title: 'Flashcards',
+    href: '/dashboard/flashcards',
     icon: Layers,
-    description: "Memorize conteúdo de forma rápida e eficaz.",
+    description: 'Memorize conteúdo de forma rápida e eficaz.',
   },
   {
-    title: "Apostilas",
-    href: "/dashboard/apostilas",
+    title: 'Apostilas',
+    href: '/dashboard/apostilas',
     icon: BookOpen,
-    description: "Acesse materiais de estudo completos e atualizados.",
+    description: 'Acesse materiais de estudo completos e atualizados.',
   },
   {
-    title: "Configurações",
-    href: "/dashboard/configuracoes",
+    title: 'Configurações',
+    href: '/dashboard/configuracoes',
     icon: Settings,
-    description: "Ajuste as preferências do seu aplicativo.",
+    description: 'Ajuste as preferências do seu aplicativo.',
   },
-]
+];
 
 export default function HomePage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -126,7 +124,7 @@ export default function HomePage() {
         <SheetContent
           side="left"
           className="w-64 p-0"
-          onOpenAutoFocus={(event) => event.preventDefault()}
+          onOpenAutoFocus={event => event.preventDefault()}
         >
           <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
           <div className="flex flex-col h-full">
@@ -152,7 +150,7 @@ export default function HomePage() {
                 <span className="sr-only">Abrir menu</span>
               </Button>
             </div>
-            
+
             {/* Logo Centralizada */}
             <div className="absolute left-1/2 transform -translate-x-1/2">
               <Link href="/" className="flex items-center space-x-3">
@@ -164,10 +162,12 @@ export default function HomePage() {
                   priority
                   className="object-contain"
                 />
-                <span className="text-xl font-black text-[#1e40af] hidden sm:block">AprovaFácil</span>
+                <span className="text-xl font-black text-[#1e40af] hidden sm:block">
+                  AprovaFácil
+                </span>
               </Link>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <UserNav />
             </div>
@@ -180,7 +180,7 @@ export default function HomePage() {
             {/* Hero Section */}
             <div className="text-center space-y-6">
               <h1 className="text-4xl lg:text-6xl font-bold tracking-tight">
-                Bem-vindo ao{" "}
+                Bem-vindo ao{' '}
                 <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                   AprovaFácil
                 </span>
@@ -192,13 +192,14 @@ export default function HomePage() {
               <div className="text-center space-y-4">
                 <h2 className="text-3xl font-bold">Recursos Disponíveis</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Explore todas as ferramentas disponíveis para otimizar seus estudos
+                  Explore todas as ferramentas disponíveis para otimizar seus
+                  estudos
                 </p>
               </div>
-              
+
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                {featureItems.map((item) => {
-                  const IconComponent = item.icon
+                {featureItems.map(item => {
+                  const IconComponent = item.icon;
                   return (
                     <Link href={item.href} key={item.title}>
                       <Card className="card-hover cursor-pointer group h-full">
@@ -207,7 +208,9 @@ export default function HomePage() {
                             <IconComponent className="h-6 w-6 text-primary" />
                           </div>
                           <div className="space-y-2">
-                            <CardTitle className="text-lg">{item.title}</CardTitle>
+                            <CardTitle className="text-lg">
+                              {item.title}
+                            </CardTitle>
                             <p className="text-sm text-muted-foreground leading-relaxed">
                               {item.description}
                             </p>
@@ -215,7 +218,7 @@ export default function HomePage() {
                         </CardHeader>
                       </Card>
                     </Link>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -223,5 +226,5 @@ export default function HomePage() {
         </main>
       </div>
     </div>
-  )
+  );
 }

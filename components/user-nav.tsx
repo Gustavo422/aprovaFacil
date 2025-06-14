@@ -1,7 +1,8 @@
-"use client"
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,21 +11,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { useRouter } from "next/navigation"
-import { User, Settings, LogOut } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+} from '@/components/ui/dropdown-menu';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import { User, Settings, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 export function UserNav() {
-  const router = useRouter()
-  const supabase = createClientComponentClient()
-  const { user, loading } = useAuth()
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+  const { user, loading } = useAuth();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push("/login")
-  }
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
 
   // Se ainda está carregando, mostrar um placeholder
   if (loading) {
@@ -36,34 +37,39 @@ export function UserNav() {
           </AvatarFallback>
         </Avatar>
       </Button>
-    )
+    );
   }
 
   // Se não há usuário logado, não mostrar o componente
   if (!user) {
-    return null
+    return null;
   }
 
   // Obter as iniciais do nome do usuário
   const getUserInitials = () => {
-    const name = user.user_metadata?.name || user.email?.split('@')[0] || 'U'
-    return name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
-  }
+    const name = user.user_metadata?.name || user.email?.split('@')[0] || 'U';
+    return name
+      .split(' ')
+      .map((n: string) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   const getUserName = () => {
-    return user.user_metadata?.name || user.email?.split('@')[0] || 'Usuário'
-  }
+    return user.user_metadata?.name || user.email?.split('@')[0] || 'Usuário';
+  };
 
   const getUserEmail = () => {
-    return user.email || 'usuario@exemplo.com'
-  }
+    return user.email || 'Email não disponível';
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/placeholder.svg" alt="@user" />
+            <AvatarImage src={user.user_metadata?.avatar_url || undefined} alt={getUserName()} />
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
               {getUserInitials()}
             </AvatarFallback>
@@ -97,5 +103,5 @@ export function UserNav() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

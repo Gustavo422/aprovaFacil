@@ -1,97 +1,93 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import { NextResponse } from "next/server"
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const limit = Number.parseInt(searchParams.get("limit") || "10")
-  const disciplina = searchParams.get("disciplina")
-  const tema = searchParams.get("tema")
+export async function GET() {
+  try {
+    const supabase = createRouteHandlerClient({ cookies });
 
-  const cookieStore = cookies()
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    // Buscar flashcards do banco
+    const { data: flashcards, error } = await supabase
+      .from('flashcards')
+      .select('*')
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao buscar flashcards:', error.message);
+      return NextResponse.json(
+        { error: 'Erro ao buscar flashcards' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(flashcards || []);
+  } catch (error) {
+    console.error('Erro inesperado ao buscar flashcards:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(_request: Request) {
+  const cookieStore = cookies();
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
   try {
     // Verificar se o usuário está autenticado
     const {
       data: { session },
-    } = await supabase.auth.getSession()
+    } = await supabase.auth.getSession();
 
     if (!session) {
-      return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Buscar os pontos fracos do usuário
-    // Em um cenário real, isso seria baseado no desempenho do usuário em simulados e questões
-    // Aqui estamos simulando uma busca de pontos fracos
-    const pontosFracos = [
-      { disciplina: "Direito Constitucional", tema: "Controle de Constitucionalidade" },
-      { disciplina: "Direito Administrativo", tema: "Licitações e Contratos" },
-      { disciplina: "Português", tema: "Crase" },
-    ]
+    // Obter os dados do corpo da requisição
+    const body = await _request.json();
+    const { front, back, disciplina, tema, subtema, concurso_id } = body;
 
-    // Construir a query para buscar flashcards baseados nos pontos fracos
-    let query = supabase.from("flashcards").select("*")
-
-    // Se disciplina e tema foram especificados, usar esses filtros
-    if (disciplina && tema) {
-      query = query.eq("disciplina", disciplina).eq("tema", tema)
-    } else {
-      // Caso contrário, usar os pontos fracos
-      const disciplinas = pontosFracos.map((pf) => pf.disciplina)
-      const temas = pontosFracos.map((pf) => pf.tema)
-
-      if (disciplinas.length > 0) {
-        query = query.in("disciplina", disciplinas)
-      }
-
-      if (temas.length > 0) {
-        query = query.in("tema", temas)
-      }
+    // Validar os dados obrigatórios
+    if (!front || !back || !disciplina || !tema) {
+      return NextResponse.json(
+        { error: 'Dados obrigatórios não fornecidos' },
+        { status: 400 }
+      );
     }
 
-    // Limitar o número de flashcards
-    query = query.limit(limit)
-
-    // Executar a query
-    const { data: flashcards, error } = await query
+    // Criar o flashcard
+    const { data: flashcard, error } = await supabase
+      .from('flashcards')
+      .insert({
+        front,
+        back,
+        disciplina,
+        tema,
+        subtema,
+        concurso_id,
+      })
+      .select()
+      .single();
 
     if (error) {
-      console.error("Erro ao buscar flashcards:", error)
-      return NextResponse.json({ error: "Erro ao buscar flashcards" }, { status: 500 })
+      console.error('Erro ao criar flashcard:', error);
+      return NextResponse.json(
+        { error: 'Erro ao criar flashcard' },
+        { status: 500 }
+      );
     }
-
-    // Buscar o progresso do usuário para esses flashcards
-    const flashcardIds = flashcards.map((f) => f.id)
-
-    const { data: progressos, error: progressosError } = await supabase
-      .from("user_flashcard_progress")
-      .select("*")
-      .eq("user_id", session.user.id)
-      .in("flashcard_id", flashcardIds)
-
-    if (progressosError) {
-      console.error("Erro ao buscar progressos:", progressosError)
-      return NextResponse.json({ error: "Erro ao buscar progressos" }, { status: 500 })
-    }
-
-    // Mapear os progressos para os flashcards
-    const flashcardsComProgresso = flashcards.map((flashcard) => {
-      const progresso = progressos?.find((p) => p.flashcard_id === flashcard.id)
-      return {
-        ...flashcard,
-        status: progresso?.status || "novo",
-        nextReview: progresso?.next_review || null,
-        reviewCount: progresso?.review_count || 0,
-      }
-    })
 
     return NextResponse.json({
-      flashcards: flashcardsComProgresso,
-      pontosFracos,
-    })
+      message: 'Flashcard criado com sucesso',
+      flashcard,
+    });
   } catch (error) {
-    console.error("Erro ao processar requisição:", error)
-    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 })
+    console.error('Erro ao processar requisição:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
   }
 }

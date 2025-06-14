@@ -1,31 +1,40 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, User, Bell, Shield } from "lucide-react"
-import { useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Settings, User, Bell, Shield } from 'lucide-react';
+import { useState } from 'react';
 
 export default function ConfiguracoesPage() {
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
     weekly: true,
-    daily: false
-  })
-
-  const preferences = {
-    language: "pt-BR",
-    timezone: "America/Sao_Paulo"
-  }
+    daily: false,
+  });
 
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
-      <p className="text-muted-foreground">Gerencie suas preferências e configurações da conta.</p>
+      <p className="text-muted-foreground">
+        Gerencie suas preferências e configurações da conta.
+      </p>
 
       <div className="grid gap-6">
         {/* Perfil */}
@@ -55,8 +64,12 @@ export default function ConfiguracoesPage() {
                   <SelectValue placeholder="Selecione um concurso" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="policia-federal">Polícia Federal</SelectItem>
-                  <SelectItem value="receita-federal">Receita Federal</SelectItem>
+                  <SelectItem value="policia-federal">
+                    Polícia Federal
+                  </SelectItem>
+                  <SelectItem value="receita-federal">
+                    Receita Federal
+                  </SelectItem>
                   <SelectItem value="tribunais">Tribunais</SelectItem>
                   <SelectItem value="ministerios">Ministérios</SelectItem>
                 </SelectContent>
@@ -85,9 +98,11 @@ export default function ConfiguracoesPage() {
                   Receba lembretes e atualizações por e-mail
                 </p>
               </div>
-              <Switch 
-                checked={notifications.email} 
-                onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, email: checked }))}
+              <Switch
+                checked={notifications.email}
+                onCheckedChange={checked =>
+                  setNotifications(prev => ({ ...prev, email: checked }))
+                }
               />
             </div>
             <div className="flex items-center justify-between">
@@ -97,9 +112,11 @@ export default function ConfiguracoesPage() {
                   Receba notificações no navegador
                 </p>
               </div>
-              <Switch 
-                checked={notifications.push} 
-                onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, push: checked }))}
+              <Switch
+                checked={notifications.push}
+                onCheckedChange={checked =>
+                  setNotifications(prev => ({ ...prev, push: checked }))
+                }
               />
             </div>
             <div className="flex items-center justify-between">
@@ -109,9 +126,11 @@ export default function ConfiguracoesPage() {
                   Receba um resumo do seu progresso semanal
                 </p>
               </div>
-              <Switch 
-                checked={notifications.weekly} 
-                onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, weekly: checked }))}
+              <Switch
+                checked={notifications.weekly}
+                onCheckedChange={checked =>
+                  setNotifications(prev => ({ ...prev, weekly: checked }))
+                }
               />
             </div>
             <div className="flex items-center justify-between">
@@ -121,9 +140,11 @@ export default function ConfiguracoesPage() {
                   Lembretes para estudar todos os dias
                 </p>
               </div>
-              <Switch 
-                checked={notifications.daily} 
-                onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, daily: checked }))}
+              <Switch
+                checked={notifications.daily}
+                onCheckedChange={checked =>
+                  setNotifications(prev => ({ ...prev, daily: checked }))
+                }
               />
             </div>
           </CardContent>
@@ -175,5 +196,5 @@ export default function ConfiguracoesPage() {
         </Card>
       </div>
     </div>
-  )
-} 
+  );
+}

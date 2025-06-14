@@ -1,39 +1,49 @@
-"use client"
+'use client';
+import { logger } from '@/lib/logger';
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { BookOpen, FileText, Clock, CheckCircle } from "lucide-react"
-import { useState, useEffect } from "react"
-import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { BookOpen, FileText, Clock, CheckCircle } from 'lucide-react';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface Apostila {
-  id: string
-  title: string
-  description: string
-  concurso_id: string | null
-  created_at: string
+  id: string;
+  title: string;
+  description: string;
+  concurso_id: string | null;
+  created_at: string;
 }
 
 export default function ApostilasPage() {
-  const [apostilas, setApostilas] = useState<Apostila[]>([])
-  const [loading, setLoading] = useState(true)
+  const [apostilas, setApostilas] = useState<Apostila[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchApostilas()
-  }, [])
+    fetchApostilas();
+  }, []);
 
   const fetchApostilas = async () => {
     try {
-      const response = await fetch("/api/apostilas")
-      const data = await response.json()
-      setApostilas(data.apostilas)
+      const response = await fetch('/api/apostilas');
+      const data = await response.json();
+      setApostilas(data.apostilas);
     } catch (error) {
-      console.error("Erro ao buscar apostilas:", error)
+      logger.error('Erro ao buscar apostilas', {
+        error: error instanceof Error ? error.message : String(error),
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -41,16 +51,18 @@ export default function ApostilasPage() {
         <h1 className="text-3xl font-bold tracking-tight">Apostilas</h1>
         <p className="text-muted-foreground">Carregando...</p>
       </div>
-    )
+    );
   }
 
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-3xl font-bold tracking-tight">Apostilas</h1>
-      <p className="text-muted-foreground">Acesse apostilas completas para seus estudos.</p>
+      <p className="text-muted-foreground">
+        Acesse apostilas completas para seus estudos.
+      </p>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {apostilas.map((apostila) => (
+        {apostilas.map(apostila => (
           <Card key={apostila.id} className="h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -67,12 +79,12 @@ export default function ApostilasPage() {
                 </div>
                 <Progress value={0} className="h-2" />
               </div>
-              
+
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <FileText className="h-4 w-4" />
                 <span>5 módulos</span>
               </div>
-              
+
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
                 <span>~2h de leitura</span>
@@ -83,7 +95,10 @@ export default function ApostilasPage() {
                 <span>0 módulos concluídos</span>
               </div>
 
-              <Link href={`/dashboard/apostilas/${apostila.id}`} className="w-full">
+              <Link
+                href={`/dashboard/apostilas/${apostila.id}`}
+                className="w-full"
+              >
                 <Button className="w-full">Acessar Apostila</Button>
               </Link>
             </CardContent>
@@ -96,11 +111,12 @@ export default function ApostilasPage() {
           <CardHeader>
             <CardTitle>Nenhuma apostila disponível</CardTitle>
             <CardDescription>
-              As apostilas serão adicionadas em breve. Fique atento às atualizações!
+              As apostilas serão adicionadas em breve. Fique atento às
+              atualizações!
             </CardDescription>
           </CardHeader>
         </Card>
       )}
     </div>
-  )
-} 
+  );
+}
