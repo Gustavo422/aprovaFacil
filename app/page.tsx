@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
@@ -14,11 +14,11 @@ import {
   Layers,
   BookOpen,
   Settings,
+  ArrowRight,
 } from "lucide-react"
 import { useState } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { UserNav } from "@/components/user-nav"
-import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
 
@@ -69,137 +69,179 @@ const featureItems = [
   {
     title: "Dashboard",
     href: "/dashboard",
-    icon: "LayoutDashboard",
+    icon: LayoutDashboard,
     description: "Visão geral do seu progresso e atividades.",
   },
   {
     title: "Simulados",
     href: "/dashboard/simulados",
-    icon: "FileText",
+    icon: FileText,
     description: "Teste seus conhecimentos com simulados personalizados.",
   },
   {
     title: "Questões Semanais",
     href: "/dashboard/questoes-semanais",
-    icon: "ListChecks",
+    icon: ListChecks,
     description: "Pratique com questões selecionadas semanalmente.",
   },
   {
     title: "Plano de Estudos",
     href: "/dashboard/plano-estudos",
-    icon: "Calendar",
+    icon: Calendar,
     description: "Organize sua rotina de estudos de forma eficiente.",
   },
   {
     title: "Mapa de Assuntos",
     href: "/dashboard/mapa-assuntos",
-    icon: "Map",
+    icon: Map,
     description: "Visualize e domine os tópicos importantes.",
   },
   {
     title: "Flashcards",
     href: "/dashboard/flashcards",
-    icon: "Layers",
+    icon: Layers,
     description: "Memorize conteúdo de forma rápida e eficaz.",
   },
   {
     title: "Apostilas",
     href: "/dashboard/apostilas",
-    icon: "BookOpen",
+    icon: BookOpen,
     description: "Acesse materiais de estudo completos e atualizados.",
   },
   {
     title: "Configurações",
     href: "/dashboard/configuracoes",
-    icon: "Settings",
+    icon: Settings,
     description: "Ajuste as preferências do seu aplicativo.",
   },
 ]
-
-const iconMap = {
-  LayoutDashboard,
-  FileText,
-  ListChecks,
-  Calendar,
-  Map,
-  Layers,
-  BookOpen,
-  Settings,
-}
 
 export default function HomePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b bg-background shadow-sm">
-        <div className="container flex h-16 items-center px-6 py-4">
-          {/* Hamburger on far left */}
-          <div className="flex items-center">
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+        <div className="container-padding flex h-16 items-center">
+          {/* Mobile Menu */}
+          <div className="flex items-center lg:hidden">
             <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" className="md:hidden [&_svg]:!h-8 [&_svg]:!w-8">
-                  <Menu className="h-8 w-8" />
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+              <SheetContent side="left" className="w-64 p-0">
                 <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
-                <div className="flex items-center justify-between mb-6">
-                  <h1 className="text-lg font-bold">Menu</h1>
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center px-6 py-5 border-b border-border">
+                    <Link href="/" className="flex items-center space-x-3">
+                      <Image
+                        src="/aprova_facil_logo.png"
+                        alt="AprovaFácil Logo"
+                        width={32}
+                        height={32}
+                        priority
+                        className="object-contain"
+                      />
+                      <span className="text-lg font-bold">AprovaFácil</span>
+                    </Link>
+                  </div>
+                  <nav className="flex-1 px-4 py-6">
+                    <SidebarNav items={sidebarNavItems} />
+                  </nav>
                 </div>
-                <SidebarNav items={sidebarNavItems} className="flex-col space-y-1" />
               </SheetContent>
             </Sheet>
           </div>
 
-          {/* Logo in the center */}
-          <div className="flex-grow flex justify-center">
-            <Link href="/" className="flex items-center space-x-2">
+          {/* Logo */}
+          <div className="flex-grow flex justify-center lg:justify-start lg:flex-grow-0">
+            <Link href="/" className="flex items-center space-x-3">
               <Image
                 src="/aprova_facil_logo.png"
                 alt="AprovaFácil Logo"
-                width={72}
-                height={72}
+                width={40}
+                height={40}
                 priority
                 className="object-contain"
               />
+              <span className="text-xl font-bold hidden sm:block">AprovaFácil</span>
             </Link>
           </div>
 
-          {/* UserNav on far right */}
+          {/* User Nav */}
           <div className="flex items-center">
             <UserNav />
           </div>
         </div>
       </header>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">Bem-vindo ao AprovaFácil!</h1>
-          <p className="text-lg text-muted-foreground">Sua plataforma completa para estudos e aprovação.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full">
-          {featureItems.map((item) => {
-            const IconComponent = iconMap[item.icon as keyof typeof iconMap]
-            return (
-              <Link href={item.href} key={item.title}>
-                <Card className="h-full flex flex-col items-center text-center p-6 hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader className="pb-4">
-                    {IconComponent && <IconComponent className="h-12 w-12 text-primary" />}
-                  </CardHeader>
-                  <CardContent className="flex-grow flex flex-col justify-center items-center">
-                    <CardTitle className="text-xl font-semibold mb-2">{item.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </CardContent>
-                </Card>
+      {/* Main Content */}
+      <main className="container-padding py-16">
+        <div className="max-w-6xl mx-auto space-y-16">
+          {/* Hero Section */}
+          <div className="text-center space-y-6">
+            <h1 className="text-4xl lg:text-6xl font-bold tracking-tight">
+              Bem-vindo ao{" "}
+              <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                AprovaFácil
+              </span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Sua plataforma completa para estudos e aprovação em concursos públicos.
+              Organize, pratique e conquiste seus objetivos.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/dashboard">
+                <Button size="lg" className="w-full sm:w-auto">
+                  Acessar Dashboard
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </Link>
-            )
-          })}
+              <Link href="/register">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  Criar Conta
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold">Recursos Disponíveis</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Explore todas as ferramentas disponíveis para otimizar seus estudos
+              </p>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {featureItems.map((item) => {
+                const IconComponent = item.icon
+                return (
+                  <Link href={item.href} key={item.title}>
+                    <Card className="card-hover cursor-pointer group h-full">
+                      <CardHeader className="text-center space-y-4">
+                        <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                          <IconComponent className="h-6 w-6 text-primary" />
+                        </div>
+                        <div className="space-y-2">
+                          <CardTitle className="text-lg">{item.title}</CardTitle>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
