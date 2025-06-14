@@ -9,18 +9,39 @@ export interface Database {
           email: string
           name: string
           created_at: string
+          updated_at: string
+          deleted_at: string | null
+          last_login_at: string | null
+          study_time_minutes: number
+          total_questions_answered: number
+          total_correct_answers: number
+          average_score: number
         }
         Insert: {
           id?: string
           email: string
           name: string
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          last_login_at?: string | null
+          study_time_minutes?: number
+          total_questions_answered?: number
+          total_correct_answers?: number
+          average_score?: number
         }
         Update: {
           id?: string
           email?: string
           name?: string
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          last_login_at?: string | null
+          study_time_minutes?: number
+          total_questions_answered?: number
+          total_correct_answers?: number
+          average_score?: number
         }
       }
       simulados: {
@@ -32,7 +53,11 @@ export interface Database {
           time_minutes: number
           difficulty: string
           created_at: string
+          updated_at: string
+          deleted_at: string | null
           concurso_id: string | null
+          created_by: string | null
+          is_public: boolean
         }
         Insert: {
           id?: string
@@ -42,7 +67,11 @@ export interface Database {
           time_minutes: number
           difficulty: string
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
           concurso_id?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
         Update: {
           id?: string
@@ -52,7 +81,11 @@ export interface Database {
           time_minutes?: number
           difficulty?: string
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
           concurso_id?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
       }
       user_simulado_progress: {
@@ -64,6 +97,9 @@ export interface Database {
           completed_at: string
           time_taken_minutes: number
           answers: Json
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -73,6 +109,9 @@ export interface Database {
           completed_at?: string
           time_taken_minutes: number
           answers: Json
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -82,6 +121,9 @@ export interface Database {
           completed_at?: string
           time_taken_minutes?: number
           answers?: Json
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
         }
       }
       questoes_semanais: {
@@ -92,6 +134,10 @@ export interface Database {
           week_number: number
           year: number
           created_at: string
+          updated_at: string
+          deleted_at: string | null
+          created_by: string | null
+          is_public: boolean
         }
         Insert: {
           id?: string
@@ -100,6 +146,10 @@ export interface Database {
           week_number: number
           year: number
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
         Update: {
           id?: string
@@ -108,6 +158,10 @@ export interface Database {
           week_number?: number
           year?: number
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
       }
       user_questoes_semanais_progress: {
@@ -118,6 +172,9 @@ export interface Database {
           score: number
           completed_at: string
           answers: Json
+          created_at: string
+          updated_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -126,6 +183,9 @@ export interface Database {
           score: number
           completed_at?: string
           answers: Json
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -134,6 +194,9 @@ export interface Database {
           score?: number
           completed_at?: string
           answers?: Json
+          created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
         }
       }
       mapa_assuntos: {
@@ -144,6 +207,10 @@ export interface Database {
           subtema: string | null
           concurso_id: string | null
           created_at: string
+          updated_at: string
+          deleted_at: string | null
+          created_by: string | null
+          is_public: boolean
         }
         Insert: {
           id?: string
@@ -152,6 +219,10 @@ export interface Database {
           subtema?: string | null
           concurso_id?: string | null
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
         Update: {
           id?: string
@@ -160,6 +231,10 @@ export interface Database {
           subtema?: string | null
           concurso_id?: string | null
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
       }
       user_mapa_assuntos_status: {
@@ -169,6 +244,8 @@ export interface Database {
           mapa_assunto_id: string
           status: string
           updated_at: string
+          created_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -176,6 +253,8 @@ export interface Database {
           mapa_assunto_id: string
           status: string
           updated_at?: string
+          created_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -183,6 +262,8 @@ export interface Database {
           mapa_assunto_id?: string
           status?: string
           updated_at?: string
+          created_at?: string
+          deleted_at?: string | null
         }
       }
       planos_estudo: {
@@ -193,6 +274,8 @@ export interface Database {
           start_date: string
           end_date: string
           created_at: string
+          updated_at: string
+          deleted_at: string | null
           schedule: Json
         }
         Insert: {
@@ -202,6 +285,8 @@ export interface Database {
           start_date: string
           end_date: string
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
           schedule: Json
         }
         Update: {
@@ -211,6 +296,8 @@ export interface Database {
           start_date?: string
           end_date?: string
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
           schedule?: Json
         }
       }
@@ -223,6 +310,10 @@ export interface Database {
           tema: string
           subtema: string | null
           created_at: string
+          updated_at: string
+          deleted_at: string | null
+          created_by: string | null
+          is_public: boolean
         }
         Insert: {
           id?: string
@@ -232,6 +323,10 @@ export interface Database {
           tema: string
           subtema?: string | null
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
         Update: {
           id?: string
@@ -241,6 +336,10 @@ export interface Database {
           tema?: string
           subtema?: string | null
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
       }
       user_flashcard_progress: {
@@ -252,6 +351,8 @@ export interface Database {
           next_review: string
           review_count: number
           updated_at: string
+          created_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -261,6 +362,8 @@ export interface Database {
           next_review: string
           review_count: number
           updated_at?: string
+          created_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -270,6 +373,8 @@ export interface Database {
           next_review?: string
           review_count?: number
           updated_at?: string
+          created_at?: string
+          deleted_at?: string | null
         }
       }
       apostilas: {
@@ -279,6 +384,10 @@ export interface Database {
           description: string
           concurso_id: string | null
           created_at: string
+          updated_at: string
+          deleted_at: string | null
+          created_by: string | null
+          is_public: boolean
         }
         Insert: {
           id?: string
@@ -286,6 +395,10 @@ export interface Database {
           description: string
           concurso_id?: string | null
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
         Update: {
           id?: string
@@ -293,6 +406,10 @@ export interface Database {
           description?: string
           concurso_id?: string | null
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
+          created_by?: string | null
+          is_public?: boolean
         }
       }
       apostila_content: {
@@ -303,6 +420,8 @@ export interface Database {
           title: string
           content_json: Json
           created_at: string
+          updated_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -311,6 +430,8 @@ export interface Database {
           title: string
           content_json: Json
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -319,6 +440,8 @@ export interface Database {
           title?: string
           content_json?: Json
           created_at?: string
+          updated_at?: string
+          deleted_at?: string | null
         }
       }
       user_apostila_progress: {
@@ -329,6 +452,8 @@ export interface Database {
           completed: boolean
           progress_percentage: number
           updated_at: string
+          created_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -337,6 +462,8 @@ export interface Database {
           completed: boolean
           progress_percentage: number
           updated_at?: string
+          created_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -344,6 +471,139 @@ export interface Database {
           apostila_content_id?: string
           completed?: boolean
           progress_percentage?: number
+          updated_at?: string
+          created_at?: string
+          deleted_at?: string | null
+        }
+      }
+      user_performance_cache: {
+        Row: {
+          id: string
+          user_id: string
+          cache_key: string
+          cache_data: Json
+          expires_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          cache_key: string
+          cache_data: Json
+          expires_at: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          cache_key?: string
+          cache_data?: Json
+          expires_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      audit_logs: {
+        Row: {
+          id: string
+          user_id: string | null
+          action: string
+          table_name: string
+          record_id: string | null
+          old_values: Json | null
+          new_values: Json | null
+          ip_address: string | null
+          user_agent: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          action: string
+          table_name: string
+          record_id?: string | null
+          old_values?: Json | null
+          new_values?: Json | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          action?: string
+          table_name?: string
+          record_id?: string | null
+          old_values?: Json | null
+          new_values?: Json | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+        }
+      }
+      cache_config: {
+        Row: {
+          id: string
+          cache_key: string
+          ttl_minutes: number
+          description: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          cache_key: string
+          ttl_minutes: number
+          description: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          cache_key?: string
+          ttl_minutes?: number
+          description?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      user_discipline_stats: {
+        Row: {
+          id: string
+          user_id: string
+          disciplina: string
+          total_questions: number
+          correct_answers: number
+          average_score: number
+          study_time_minutes: number
+          last_activity: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          disciplina: string
+          total_questions: number
+          correct_answers: number
+          average_score: number
+          study_time_minutes: number
+          last_activity: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          disciplina?: string
+          total_questions?: number
+          correct_answers?: number
+          average_score?: number
+          study_time_minutes?: number
+          last_activity?: string
+          created_at?: string
           updated_at?: string
         }
       }

@@ -14,14 +14,48 @@ import {
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
 import { User, Settings, LogOut } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth"
 
 export function UserNav() {
   const router = useRouter()
   const supabase = createClientComponentClient()
+  const { user, loading } = useAuth()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push("/login")
+  }
+
+  // Se ainda está carregando, mostrar um placeholder
+  if (loading) {
+    return (
+      <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+        <Avatar className="h-9 w-9">
+          <AvatarFallback className="bg-primary/10 text-primary font-medium">
+            ...
+          </AvatarFallback>
+        </Avatar>
+      </Button>
+    )
+  }
+
+  // Se não há usuário logado, não mostrar o componente
+  if (!user) {
+    return null
+  }
+
+  // Obter as iniciais do nome do usuário
+  const getUserInitials = () => {
+    const name = user.user_metadata?.name || user.email?.split('@')[0] || 'U'
+    return name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
+  }
+
+  const getUserName = () => {
+    return user.user_metadata?.name || user.email?.split('@')[0] || 'Usuário'
+  }
+
+  const getUserEmail = () => {
+    return user.email || 'usuario@exemplo.com'
   }
 
   return (
@@ -31,7 +65,7 @@ export function UserNav() {
           <Avatar className="h-9 w-9">
             <AvatarImage src="/placeholder.svg" alt="@user" />
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
-              U
+              {getUserInitials()}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -39,9 +73,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Usuário</p>
+            <p className="text-sm font-medium leading-none">{getUserName()}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              usuario@exemplo.com
+              {getUserEmail()}
             </p>
           </div>
         </DropdownMenuLabel>

@@ -5,6 +5,40 @@ import { BookOpen, Calendar, CheckCircle, Clock, FileText, ListChecks, Target, T
 import Link from "next/link"
 
 export default function DashboardPage() {
+  // Dados mockados para teste
+  const performanceStats = {
+    totalSimulados: 0,
+    totalQuestoes: 0,
+    totalStudyTime: 0,
+    averageScore: 0,
+    accuracyRate: 0,
+    weeklyProgress: {
+      simulados: 0,
+      questoes: 0,
+      studyTime: 0,
+      scoreImprovement: 0
+    },
+    disciplineStats: []
+  }
+  
+  const recentActivities = []
+
+  // Formatar tempo de estudo
+  const formatStudyTime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    return hours > 0 ? `${hours}h ${mins}min` : `${mins}min`
+  }
+
+  // Formatar taxa de acerto
+  const formatAccuracy = (rate: number) => `${Math.round(rate)}%`
+
+  // Formatar melhoria de pontuação
+  const formatScoreImprovement = (improvement: number) => {
+    const sign = improvement >= 0 ? '+' : ''
+    return `${sign}${Math.round(improvement)}%`
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -23,8 +57,10 @@ export default function DashboardPage() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">+2 esta semana</p>
+            <div className="text-2xl font-bold">{performanceStats.totalSimulados}</div>
+            <p className="text-xs text-muted-foreground">
+              {formatScoreImprovement(performanceStats.weeklyProgress.simulados)} esta semana
+            </p>
           </CardContent>
         </Card>
         
@@ -34,8 +70,10 @@ export default function DashboardPage() {
             <ListChecks className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">583</div>
-            <p className="text-xs text-muted-foreground">+89 esta semana</p>
+            <div className="text-2xl font-bold">{performanceStats.totalQuestoes}</div>
+            <p className="text-xs text-muted-foreground">
+              {formatScoreImprovement(performanceStats.weeklyProgress.questoes)} esta semana
+            </p>
           </CardContent>
         </Card>
         
@@ -45,8 +83,10 @@ export default function DashboardPage() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">32h</div>
-            <p className="text-xs text-muted-foreground">+4h esta semana</p>
+            <div className="text-2xl font-bold">{formatStudyTime(performanceStats.totalStudyTime)}</div>
+            <p className="text-xs text-muted-foreground">
+              {formatStudyTime(performanceStats.weeklyProgress.studyTime)} esta semana
+            </p>
           </CardContent>
         </Card>
         
@@ -56,8 +96,10 @@ export default function DashboardPage() {
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">76%</div>
-            <p className="text-xs text-muted-foreground">+2% esta semana</p>
+            <div className="text-2xl font-bold">{formatAccuracy(performanceStats.accuracyRate)}</div>
+            <p className="text-xs text-muted-foreground">
+              {formatScoreImprovement(performanceStats.weeklyProgress.scoreImprovement)} esta semana
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -71,38 +113,11 @@ export default function DashboardPage() {
             <CardDescription>Seu desempenho nas principais matérias</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Direito Constitucional</span>
-                  <span className="text-sm text-muted-foreground">82%</span>
-                </div>
-                <Progress value={82} className="h-2" />
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Direito Administrativo</span>
-                  <span className="text-sm text-muted-foreground">75%</span>
-                </div>
-                <Progress value={75} className="h-2" />
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Português</span>
-                  <span className="text-sm text-muted-foreground">68%</span>
-                </div>
-                <Progress value={68} className="h-2" />
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Raciocínio Lógico</span>
-                  <span className="text-sm text-muted-foreground">60%</span>
-                </div>
-                <Progress value={60} className="h-2" />
-              </div>
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Nenhum dado de disciplina disponível ainda.</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Complete simulados e questões para ver seu progresso por disciplina.
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -114,89 +129,65 @@ export default function DashboardPage() {
             <CardDescription>Suas últimas atividades na plataforma</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0" />
-              <div className="space-y-1 min-w-0 flex-1">
-                <p className="text-sm font-medium">Simulado concluído</p>
-                <p className="text-xs text-muted-foreground">Direito Constitucional • Hoje às 10:30</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
-              <div className="space-y-1 min-w-0 flex-1">
-                <p className="text-sm font-medium">Apostila acessada</p>
-                <p className="text-xs text-muted-foreground">Direito Administrativo • Ontem às 15:45</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-3">
-              <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0" />
-              <div className="space-y-1 min-w-0 flex-1">
-                <p className="text-sm font-medium">Questões semanais</p>
-                <p className="text-xs text-muted-foreground">20 questões respondidas • Ontem às 09:15</p>
-              </div>
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Nenhuma atividade recente.</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Comece a estudar para ver suas atividades aqui.
+              </p>
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Quick Actions */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Acesso Rápido</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Link href="/dashboard/simulados">
-            <Card className="card-hover cursor-pointer group">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <FileText className="h-8 w-8 text-primary" />
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </div>
-                <CardTitle className="text-lg">Simulados</CardTitle>
-                <CardDescription>Pratique com simulados completos</CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-          
-          <Link href="/dashboard/questoes-semanais">
-            <Card className="card-hover cursor-pointer group">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <ListChecks className="h-8 w-8 text-primary" />
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </div>
-                <CardTitle className="text-lg">Questões Semanais</CardTitle>
-                <CardDescription>100 questões selecionadas</CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-          
-          <Link href="/dashboard/plano-estudos">
-            <Card className="card-hover cursor-pointer group">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <Calendar className="h-8 w-8 text-primary" />
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </div>
-                <CardTitle className="text-lg">Plano de Estudos</CardTitle>
-                <CardDescription>Cronograma personalizado</CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-          
-          <Link href="/dashboard/flashcards">
-            <Card className="card-hover cursor-pointer group">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <BookOpen className="h-8 w-8 text-primary" />
-                  <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </div>
-                <CardTitle className="text-lg">Flashcards</CardTitle>
-                <CardDescription>Memorize conceitos importantes</CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
-        </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Link href="/dashboard/simulados">
+          <Card className="card-hover cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Simulados</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground">Pratique com simulados completos</p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/questoes-semanais">
+          <Card className="card-hover cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Questões Semanais</CardTitle>
+              <ListChecks className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground">Questões selecionadas para esta semana</p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/apostilas">
+          <Card className="card-hover cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Apostilas</CardTitle>
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground">Material de estudo organizado</p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/dashboard/plano-estudos">
+          <Card className="card-hover cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Plano de Estudos</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground">Organize sua rotina de estudos</p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
     </div>
   )

@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
+import { useAuthRetry } from "@/hooks/use-auth-retry"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import Link from "next/link"
 
@@ -29,6 +30,7 @@ const formSchema = z.object({
 export default function RegisterPage() {
   const router = useRouter()
   const { toast } = useToast()
+  const { retryWithBackoff, getRateLimitMessage } = useAuthRetry()
   const [isLoading, setIsLoading] = useState(false)
   const supabase = createClientComponentClient()
 
@@ -44,21 +46,24 @@ export default function RegisterPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
     try {
-      const { error } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-        options: {
-          data: {
-            name: values.name,
+      const result = await retryWithBackoff(async () => {
+        return await supabase.auth.signUp({
+          email: values.email,
+          password: values.password,
+          options: {
+            data: {
+              name: values.name,
+            },
           },
-        },
+        })
       })
 
-      if (error) {
+      // Se chegou aqui, não há erro ou o retry funcionou
+      if (result.error) {
         toast({
           variant: "destructive",
           title: "Erro ao criar conta",
-          description: error.message,
+          description: (result.error as any).message,
         })
         return
       }
@@ -86,11 +91,13 @@ export default function RegisterPage() {
         description: "Verifique seu e-mail para confirmar sua conta.",
       })
       router.push("/login")
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Erro no registro:", error)
+      
       toast({
         variant: "destructive",
         title: "Erro ao criar conta",
-        description: "Ocorreu um erro ao tentar criar sua conta. Tente novamente.",
+        description: getRateLimitMessage(error),
       })
     } finally {
       setIsLoading(false)

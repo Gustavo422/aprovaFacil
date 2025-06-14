@@ -1,6 +1,6 @@
 import type React from "react"
-import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { ErrorBoundary } from "@/components/error-boundary"
 import { Inter } from "next/font/google"
 import "./globals.css"
 
@@ -18,12 +18,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ErrorBoundary>
           {children}
-          <Toaster />
-        </ThemeProvider>
+        </ErrorBoundary>
+        <Toaster />
       </body>
     </html>
   )

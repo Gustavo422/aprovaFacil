@@ -10,27 +10,28 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession()
 
+  // TEMPORARIAMENTE DESABILITADO PARA TESTE
   // Se o usuário não estiver autenticado e estiver tentando acessar a rota raiz
-  if (!session && req.nextUrl.pathname === "/") {
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = "/login"
-    return NextResponse.redirect(redirectUrl)
-  }
+  // if (!session && req.nextUrl.pathname === "/") {
+  //   const redirectUrl = req.nextUrl.clone()
+  //   redirectUrl.pathname = "/login"
+  //   return NextResponse.redirect(redirectUrl)
+  // }
 
   // Se o usuário não estiver autenticado e estiver tentando acessar uma rota protegida
-  if (!session && req.nextUrl.pathname.startsWith("/dashboard")) {
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = "/login"
-    redirectUrl.searchParams.set("redirectedFrom", req.nextUrl.pathname)
-    return NextResponse.redirect(redirectUrl)
-  }
+  // if (!session && req.nextUrl.pathname.startsWith("/dashboard")) {
+  //   const redirectUrl = req.nextUrl.clone()
+  //   redirectUrl.pathname = "/login"
+  //   redirectUrl.searchParams.set("redirectedFrom", req.nextUrl.pathname)
+  //   return NextResponse.redirect(redirectUrl)
+  // }
 
   // Se o usuário estiver autenticado e estiver tentando acessar login/register
-  if (session && (req.nextUrl.pathname === "/login" || req.nextUrl.pathname === "/register")) {
-    const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = "/dashboard"
-    return NextResponse.redirect(redirectUrl)
-  }
+  // if (session && (req.nextUrl.pathname === "/login" || req.nextUrl.pathname === "/register")) {
+  //   const redirectUrl = req.nextUrl.clone()
+  //   redirectUrl.pathname = "/dashboard"
+  //   return NextResponse.redirect(redirectUrl)
+  // }
 
   return res
 }
