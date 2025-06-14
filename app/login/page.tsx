@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -72,71 +71,95 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex justify-center mb-4">
-            <Image
-              src="/aprova_facil_logo.png"
-              alt="AprovaFácil Logo"
-              width={150}
-              height={150}
-              priority
-              className="object-contain"
-            />
-          </div>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>Entre com seu e-mail e senha para acessar sua conta.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>E-mail</FormLabel>
-                    <FormControl>
-                      <Input placeholder="seu@email.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Senha</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Entrando..." : "Entrar"}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-2">
-          <div className="text-center text-sm">
-            Não tem uma conta?{" "}
-            <Link href="/register" className="underline">
-              Cadastre-se
-            </Link>
-          </div>
-          <div className="text-center text-sm">
-            <Link href="/forgot-password" className="text-sm underline">
-              Esqueceu sua senha?
-            </Link>
-          </div>
-        </CardFooter>
-      </Card>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
+      <div className="w-full max-w-md">
+        <Card className="shadow-xl border-0 bg-card/50 backdrop-blur-sm">
+          <CardHeader className="space-y-6 text-center">
+            <div className="flex justify-center">
+              <div className="flex items-center space-x-3">
+                <Image
+                  src="/aprova_facil_logo.png"
+                  alt="AprovaFácil Logo"
+                  width={48}
+                  height={48}
+                  priority
+                  className="object-contain"
+                />
+                <span className="text-2xl font-bold">AprovaFácil</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <CardTitle className="text-2xl">Bem-vindo de volta</CardTitle>
+              <CardDescription>
+                Entre com suas credenciais para acessar sua conta
+              </CardDescription>
+            </div>
+          </CardHeader>
+          
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>E-mail</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="seu@email.com" 
+                          type="email"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Senha</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="password" 
+                          placeholder="••••••••" 
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button 
+                  type="submit" 
+                  className="w-full" 
+                  disabled={isLoading}
+                  size="lg"
+                >
+                  {isLoading ? "Entrando..." : "Entrar"}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+          
+          <CardFooter className="flex flex-col space-y-4">
+            <div className="text-center text-sm text-muted-foreground">
+              Não tem uma conta?{" "}
+              <Link href="/register" className="text-primary hover:underline font-medium">
+                Cadastre-se
+              </Link>
+            </div>
+            <div className="text-center">
+              <Link href="/forgot-password" className="text-sm text-muted-foreground hover:text-primary">
+                Esqueceu sua senha?
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   )
 }

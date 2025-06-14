@@ -9,11 +9,11 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
+import { User, Settings, LogOut } from "lucide-react"
 
 export function UserNav() {
   const router = useRouter()
@@ -27,10 +27,12 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+          <Avatar className="h-9 w-9">
             <AvatarImage src="/placeholder.svg" alt="@user" />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarFallback className="bg-primary/10 text-primary font-medium">
+              U
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -38,24 +40,26 @@ export function UserNav() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">Usuário</p>
-            <p className="text-xs leading-none text-muted-foreground">usuario@exemplo.com</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              usuario@exemplo.com
+            </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Perfil
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <User className="mr-2 h-4 w-4" />
+            <span>Perfil</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Configurações
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Configurações</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          Sair
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Sair</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
