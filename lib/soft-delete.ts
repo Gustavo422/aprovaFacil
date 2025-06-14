@@ -1,18 +1,19 @@
-import { createServerSupabaseClient } from "./supabase"
-import { getAuditLogger } from "./audit"
+import { createServerSupabaseClient } from './supabase';
+import { logger } from '@/lib/logger';
+import { getAuditLogger } from './audit';
 
 export class SoftDeleteManager {
-  private static instance: SoftDeleteManager
-  private supabase = createServerSupabaseClient()
-  private auditLogger = getAuditLogger()
+  private static instance: SoftDeleteManager;
+  private supabase = createServerSupabaseClient();
+  private auditLogger = getAuditLogger();
 
   private constructor() {}
 
   public static getInstance(): SoftDeleteManager {
     if (!SoftDeleteManager.instance) {
-      SoftDeleteManager.instance = new SoftDeleteManager()
+      SoftDeleteManager.instance = new SoftDeleteManager();
     }
-    return SoftDeleteManager.instance
+    return SoftDeleteManager.instance;
   }
 
   /**
@@ -30,11 +31,14 @@ export class SoftDeleteManager {
         .from(tableName)
         .select('*')
         .eq('id', recordId)
-        .single()
+        .single();
 
       if (fetchError || !currentData) {
-        console.error('Erro ao buscar dados para soft delete:', fetchError)
-        return false
+        logger.error('Erro ao buscar dados para soft delete:', {
+          error: fetchError?.message || 'Dados não encontrados',
+          details: fetchError,
+        });
+        return false;
       }
 
       // Executar soft delete
@@ -42,13 +46,16 @@ export class SoftDeleteManager {
         .from(tableName)
         .update({
           deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', recordId)
+        .eq('id', recordId);
 
       if (error) {
-        console.error('Erro ao executar soft delete:', error)
-        return false
+        logger.error('Erro ao executar soft delete:', {
+          error: error.message,
+          details: error,
+        });
+        return false;
       }
 
       // Registrar no log de auditoria
@@ -58,13 +65,15 @@ export class SoftDeleteManager {
         tableName,
         recordId,
         oldValues: currentData,
-        newValues: { deleted_at: new Date().toISOString(), reason }
-      })
+        newValues: { deleted_at: new Date().toISOString(), reason },
+      });
 
-      return true
+      return true;
     } catch (error) {
-      console.error('Erro ao executar soft delete:', error)
-      return false
+      logger.error('Erro ao executar soft delete:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return false;
     }
   }
 
@@ -82,11 +91,14 @@ export class SoftDeleteManager {
         .from(tableName)
         .select('*')
         .eq('id', recordId)
-        .single()
+        .single();
 
       if (fetchError || !currentData) {
-        console.error('Erro ao buscar dados para restauração:', fetchError)
-        return false
+        logger.error('Erro ao buscar dados para restauração:', {
+          error: fetchError?.message || 'Dados não encontrados',
+          details: fetchError,
+        });
+        return false;
       }
 
       // Restaurar registro
@@ -94,13 +106,16 @@ export class SoftDeleteManager {
         .from(tableName)
         .update({
           deleted_at: null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', recordId)
+        .eq('id', recordId);
 
       if (error) {
-        console.error('Erro ao restaurar registro:', error)
-        return false
+        logger.error('Erro ao restaurar registro:', {
+          error: error.message,
+          details: error,
+        });
+        return false;
       }
 
       // Registrar no log de auditoria
@@ -110,13 +125,15 @@ export class SoftDeleteManager {
         tableName,
         recordId,
         oldValues: currentData,
-        newValues: { deleted_at: null }
-      })
+        newValues: { deleted_at: null },
+      });
 
-      return true
+      return true;
     } catch (error) {
-      console.error('Erro ao restaurar registro:', error)
-      return false
+      logger.error('Erro ao restaurar registro:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return false;
     }
   }
 
@@ -128,33 +145,44 @@ export class SoftDeleteManager {
     daysToKeep: number = 365
   ): Promise<number> {
     try {
-      const cutoffDate = new Date(Date.now() - daysToKeep * 24 * 60 * 60 * 1000).toISOString()
+      const cutoffDate = new Date(
+        Date.now() - daysToKeep * 24 * 60 * 60 * 1000
+      ).toISOString();
 
       // Buscar registros soft deleted antigos
       const { data: oldRecords, error: fetchError } = await this.supabase
         .from(tableName)
         .select('id')
         .not('deleted_at', 'is', null)
-        .lt('deleted_at', cutoffDate)
+        .lt('deleted_at', cutoffDate);
 
       if (fetchError) {
-        console.error('Erro ao buscar registros antigos:', fetchError)
-        return 0
+        logger.error('Erro ao buscar registros antigos:', {
+          error: fetchError.message,
+          details: fetchError,
+        });
+        return 0;
       }
 
       if (!oldRecords || oldRecords.length === 0) {
-        return 0
+        return 0;
       }
 
       // Executar hard delete
       const { error } = await this.supabase
         .from(tableName)
         .delete()
-        .in('id', oldRecords.map(record => record.id))
+        .in(
+          'id',
+          oldRecords.map(record => record.id)
+        );
 
       if (error) {
-        console.error('Erro ao executar hard delete:', error)
-        return 0
+        logger.error('Erro ao executar hard delete:', {
+          error: error.message,
+          details: error,
+        });
+        return 0;
       }
 
       // Registrar no log de auditoria
@@ -164,14 +192,16 @@ export class SoftDeleteManager {
         newValues: {
           hard_deleted_count: oldRecords.length,
           cutoff_date: cutoffDate,
-          reason: 'Automatic cleanup of old soft deleted records'
-        }
-      })
+          reason: 'Automatic cleanup of old soft deleted records',
+        },
+      });
 
-      return oldRecords.length
+      return oldRecords.length;
     } catch (error) {
-      console.error('Erro ao executar hard delete de registros antigos:', error)
-      return 0
+      logger.error('Erro ao executar hard delete de registros antigos:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return 0;
     }
   }
 
@@ -182,30 +212,35 @@ export class SoftDeleteManager {
     tableName: string,
     userId?: string,
     limit: number = 50
-  ): Promise<any[]> {
+  ): Promise<unknown[]> {
     try {
       let query = this.supabase
         .from(tableName)
         .select('*')
         .not('deleted_at', 'is', null)
         .order('deleted_at', { ascending: false })
-        .limit(limit)
+        .limit(limit);
 
       if (userId) {
-        query = query.eq('user_id', userId)
+        query = query.eq('user_id', userId);
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
       if (error) {
-        console.error('Erro ao buscar registros soft deleted:', error)
-        return []
+        logger.error('Erro ao buscar registros soft deleted:', {
+          error: error.message,
+          details: error,
+        });
+        return [];
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Erro ao buscar registros soft deleted:', error)
-      return []
+      logger.error('Erro ao buscar registros soft deleted:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return [];
     }
   }
 
@@ -218,16 +253,18 @@ export class SoftDeleteManager {
         .from(tableName)
         .select('deleted_at')
         .eq('id', recordId)
-        .single()
+        .single();
 
       if (error || !data) {
-        return false
+        return false;
       }
 
-      return data.deleted_at !== null
+      return data.deleted_at !== null;
     } catch (error) {
-      console.error('Erro ao verificar soft delete:', error)
-      return false
+      logger.error('Erro ao verificar soft delete:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return false;
     }
   }
 
@@ -240,19 +277,21 @@ export class SoftDeleteManager {
       'user_questoes_semanais_progress',
       'user_flashcard_progress',
       'user_apostila_progress',
-      'user_mapa_assuntos_status'
-    ]
+      'user_mapa_assuntos_status',
+    ];
 
-    const cleanupResults = []
+    const cleanupResults = [];
 
     for (const table of tables) {
       try {
-        const deletedCount = await this.hardDeleteOldRecords(table, 365) // Manter por 1 ano
+        const deletedCount = await this.hardDeleteOldRecords(table, 365); // Manter por 1 ano
         if (deletedCount > 0) {
-          cleanupResults.push({ table, deletedCount })
+          cleanupResults.push({ table, deletedCount });
         }
       } catch (error) {
-        console.error(`Erro na limpeza da tabela ${table}:`, error)
+        logger.error(`Erro na limpeza da tabela ${table}:`, {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
@@ -263,9 +302,9 @@ export class SoftDeleteManager {
         tableName: 'system',
         newValues: {
           cleanup_results: cleanupResults,
-          timestamp: new Date().toISOString()
-        }
-      })
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
   }
 
@@ -275,28 +314,33 @@ export class SoftDeleteManager {
   async exportHistoricalData(
     tableName: string,
     recordIds: string[]
-  ): Promise<any[]> {
+  ): Promise<unknown[]> {
     try {
       const { data, error } = await this.supabase
         .from(tableName)
         .select('*')
-        .in('id', recordIds)
+        .in('id', recordIds);
 
       if (error) {
-        console.error('Erro ao exportar dados históricos:', error)
-        return []
+        logger.error('Erro ao exportar dados históricos:', {
+          error: error.message,
+          details: error,
+        });
+        return [];
       }
 
-      return data || []
+      return data || [];
     } catch (error) {
-      console.error('Erro ao exportar dados históricos:', error)
-      return []
+      logger.error('Erro ao exportar dados históricos:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return [];
     }
   }
 }
 
 // Função utilitária para obter instância do gerenciador
-export const getSoftDeleteManager = () => SoftDeleteManager.getInstance()
+export const getSoftDeleteManager = () => SoftDeleteManager.getInstance();
 
 // Middleware para soft delete automático
 export async function withSoftDelete<T>(
@@ -305,13 +349,13 @@ export async function withSoftDelete<T>(
   recordId: string,
   action: () => Promise<T>
 ): Promise<T> {
-  const softDeleteManager = getSoftDeleteManager()
-  
+  const softDeleteManager = getSoftDeleteManager();
+
   // Verificar se o registro já está soft deleted
-  const isDeleted = await softDeleteManager.isSoftDeleted(tableName, recordId)
+  const isDeleted = await softDeleteManager.isSoftDeleted(tableName, recordId);
   if (isDeleted) {
-    throw new Error('Registro não encontrado ou foi excluído')
+    throw new Error('Registro não encontrado ou foi excluído');
   }
 
-  return await action()
-} 
+  return await action();
+}

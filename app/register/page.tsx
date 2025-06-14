@@ -1,50 +1,65 @@
-"use client"
+'use client';
+import { logger } from '@/lib/logger';
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/hooks/use-toast"
-import { useAuthRetry } from "@/hooks/use-auth-retry"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import Link from "next/link"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { useAuthRetry } from '@/hooks/use-auth-retry';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Link from 'next/link';
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: "O nome deve ter pelo menos 2 caracteres.",
+    message: 'O nome deve ter pelo menos 2 caracteres.',
   }),
   email: z.string().email({
-    message: "Por favor, insira um e-mail válido.",
+    message: 'Por favor, insira um e-mail válido.',
   }),
   password: z.string().min(6, {
-    message: "A senha deve ter pelo menos 6 caracteres.",
+    message: 'A senha deve ter pelo menos 6 caracteres.',
   }),
-})
+});
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const { retryWithBackoff, getRateLimitMessage } = useAuthRetry()
-  const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClientComponentClient()
+  const router = useRouter();
+  const { toast } = useToast();
+  const { retryWithBackoff, getRateLimitMessage } = useAuthRetry();
+  const [isLoading, setIsLoading] = useState(false);
+  const supabase = createClientComponentClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      name: '',
+      email: '',
+      password: '',
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const result = await retryWithBackoff(async () => {
         return await supabase.auth.signUp({
@@ -55,52 +70,62 @@ export default function RegisterPage() {
               name: values.name,
             },
           },
-        })
-      })
+        });
+      });
 
       // Se chegou aqui, não há erro ou o retry funcionou
       if (result.error) {
         toast({
-          variant: "destructive",
-          title: "Erro ao criar conta",
-          description: (result.error as any).message,
-        })
-        return
+          variant: 'destructive',
+          title: 'Erro ao criar conta',
+          description: (result.error as Error).message,
+        });
+        return;
       }
 
       // Create user profile in the database
-      const { error: profileError } = await supabase.from("users").insert([
-        {
-          email: values.email,
-          name: values.name,
-          created_at: new Date().toISOString(),
-        },
-      ])
+      if (result.data.user) {
+        const { error: profileError } = await supabase.from('users').insert([
+          {
+            id: result.data.user.id,
+            email: values.email,
+            name: values.name,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            study_time_minutes: 0,
+            total_questions_answered: 0,
+            total_correct_answers: 0,
+            average_score: 0,
+          },
+        ]);
 
-      if (profileError) {
-        toast({
-          variant: "destructive",
-          title: "Erro ao criar perfil",
-          description: profileError.message,
-        })
-        return
+        if (profileError) {
+          toast({
+            variant: 'destructive',
+            title: 'Erro ao criar perfil',
+            description: profileError.message,
+          });
+          return;
+        }
       }
 
       toast({
-        title: "Conta criada com sucesso",
-        description: "Verifique seu e-mail para confirmar sua conta.",
-      })
-      router.push("/login")
-    } catch (error: any) {
-      console.error("Erro no registro:", error)
-      
+        title: 'Conta criada com sucesso',
+        description: 'Verifique seu e-mail para confirmar sua conta.',
+      });
+      router.push('/login');
+    } catch (error: unknown) {
+      logger.error('Erro no registro', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+
       toast({
-        variant: "destructive",
-        title: "Erro ao criar conta",
+        variant: 'destructive',
+        title: 'Erro ao criar conta',
         description: getRateLimitMessage(error),
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -109,7 +134,9 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Criar conta</CardTitle>
-          <CardDescription>Preencha os campos abaixo para criar sua conta.</CardDescription>
+          <CardDescription>
+            Preencha os campos abaixo para criar sua conta.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -154,14 +181,14 @@ export default function RegisterPage() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Criando conta..." : "Criar conta"}
+                {isLoading ? 'Criando conta...' : 'Criar conta'}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <div className="text-center text-sm">
-            Já tem uma conta?{" "}
+            Já tem uma conta?{' '}
             <Link href="/login" className="underline">
               Faça login
             </Link>
@@ -169,5 +196,5 @@ export default function RegisterPage() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }

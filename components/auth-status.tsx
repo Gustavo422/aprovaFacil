@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import { useAuth } from "@/hooks/use-auth"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useAuth } from '@/hooks/use-auth';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export function AuthStatus() {
-  const { user, loading } = useAuth()
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -17,7 +17,7 @@ export function AuthStatus() {
           <p>Carregando...</p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -28,11 +28,11 @@ export function AuthStatus() {
       <CardContent className="space-y-4">
         <div className="flex items-center space-x-2">
           <span>Status:</span>
-          <Badge variant={user ? "default" : "destructive"}>
-            {user ? "Logado" : "Não logado"}
+          <Badge variant={user ? 'default' : 'destructive'}>
+            {user ? 'Logado' : 'Não logado'}
           </Badge>
         </div>
-        
+
         {user && (
           <div className="space-y-2">
             <div>
@@ -42,17 +42,22 @@ export function AuthStatus() {
               <strong>ID:</strong> {user.id}
             </div>
             <div>
-              <strong>Nome:</strong> {user.user_metadata?.name || "Não definido"}
+              <strong>Nome:</strong>{' '}
+              {user.user_metadata?.name || 'Não definido'}
             </div>
             <div>
-              <strong>Criado em:</strong> {new Date(user.created_at).toLocaleDateString('pt-BR')}
+              <strong>Criado em:</strong>{' '}
+              {new Date(user.created_at).toLocaleDateString('pt-BR')}
             </div>
             <div>
-              <strong>Último login:</strong> {new Date(user.last_sign_in_at || user.created_at).toLocaleDateString('pt-BR')}
+              <strong>Último login:</strong>{' '}
+              {new Date(
+                user.last_sign_in_at || user.created_at
+              ).toLocaleDateString('pt-BR')}
             </div>
           </div>
         )}
       </CardContent>
     </Card>
-  )
-} 
+  );
+}

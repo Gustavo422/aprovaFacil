@@ -5,6 +5,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
 ## 📋 Funcionalidades Implementadas
 
 ### 1. ✅ Cálculo Dinâmico de Desempenho
+
 - **Arquivo**: `lib/performance.ts`
 - **Funcionalidade**: Sistema que calcula estatísticas de desempenho em tempo real
 - **Recursos**:
@@ -14,6 +15,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Atualização automática de estatísticas
 
 ### 2. ✅ Sistema de Cache
+
 - **Arquivo**: `lib/cache.ts`
 - **Funcionalidade**: Cache inteligente para dados frequentemente acessados
 - **Recursos**:
@@ -23,6 +25,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Limpeza automática de cache expirado
 
 ### 3. ✅ Logs de Auditoria
+
 - **Arquivo**: `lib/audit.ts`
 - **Funcionalidade**: Sistema completo de logs para ações importantes
 - **Recursos**:
@@ -33,6 +36,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Consultas por período e usuário
 
 ### 4. ✅ Validação de Propriedade
+
 - **Arquivo**: `lib/ownership.ts`
 - **Funcionalidade**: Sistema de validação de propriedade de recursos
 - **Recursos**:
@@ -42,6 +46,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Filtros por propriedade e acesso
 
 ### 5. ✅ Soft Delete
+
 - **Arquivo**: `lib/soft-delete.ts`
 - **Funcionalidade**: Sistema de exclusão suave para preservar dados históricos
 - **Recursos**:
@@ -51,6 +56,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Exportação de dados históricos
 
 ### 6. ✅ Dashboard Dinâmico
+
 - **Arquivo**: `app/dashboard/page.tsx`
 - **Funcionalidade**: Dashboard atualizado com dados dinâmicos
 - **Recursos**:
@@ -60,6 +66,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Formatação inteligente de dados
 
 ### 7. ✅ Autenticação Aprimorada
+
 - **Arquivo**: `app/actions/auth.ts`
 - **Funcionalidade**: Sistema de autenticação com auditoria
 - **Recursos**:
@@ -69,6 +76,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Atualização de perfil com auditoria
 
 ### 8. ✅ Tipos de Banco Atualizados
+
 - **Arquivo**: `lib/database.types.ts`
 - **Funcionalidade**: Tipos TypeScript atualizados
 - **Recursos**:
@@ -78,6 +86,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Novas tabelas implementadas
 
 ### 9. ✅ Schema de Banco Atualizado
+
 - **Arquivo**: `scripts/schema.sql`
 - **Funcionalidade**: Schema completo com todas as novas funcionalidades
 - **Recursos**:
@@ -87,6 +96,7 @@ Este documento descreve as funcionalidades implementadas e como aplicá-las no s
   - Configurações padrão
 
 ### 10. ✅ Script de Migração
+
 - **Arquivo**: `scripts/migration.sql`
 - **Funcionalidade**: Script para atualizar banco existente
 - **Recursos**:
@@ -153,9 +163,9 @@ SELECT performAutomaticCleanup();
 Para visualizar logs de auditoria:
 
 ```sql
-SELECT * FROM audit_logs 
-WHERE user_id = 'seu_user_id' 
-ORDER BY created_at DESC 
+SELECT * FROM audit_logs
+WHERE user_id = 'seu_user_id'
+ORDER BY created_at DESC
 LIMIT 50;
 ```
 
@@ -164,9 +174,9 @@ LIMIT 50;
 Para monitorar o cache:
 
 ```sql
-SELECT cache_key, COUNT(*) as usage_count 
-FROM user_performance_cache 
-GROUP BY cache_key 
+SELECT cache_key, COUNT(*) as usage_count
+FROM user_performance_cache
+GROUP BY cache_key
 ORDER BY usage_count DESC;
 ```
 
@@ -175,23 +185,27 @@ ORDER BY usage_count DESC;
 Para ver estatísticas por disciplina:
 
 ```sql
-SELECT * FROM user_discipline_stats 
-WHERE user_id = 'seu_user_id' 
+SELECT * FROM user_discipline_stats
+WHERE user_id = 'seu_user_id'
 ORDER BY last_activity DESC;
 ```
 
 ## 🛠️ Troubleshooting
 
 ### Problema: Cache não está funcionando
+
 **Solução**: Verifique se a tabela `user_performance_cache` foi criada e se as políticas RLS estão corretas.
 
 ### Problema: Logs de auditoria não aparecem
+
 **Solução**: Verifique se a tabela `audit_logs` foi criada e se o usuário tem permissão para inserir.
 
 ### Problema: Validação de propriedade falhando
+
 **Solução**: Verifique se as colunas `created_by` e `is_public` foram adicionadas às tabelas.
 
 ### Problema: Soft delete não funciona
+
 **Solução**: Verifique se as colunas `deleted_at` foram adicionadas e se as políticas RLS foram atualizadas.
 
 ## 📈 Benefícios Implementados
@@ -222,4 +236,4 @@ Se encontrar problemas durante a implementação:
 
 ---
 
-**Nota**: Esta implementação é compatível com Next.js 14+ e Supabase. Certifique-se de que está usando versões compatíveis. 
+**Nota**: Esta implementação é compatível com Next.js 14+ e Supabase. Certifique-se de que está usando versões compatíveis.

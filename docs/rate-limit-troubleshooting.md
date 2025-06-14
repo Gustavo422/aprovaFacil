@@ -42,18 +42,23 @@ const result = await retryWithBackoffEnabled(async () => {
 **Problema identificado**: O Supabase não lança exceções, mas retorna erros no objeto `result.error`.
 
 **Solução implementada**:
+
 ```typescript
 // Verificar se o resultado tem um erro (caso do Supabase)
 if (result && typeof result === 'object' && 'error' in result && result.error) {
-  const error = result.error as SupabaseError
-  
+  const error = result.error as SupabaseError;
+
   // Se é um erro de rate limit e retry está habilitado
-  if (error.message?.includes('rate limit') && enableRetry && attempt < actualMaxRetries) {
+  if (
+    error.message?.includes('rate limit') &&
+    enableRetry &&
+    attempt < actualMaxRetries
+  ) {
     // Fazer retry com delay exponencial
   }
-  
+
   // Se não é rate limit ou retry não está habilitado, lançar o erro
-  throw error
+  throw error;
 }
 ```
 
@@ -66,12 +71,12 @@ if (result && typeof result === 'object' && 'error' in result && result.error) {
 ### 5. Hook Personalizado (`useAuthRetry`)
 
 ```typescript
-const { 
-  retryWithBackoff,           // Tentativa única (padrão)
-  retryWithBackoffEnabled,    // Retry habilitado
-  getRateLimitMessage, 
-  isRetrying 
-} = useAuthRetry()
+const {
+  retryWithBackoff, // Tentativa única (padrão)
+  retryWithBackoffEnabled, // Retry habilitado
+  getRateLimitMessage,
+  isRetrying,
+} = useAuthRetry();
 ```
 
 ## Como Usar
@@ -79,18 +84,20 @@ const {
 ### Para Desenvolvedores
 
 1. **Importe o hook**:
+
 ```typescript
-import { useAuthRetry } from "@/hooks/use-auth-retry"
+import { useAuthRetry } from '@/hooks/use-auth-retry';
 ```
 
 2. **Use para tentativa única (padrão)**:
+
 ```typescript
 const result = await retryWithBackoff(async () => {
   return await supabase.auth.signInWithPassword({
     email: values.email,
     password: values.password,
-  })
-})
+  });
+});
 
 // Verificar se há erro
 if (result.error) {
@@ -99,20 +106,24 @@ if (result.error) {
 ```
 
 3. **Use para retry habilitado (quando necessário)**:
+
 ```typescript
-const result = await retryWithBackoffEnabled(async () => {
-  return await supabase.auth.signInWithPassword({
-    email: values.email,
-    password: values.password,
-  })
-}, {
-  onRetry: (attempt, delay) => {
-    toast({
-      title: "Tentativa de login",
-      description: `Aguardando ${Math.round(delay / 1000)}s antes da tentativa ${attempt}...`,
-    })
+const result = await retryWithBackoffEnabled(
+  async () => {
+    return await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+  },
+  {
+    onRetry: (attempt, delay) => {
+      toast({
+        title: 'Tentativa de login',
+        description: `Aguardando ${Math.round(delay / 1000)}s antes da tentativa ${attempt}...`,
+      });
+    },
   }
-})
+);
 ```
 
 ### Para Usuários
@@ -124,6 +135,7 @@ const result = await retryWithBackoffEnabled(async () => {
 ## Configurações do Supabase
 
 O rate limit padrão do Supabase é:
+
 - **Login**: 5 tentativas por minuto por IP
 - **Registro**: 3 tentativas por minuto por IP
 - **Reset de senha**: 3 tentativas por minuto por IP
@@ -148,7 +160,7 @@ Para monitorar rate limits em produção:
 Use o componente `RateLimitTest` para testar o tratamento de rate limits:
 
 ```typescript
-import { RateLimitTest } from "@/components/rate-limit-test"
+import { RateLimitTest } from '@/components/rate-limit-test';
 ```
 
 ## Limitações
@@ -160,11 +172,13 @@ import { RateLimitTest } from "@/components/rate-limit-test"
 ## Correções Recentes
 
 ### v1.2 - Tentativa Única por Padrão
+
 - **Problema**: Sistema fazia múltiplas tentativas automáticas
 - **Solução**: Retry agora é opcional e por padrão faz apenas uma tentativa
 - **Resultado**: Evita piorar o problema de rate limit
 
 ### v1.1 - Correção do Tratamento de Erros
+
 - **Problema**: O hook não estava detectando corretamente os erros do Supabase
 - **Solução**: Implementada verificação específica para `result.error`
-- **Resultado**: Tratamento correto de erros do Supabase 
+- **Resultado**: Tratamento correto de erros do Supabase

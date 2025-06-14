@@ -1,127 +1,215 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { QuestionPlayer } from "@/components/question-player"
-import { Calendar, CheckCircle, Clock } from "lucide-react"
+import { useState, useEffect } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { QuestionPlayer } from '@/components/question-player';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Calendar, CheckCircle, Clock, Loader2 } from 'lucide-react';
+import { logger } from '@/lib/logger';
 
-// Dados de exemplo
-const questoesSemanaisExemplo = {
-  id: 1,
-  title: "100 Questões Semanais - Semana 23",
-  description: "Questões selecionadas para a semana 23 de 2025",
-  weekNumber: 23,
-  year: 2025,
-  questions: Array.from({ length: 10 }).map((_, index) => ({
-    id: index + 1,
-    text: `Questão de exemplo ${index + 1} para a semana 23 de 2025`,
-    options: [
-      { id: "a", text: `Opção A da questão ${index + 1}` },
-      { id: "b", text: `Opção B da questão ${index + 1}` },
-      { id: "c", text: `Opção C da questão ${index + 1}` },
-      { id: "d", text: `Opção D da questão ${index + 1}` },
-      { id: "e", text: `Opção E da questão ${index + 1}` },
-    ],
-    correctAnswer: ["a", "b", "c", "d", "e"][Math.floor(Math.random() * 5)],
-  })),
+interface QuestaoSemanal {
+  id: string;
+  title: string;
+  description: string;
+  week_number: number;
+  year: number;
+  concurso_id?: string;
+  created_at: string;
 }
 
-// Histórico de exemplo
-const historicoExemplo = [
-  {
-    id: 1,
-    title: "100 Questões Semanais - Semana 22",
-    description: "Questões selecionadas para a semana 22 de 2025",
-    weekNumber: 22,
-    year: 2025,
-    score: 78,
-    totalQuestions: 100,
-    completedAt: "2025-06-01T15:30:00Z",
-  },
-  {
-    id: 2,
-    title: "100 Questões Semanais - Semana 21",
-    description: "Questões selecionadas para a semana 21 de 2025",
-    weekNumber: 21,
-    year: 2025,
-    score: 82,
-    totalQuestions: 100,
-    completedAt: "2025-05-25T14:45:00Z",
-  },
-]
+interface Questao {
+  id: string;
+  question_text: string;
+  alternatives: Record<string, string>;
+  correct_answer: string;
+  explanation?: string;
+  discipline?: string;
+  topic?: string;
+}
+
+interface HistoricoQuestao {
+  id: string;
+  title: string;
+  description: string;
+  week_number: number;
+  year: number;
+  score: number;
+  total_questions: number;
+  completed_at: string;
+}
 
 export default function QuestoesSemanaisPage() {
-  const [activeTab, setActiveTab] = useState("atual")
-  const [isStarted, setIsStarted] = useState(false)
-  const [isCompleted, setIsCompleted] = useState(false)
+  const [_activeTab, setActiveTab] = useState('atual');
+  const [isStarted, setIsStarted] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [questaoSemanal, setQuestaoSemanal] = useState<QuestaoSemanal | null>(null);
+  const [questoes, setQuestoes] = useState<Questao[]>([]);
+  const [historico, setHistorico] = useState<HistoricoQuestao[]>([]);
   const [results, setResults] = useState<{
-    answers: Record<number, string>
-    score: number
-    timeSpent: number
-  } | null>(null)
+    answers: Record<number, string>;
+    score: number;
+    timeSpent: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Buscar questão semanal atual
+        const questoesResponse = await fetch('/api/questoes-semanais');
+        if (!questoesResponse.ok) {
+          throw new Error('Erro ao carregar questões semanais');
+        }
+        const questoesData = await questoesResponse.json();
+        
+        if (questoesData.questaoSemanal) {
+          setQuestaoSemanal(questoesData.questaoSemanal);
+          setQuestoes(questoesData.questoes || []);
+        }
+        
+        if (questoesData.historico) {
+          setHistorico(questoesData.historico);
+        }
+
+      } catch (error) {
+        logger.error('Erro ao buscar questões semanais:', {
+          error: error instanceof Error ? error.message : String(error),
+        });
+        setError('Erro ao carregar questões semanais. Tente novamente.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleStart = () => {
-    setIsStarted(true)
-  }
+    setIsStarted(true);
+  };
 
-  const handleComplete = (answers: Record<number, string>, timeSpent: number) => {
+  const handleComplete = (
+    answers: Record<number, string>,
+    timeSpent: number
+  ) => {
+    if (!questaoSemanal) return;
+
     // Calcular pontuação
-    const score = questoesSemanaisExemplo.questions.filter((q, index) => answers[index] === q.correctAnswer).length
+    const score = questoes.filter(
+      (q, index) => answers[index] === q.correct_answer
+    ).length;
 
     setResults({
       answers,
       score,
       timeSpent,
-    })
+    });
 
-    setIsCompleted(true)
-  }
+    setIsCompleted(true);
+  };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }).format(date)
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(date);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <h2 className="text-xl font-semibold">Erro ao carregar questões semanais</h2>
+        <p className="text-muted-foreground">{error}</p>
+        <Button onClick={() => window.location.reload()}>
+          Tentar novamente
+        </Button>
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-3xl font-bold tracking-tight">Questões Semanais</h1>
-      <p className="text-muted-foreground">Pratique com 100 questões selecionadas semanalmente.</p>
+      <p className="text-muted-foreground">
+        Pratique com questões selecionadas semanalmente.
+      </p>
 
-      <Tabs defaultValue="atual" className="w-full" onValueChange={setActiveTab}>
+      <Tabs
+        defaultValue="atual"
+        className="w-full"
+        onValueChange={setActiveTab}
+      >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="atual">Semana Atual</TabsTrigger>
           <TabsTrigger value="historico">Histórico</TabsTrigger>
         </TabsList>
 
         <TabsContent value="atual" className="space-y-4">
-          {!isStarted ? (
+          {!questaoSemanal ? (
             <Card>
               <CardHeader>
-                <CardTitle>{questoesSemanaisExemplo.title}</CardTitle>
-                <CardDescription>{questoesSemanaisExemplo.description}</CardDescription>
+                <CardTitle>Nenhuma questão semanal disponível</CardTitle>
+                <CardDescription>
+                  Não há questões semanais disponíveis no momento.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Volte mais tarde para ver as próximas questões semanais.
+                </p>
+              </CardContent>
+            </Card>
+          ) : !isStarted ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>{questaoSemanal.title}</CardTitle>
+                <CardDescription>
+                  {questaoSemanal.description}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-5 w-5 text-muted-foreground" />
                     <span>
-                      Semana {questoesSemanaisExemplo.weekNumber} de {questoesSemanaisExemplo.year}
+                      Semana {questaoSemanal.week_number} de{' '}
+                      {questaoSemanal.year}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-muted-foreground" />
-                    <span>{questoesSemanaisExemplo.questions.length} questões</span>
+                    <span>
+                      {questoes.length} questões
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="h-5 w-5 text-muted-foreground" />
-                    <span>Tempo estimado: {Math.ceil(questoesSemanaisExemplo.questions.length * 1.5)} minutos</span>
+                    <span>
+                      Tempo estimado:{' '}
+                      {Math.ceil(questoes.length * 1.5)} minutos
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -134,8 +222,12 @@ export default function QuestoesSemanaisPage() {
           ) : isCompleted ? (
             <Card>
               <CardHeader>
-                <CardTitle>Resultado - {questoesSemanaisExemplo.title}</CardTitle>
-                <CardDescription>{questoesSemanaisExemplo.description}</CardDescription>
+                <CardTitle>
+                  Resultado - {questaoSemanal.title}
+                </CardTitle>
+                <CardDescription>
+                  {questaoSemanal.description}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -143,12 +235,17 @@ export default function QuestoesSemanaisPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Pontuação</span>
                       <span className="text-sm font-medium">
-                        {results?.score} de {questoesSemanaisExemplo.questions.length} (
-                        {Math.round(((results?.score || 0) / questoesSemanaisExemplo.questions.length) * 100)}%)
+                        {results?.score} de {questoes.length} (
+                        {Math.round(
+                          ((results?.score || 0) / questoes.length) * 100
+                        )}
+                        %)
                       </span>
                     </div>
                     <Progress
-                      value={((results?.score || 0) / questoesSemanaisExemplo.questions.length) * 100}
+                      value={
+                        ((results?.score || 0) / questoes.length) * 100
+                      }
                       className="h-2"
                     />
                   </div>
@@ -156,54 +253,101 @@ export default function QuestoesSemanaisPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col items-center rounded-lg border p-4">
                       <CheckCircle className="h-8 w-8 text-green-500" />
-                      <span className="mt-2 text-2xl font-bold">{results?.score}</span>
-                      <span className="text-sm text-muted-foreground">Acertos</span>
+                      <span className="mt-2 text-2xl font-bold">
+                        {results?.score}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        Acertos
+                      </span>
                     </div>
                     <div className="flex flex-col items-center rounded-lg border p-4">
                       <Clock className="h-8 w-8 text-blue-500" />
-                      <span className="mt-2 text-2xl font-bold">{results?.timeSpent} min</span>
-                      <span className="text-sm text-muted-foreground">Tempo</span>
+                      <span className="mt-2 text-2xl font-bold">
+                        {Math.round((results?.timeSpent || 0) / 60)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        Minutos
+                      </span>
                     </div>
                   </div>
                 </div>
               </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    setIsStarted(false);
+                    setIsCompleted(false);
+                    setResults(null);
+                  }}
+                >
+                  Refazer Questões
+                </Button>
+              </CardFooter>
             </Card>
           ) : (
-            <QuestionPlayer questions={questoesSemanaisExemplo.questions} onComplete={handleComplete} />
+            <QuestionPlayer
+              title={questaoSemanal.title}
+              questions={questoes.map((q, _index) => ({
+                id: q.id,
+                text: q.question_text,
+                options: Object.entries(q.alternatives).map(([key, value]) => ({
+                  id: key,
+                  text: value,
+                })),
+                correctAnswer: q.correct_answer,
+              }))}
+              onComplete={handleComplete}
+            />
           )}
         </TabsContent>
 
-        <TabsContent value="historico">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {historicoExemplo.map((item) => (
-              <Card key={item.id}>
-                <CardHeader>
-                  <CardTitle>{item.title}</CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>
-                      Semana {item.weekNumber} de {item.year}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                    <span>
-                      {item.score}/{item.totalQuestions}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span>Concluído em {formatDate(item.completedAt)}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+        <TabsContent value="historico" className="space-y-4">
+          {historico.length === 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Nenhum histórico disponível</CardTitle>
+                <CardDescription>
+                  Complete algumas questões semanais para ver seu histórico.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {historico.map(item => (
+                <Card key={item.id}>
+                  <CardHeader>
+                    <CardTitle>{item.title}</CardTitle>
+                    <CardDescription>{item.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">
+                            Semana {item.week_number} de {item.year}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">
+                            {item.score} de {item.total_questions} (
+                            {Math.round((item.score / item.total_questions) * 100)}%)
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatDate(item.completed_at)}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

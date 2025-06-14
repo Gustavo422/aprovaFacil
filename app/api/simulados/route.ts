@@ -1,78 +1,60 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import { NextResponse } from "next/server"
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const page = Number.parseInt(searchParams.get("page") || "1")
-  const limit = Number.parseInt(searchParams.get("limit") || "10")
-  const filter = searchParams.get("filter") || "all"
-
-  const cookieStore = cookies()
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-
+export async function GET(_request: Request) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
+
     // Verificar se o usuário está autenticado
     const {
       data: { session },
-    } = await supabase.auth.getSession()
+    } = await supabase.auth.getSession();
 
     if (!session) {
-      return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+      console.log('Usuário não autenticado');
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Buscar simulados com paginação
-    const start = (page - 1) * limit
-    const end = start + limit - 1
+    console.log('Usuário autenticado:', session.user.id);
 
-    let query = supabase.from("simulados").select("*", { count: "exact" }).range(start, end)
-
-    // Aplicar filtros se necessário
-    if (filter === "completed") {
-      const { data: completedIds } = await supabase
-        .from("user_simulado_progress")
-        .select("simulado_id")
-        .eq("user_id", session.user.id)
-
-      if (completedIds && completedIds.length > 0) {
-        const ids = completedIds.map((item) => item.simulado_id)
-        query = query.in("id", ids)
-      } else {
-        // Se não houver simulados completados, retornar array vazio
-        return NextResponse.json({
-          data: [],
-          count: 0,
-          page,
-          limit,
-        })
-      }
-    } else if (filter === "pending") {
-      const { data: completedIds } = await supabase
-        .from("user_simulado_progress")
-        .select("simulado_id")
-        .eq("user_id", session.user.id)
-
-      if (completedIds && completedIds.length > 0) {
-        const ids = completedIds.map((item) => item.simulado_id)
-        query = query.not("id", "in", ids)
-      }
-    }
-
-    const { data, count, error } = await query
+    // Buscar simulados com join para concursos
+    const { data: simulados, error } = await supabase
+      .from('simulados')
+      .select(`
+        *,
+        concursos (
+          id,
+          nome,
+          categoria,
+          ano,
+          banca
+        )
+      `)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
 
     if (error) {
-      console.error("Erro ao buscar simulados:", error)
-      return NextResponse.json({ error: "Erro ao buscar simulados" }, { status: 500 })
+      console.error('Erro ao buscar simulados:', error.message);
+      return NextResponse.json(
+        { error: 'Erro ao buscar simulados', details: error.message },
+        { status: 500 }
+      );
     }
 
+    console.log('Simulados encontrados:', simulados?.length || 0);
+
     return NextResponse.json({
-      data,
-      count,
-      page,
-      limit,
-    })
+      data: simulados || [],
+      count: simulados?.length || 0,
+      page: 1,
+      limit: 10,
+    });
   } catch (error) {
-    console.error("Erro ao processar requisição:", error)
-    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 })
+    console.error('Erro inesperado:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor', details: error },
+      { status: 500 }
+    );
   }
 }

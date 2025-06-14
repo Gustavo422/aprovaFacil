@@ -1,72 +1,86 @@
-"use client"
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/hooks/use-toast"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import Link from "next/link"
-import Image from "next/image"
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 const formSchema = z.object({
   email: z.string().email({
-    message: "Por favor, insira um e-mail válido.",
+    message: 'Por favor, insira um e-mail válido.',
   }),
   password: z.string().min(6, {
-    message: "A senha deve ter pelo menos 6 caracteres.",
+    message: 'A senha deve ter pelo menos 6 caracteres.',
   }),
-})
+});
 
 export default function LoginPage() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClientComponentClient()
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const supabase = createClientComponentClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error: authError } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
-      })
+      });
 
-      if (error) {
+      if (authError) {
         toast({
-          variant: "destructive",
-          title: "Erro ao fazer login",
-          description: error.message,
-        })
-        return
+          variant: 'destructive',
+          title: 'Erro ao fazer login',
+          description: authError.message,
+        });
+        return;
       }
 
       toast({
-        title: "Login realizado com sucesso",
-        description: "Redirecionando para o dashboard...",
-      })
-      router.push("/")
-    } catch (error) {
+        title: 'Login realizado com sucesso',
+        description: 'Redirecionando para o dashboard...',
+      });
+      router.push('/');
+    } catch {
       toast({
-        variant: "destructive",
-        title: "Erro ao fazer login",
-        description: "Ocorreu um erro ao tentar fazer login. Tente novamente.",
-      })
+        variant: 'destructive',
+        title: 'Erro ao fazer login',
+        description: 'Ocorreu um erro ao tentar fazer login. Tente novamente.',
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -85,7 +99,9 @@ export default function LoginPage() {
                   priority
                   className="object-contain"
                 />
-                <span className="text-2xl font-black text-[#1e40af]">AprovaFácil</span>
+                <span className="text-2xl font-black text-[#1e40af]">
+                  AprovaFácil
+                </span>
               </div>
             </div>
             <div className="space-y-2">
@@ -95,10 +111,13 @@ export default function LoginPage() {
               </CardDescription>
             </div>
           </CardHeader>
-          
+
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="email"
@@ -106,10 +125,10 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>E-mail</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="seu@email.com" 
+                        <Input
+                          placeholder="seu@email.com"
                           type="email"
-                          {...field} 
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -123,37 +142,43 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>Senha</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="password" 
-                          placeholder="••••••••" 
-                          {...field} 
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button 
-                  type="submit" 
-                  className="w-full" 
+                <Button
+                  type="submit"
+                  className="w-full"
                   disabled={isLoading}
                   size="lg"
                 >
-                  {isLoading ? "Entrando..." : "Entrar"}
+                  {isLoading ? 'Entrando...' : 'Entrar'}
                 </Button>
               </form>
             </Form>
           </CardContent>
-          
+
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-center text-sm text-muted-foreground">
-              Não tem uma conta?{" "}
-              <Link href="/register" className="text-primary hover:underline font-medium">
+              Não tem uma conta?{' '}
+              <Link
+                href="/register"
+                className="text-primary hover:underline font-medium"
+              >
                 Cadastre-se
               </Link>
             </div>
             <div className="text-center">
-              <Link href="/forgot-password" className="text-sm text-muted-foreground hover:text-primary">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-muted-foreground hover:text-primary"
+              >
                 Esqueceu sua senha?
               </Link>
             </div>
@@ -161,5 +186,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

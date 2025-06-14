@@ -1,15 +1,21 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertTriangle, RefreshCw } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function SimuladosError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -32,7 +38,7 @@ export default function SimuladosError({
         </CardHeader>
         <CardContent className="text-center space-y-4">
           <p className="text-xs md:text-sm text-muted-foreground">
-            {error.message || "Erro desconhecido"}
+            {error.message || 'Erro desconhecido'}
           </p>
           <div className="flex flex-col sm:flex-row gap-2">
             <Button onClick={reset} className="w-full sm:w-auto">
@@ -46,5 +52,5 @@ export default function SimuladosError({
         </CardContent>
       </Card>
     </div>
-  )
-} 
+  );
+}

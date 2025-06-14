@@ -1,64 +1,64 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useState } from "react"
-import { SidebarNav } from "@/components/sidebar-nav"
-import { UserNav } from "@/components/user-nav"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { Menu, LayoutDashboard, FileText, ListChecks, Calendar, Map, Layers, BookOpen, Settings } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+import type React from 'react';
+import { useState } from 'react';
+import { SidebarNav } from '@/components/sidebar-nav';
+import { UserNav } from '@/components/user-nav';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const sidebarNavItems = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: "LayoutDashboard",
+    title: 'Dashboard',
+    href: '/dashboard',
+    icon: 'LayoutDashboard',
   },
   {
-    title: "Simulados",
-    href: "/dashboard/simulados",
-    icon: "FileText",
+    title: 'Simulados',
+    href: '/dashboard/simulados',
+    icon: 'FileText',
   },
   {
-    title: "Questões Semanais",
-    href: "/dashboard/questoes-semanais",
-    icon: "ListChecks",
+    title: 'Questões Semanais',
+    href: '/dashboard/questoes-semanais',
+    icon: 'ListChecks',
   },
   {
-    title: "Plano de Estudos",
-    href: "/dashboard/plano-estudos",
-    icon: "Calendar",
+    title: 'Plano de Estudos',
+    href: '/dashboard/plano-estudos',
+    icon: 'Calendar',
   },
   {
-    title: "Mapa de Assuntos",
-    href: "/dashboard/mapa-assuntos",
-    icon: "Map",
+    title: 'Mapa de Assuntos',
+    href: '/dashboard/mapa-assuntos',
+    icon: 'Map',
   },
   {
-    title: "Flashcards",
-    href: "/dashboard/flashcards",
-    icon: "Layers",
+    title: 'Flashcards',
+    href: '/dashboard/flashcards',
+    icon: 'Layers',
   },
   {
-    title: "Apostilas",
-    href: "/dashboard/apostilas",
-    icon: "BookOpen",
+    title: 'Apostilas',
+    href: '/dashboard/apostilas',
+    icon: 'BookOpen',
   },
   {
-    title: "Configurações",
-    href: "/dashboard/configuracoes",
-    icon: "Settings",
+    title: 'Configurações',
+    href: '/dashboard/configuracoes',
+    icon: 'Settings',
   },
-]
+];
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -67,7 +67,7 @@ export default function DashboardLayout({
         <SheetContent
           side="left"
           className="w-64 p-0"
-          onOpenAutoFocus={(event) => event.preventDefault()}
+          onOpenAutoFocus={event => event.preventDefault()}
         >
           <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
           <div className="flex flex-col h-full">
@@ -93,7 +93,7 @@ export default function DashboardLayout({
                 <span className="sr-only">Abrir menu</span>
               </Button>
             </div>
-            
+
             {/* Logo Centralizada */}
             <div className="absolute left-1/2 transform -translate-x-1/2">
               <Link href="/" className="flex items-center space-x-3">
@@ -105,10 +105,12 @@ export default function DashboardLayout({
                   priority
                   className="object-contain"
                 />
-                <span className="text-xl font-black text-[#1e40af]">AprovaFácil</span>
+                <span className="text-xl font-black text-[#1e40af]">
+                  AprovaFácil
+                </span>
               </Link>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <UserNav />
             </div>
@@ -116,10 +118,8 @@ export default function DashboardLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 container-padding py-8">
-          {children}
-        </main>
+        <main className="flex-1 container-padding py-8">{children}</main>
       </div>
     </div>
-  )
+  );
 }

@@ -5,6 +5,7 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
 ## 🚀 Funcionalidades
 
 ### ✨ Recursos Principais
+
 - **📝 Simulados Personalizados**: Simulados completos com timer e correção automática
 - **🎯 Questões Semanais**: 100 questões selecionadas para prática semanal
 - **📋 Plano de Estudos**: Plano inteligente baseado no seu tempo disponível
@@ -14,6 +15,7 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
 - **⚙️ Configurações**: Personalização da experiência de estudo
 
 ### 🎨 Interface Moderna
+
 - Design responsivo e acessível
 - Tema claro/escuro
 - Interface intuitiva e moderna
@@ -22,6 +24,7 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend
+
 - **Next.js 15** - Framework React com App Router
 - **TypeScript** - Tipagem estática
 - **Tailwind CSS** - Framework CSS utilitário
@@ -31,6 +34,7 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
 - **Lucide React** - Ícones modernos
 
 ### Backend & Banco de Dados
+
 - **Supabase** - Backend-as-a-Service
   - Autenticação
   - Banco de dados PostgreSQL
@@ -38,6 +42,7 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
   - Edge Functions
 
 ### Ferramentas de Desenvolvimento
+
 - **ESLint** - Linting de código
 - **PostCSS** - Processamento CSS
 - **Autoprefixer** - Prefixos CSS automáticos
@@ -45,17 +50,20 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
 ## 📦 Instalação
 
 ### Pré-requisitos
-- Node.js 18+ 
+
+- Node.js 18+
 - npm, yarn ou pnpm
 - Conta no Supabase
 
 ### 1. Clone o repositório
+
 ```bash
 git clone <url-do-repositorio>
 cd study-app
 ```
 
 ### 2. Instale as dependências
+
 ```bash
 npm install
 # ou
@@ -65,6 +73,7 @@ pnpm install
 ```
 
 ### 3. Configure as variáveis de ambiente
+
 Crie um arquivo `.env.local` na raiz do projeto:
 
 ```env
@@ -79,6 +88,7 @@ NEXTAUTH_URL=http://localhost:3000
 ```
 
 ### 4. Configure o banco de dados
+
 Execute os scripts SQL na ordem correta:
 
 ```bash
@@ -90,6 +100,7 @@ psql -h seu_host -U seu_usuario -d seu_banco -f scripts/seed.sql
 ```
 
 ### 5. Execute o projeto
+
 ```bash
 npm run dev
 # ou
@@ -133,18 +144,21 @@ study-app/
 ## 🎯 Funcionalidades Detalhadas
 
 ### Sistema de Autenticação
+
 - Registro e login com email/senha
 - Autenticação via Supabase Auth
 - Proteção de rotas
 - Middleware de autenticação
 
 ### Dashboard Principal
+
 - Visão geral do progresso
 - Estatísticas de estudo
 - Acesso rápido às funcionalidades
 - Gráficos de desempenho
 
 ### Simulados
+
 - Simulados personalizados por matéria
 - Timer configurável
 - Correção automática
@@ -152,18 +166,21 @@ study-app/
 - Histórico de tentativas
 
 ### Questões Semanais
+
 - 100 questões selecionadas
 - Dificuldade progressiva
 - Feedback imediato
 - Estatísticas de acerto
 
 ### Plano de Estudos
+
 - Geração automática de planos
 - Baseado no tempo disponível
 - Ajuste dinâmico conforme progresso
 - Lembretes e notificações
 
 ### Flashcards
+
 - Sistema de repetição espaçada
 - Categorização por matéria
 - Progresso individual
@@ -186,11 +203,13 @@ npm run lint         # Executa o ESLint
 ## 🌐 Deploy
 
 ### Vercel (Recomendado)
+
 1. Conecte seu repositório ao Vercel
 2. Configure as variáveis de ambiente
 3. Deploy automático a cada push
 
 ### Outras plataformas
+
 - Netlify
 - Railway
 - Render
@@ -224,4 +243,157 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ---
 
-**Desenvolvido com ❤️ para ajudar na preparação de concursos públicos** 
+**Desenvolvido com ❤️ para ajudar na preparação de concursos públicos**
+
+# Study App - Sistema de Administração
+
+Interface web para inserir dados no banco Supabase via JSON.
+
+## 🚀 Como Usar
+
+1. **Abra o arquivo `admin-interface.html`** em um servidor local
+2. **Cole seu JSON** no campo de texto
+3. **Clique em "Inserir Dados"** para salvar no banco
+
+## 📋 Tipos de Conteúdo Suportados
+
+### 1. Simulados (Metadados Apenas)
+
+```json
+{
+  "title": "Simulado de Matemática",
+  "description": "Questões de álgebra e geometria",
+  "questions_count": 20,
+  "time_minutes": 60,
+  "difficulty": "Médio",
+  "is_public": true
+}
+```
+
+### 2. Simulados com Questões (NOVO!)
+
+```json
+{
+  "title": "Simulado de Direito Constitucional",
+  "description": "Questões de concursos recentes",
+  "time_minutes": 60,
+  "difficulty": "Médio",
+  "is_public": true,
+  "questions": [
+    {
+      "question_number": 1,
+      "question_text": "Qual é o princípio fundamental que garante a inviolabilidade do direito à vida?",
+      "alternatives": {
+        "A": "Princípio da dignidade da pessoa humana",
+        "B": "Princípio da igualdade",
+        "C": "Princípio da legalidade",
+        "D": "Princípio da separação dos poderes",
+        "E": "Princípio da soberania"
+      },
+      "correct_answer": "A",
+      "explanation": "O princípio da dignidade da pessoa humana é o fundamento da República.",
+      "discipline": "Direito Constitucional",
+      "topic": "Princípios Fundamentais",
+      "difficulty": "Fácil"
+    }
+  ]
+}
+```
+
+### 3. Questões Semanais
+
+```json
+{
+  "title": "Questões da Semana 1",
+  "description": "Questões de revisão semanal",
+  "week_number": 1,
+  "year": 2024,
+  "is_public": true
+}
+```
+
+### 4. Flashcards
+
+```json
+{
+  "front": "O que é Direito Constitucional?",
+  "back": "Ramo do direito que estuda a Constituição e suas normas",
+  "disciplina": "Direito Constitucional",
+  "tema": "Conceitos Básicos",
+  "subtema": "Definição",
+  "is_public": true
+}
+```
+
+### 5. Apostilas
+
+```json
+{
+  "title": "Apostila de Direito Administrativo",
+  "description": "Material completo para concursos",
+  "concurso_id": "uuid-do-concurso",
+  "is_public": true
+}
+```
+
+### 6. Mapa de Assuntos
+
+```json
+{
+  "disciplina": "Direito Constitucional",
+  "tema": "Princípios Fundamentais",
+  "subtema": "Dignidade da Pessoa Humana",
+  "concurso_id": "uuid-do-concurso",
+  "is_public": true
+}
+```
+
+## 🔧 Configuração
+
+### 1. Credenciais do Supabase
+
+Edite as variáveis no arquivo `admin-interface.html`:
+
+```javascript
+const SUPABASE_URL = 'sua-url-do-supabase';
+const SUPABASE_KEY = 'sua-chave-anon-do-supabase';
+```
+
+### 2. Tabela de Questões (NOVO!)
+
+Para usar simulados com questões, execute o script SQL:
+
+```sql
+-- Execute o arquivo scripts/create-questions-table.sql no seu Supabase
+```
+
+## ✅ Validações
+
+O sistema valida automaticamente:
+
+- ✅ Campos obrigatórios
+- ✅ Tipos de dados corretos
+- ✅ Valores permitidos (ex: dificuldades)
+- ✅ Estrutura das questões (alternativas, respostas corretas)
+- ✅ Números de questões sequenciais
+
+## 🎯 Exemplos Prontos
+
+Veja os arquivos na pasta `exemplos/`:
+
+- `simulado-com-questoes.json` - Exemplo completo de simulado com questões
+- Outros exemplos para cada tipo de conteúdo
+
+## 🔒 Segurança
+
+- ✅ Validação rigorosa antes da inserção
+- ✅ Políticas de segurança do Supabase ativas
+- ✅ Apenas dados válidos são aceitos
+- ✅ Logs de auditoria automáticos
+
+## 📝 Notas
+
+- **Simulados com questões**: Cria automaticamente o simulado e todas as questões relacionadas
+- **Validação em tempo real**: O botão só fica ativo quando o JSON é válido
+- **Detecção automática**: O sistema identifica o tipo de conteúdo automaticamente
+- **Feedback visual**: Status claro sobre sucesso ou erros

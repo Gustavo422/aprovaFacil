@@ -26,3 +26,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env
+
+# admin interface (local only)
+admin-interface.html
+ADMIN-INTERFACE.md
+scripts/data-importer.js
+scripts/test-json.js
+scripts/examples/

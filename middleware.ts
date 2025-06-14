@@ -1,41 +1,66 @@
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs"
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+// Rotas públicas (ajuste conforme necessário)
+const PUBLIC_PATHS = [
+  '/login',
+  '/register',
+  '/api/public',
+  '/favicon.ico',
+  '/_next',
+  '/public',
+  '/aprova_facil_logo.png',
+];
+
+function isPublicPath(pathname: string) {
+  return PUBLIC_PATHS.some((publicPath) =>
+    pathname === publicPath || pathname.startsWith(publicPath + '/')
+  );
+}
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
 
   const {
     data: { session },
-  } = await supabase.auth.getSession()
+  } = await supabase.auth.getSession();
 
-  // TEMPORARIAMENTE DESABILITADO PARA TESTE
-  // Se o usuário não estiver autenticado e estiver tentando acessar a rota raiz
-  // if (!session && req.nextUrl.pathname === "/") {
-  //   const redirectUrl = req.nextUrl.clone()
-  //   redirectUrl.pathname = "/login"
-  //   return NextResponse.redirect(redirectUrl)
-  // }
+  const { pathname } = req.nextUrl;
 
-  // Se o usuário não estiver autenticado e estiver tentando acessar uma rota protegida
-  // if (!session && req.nextUrl.pathname.startsWith("/dashboard")) {
-  //   const redirectUrl = req.nextUrl.clone()
-  //   redirectUrl.pathname = "/login"
-  //   redirectUrl.searchParams.set("redirectedFrom", req.nextUrl.pathname)
-  //   return NextResponse.redirect(redirectUrl)
-  // }
+  // Permitir acesso a rotas públicas SEM login
+  if (isPublicPath(pathname)) {
+    return res;
+  }
 
-  // Se o usuário estiver autenticado e estiver tentando acessar login/register
-  // if (session && (req.nextUrl.pathname === "/login" || req.nextUrl.pathname === "/register")) {
-  //   const redirectUrl = req.nextUrl.clone()
-  //   redirectUrl.pathname = "/dashboard"
-  //   return NextResponse.redirect(redirectUrl)
-  // }
+  // Se não autenticado, bloquear acesso a tudo (exceto público)
+  if (!session) {
+    // Se for API, retorna 401
+    if (pathname.startsWith('/api')) {
+      return new NextResponse(
+        JSON.stringify({ success: false, error: { code: 'AUTH_REQUIRED', message: 'Login obrigatório' } }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    // Se for página, redireciona para login
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = '/login';
+    redirectUrl.searchParams.set('redirectedFrom', pathname);
+    return NextResponse.redirect(redirectUrl);
+  }
 
-  return res
+  // Se autenticado e tentar acessar login/register, redireciona para dashboard
+  if (session && (pathname === '/login' || pathname === '/register')) {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = '/dashboard';
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Permitir acesso normalmente
+  return res;
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/login", "/register"],
-}
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|public).*)'],
+};
