@@ -1,8 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -23,10 +23,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/use-auth';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email({
@@ -39,9 +41,25 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClientComponentClient();
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [timeUntilReset, setTimeUntilReset] = useState(0);
+  const { user, loading } = useAuth();
+
+  const redirectedFrom = searchParams.get('redirectedFrom');
+  const reason = searchParams.get('reason');
+
+  // Redirecionar se já estiver logado
+  useEffect(() => {
+    if (!loading && user) {
+      const redirectTo = redirectedFrom || '/dashboard';
+      router.push(redirectTo);
+    }
+  }, [user, loading, router, redirectedFrom]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,28 +69,80 @@ export default function LoginPage() {
     },
   });
 
+  const getReasonMessage = () => {
+    switch (reason) {
+      case 'no_session':
+        return 'Sua sessão expirou. Faça login novamente para continuar.';
+      case 'token_expired':
+        return 'Sua sessão expirou. Faça login novamente para continuar.';
+      case 'middleware_error':
+        return 'Ocorreu um erro na verificação de autenticação. Tente novamente.';
+      default:
+        return null;
+    }
+  };
+
+  const formatTimeRemaining = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    setLoginAttempts(prev => prev + 1);
+
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
       });
 
-      if (authError) {
-        toast({
-          variant: 'destructive',
-          title: 'Erro ao fazer login',
-          description: authError.message,
-        });
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          // Rate limit exceeded
+          setIsBlocked(true);
+          setTimeUntilReset(data.error.retryAfter || 900); // 15 minutos padrão
+          
+          toast({
+            variant: 'destructive',
+            title: 'Muitas tentativas',
+            description: data.error.message,
+          });
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Erro ao fazer login',
+            description: data.error.message,
+          });
+        }
         return;
       }
 
-      toast({
-        title: 'Login realizado com sucesso',
-        description: 'Redirecionando para o dashboard...',
-      });
-      router.push('/');
+      if (data.success) {
+        toast({
+          title: 'Login realizado com sucesso',
+          description: 'Redirecionando...',
+        });
+
+        // Redirecionar para a página original ou dashboard
+        const redirectTo = redirectedFrom || '/dashboard';
+        router.push(redirectTo);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao fazer login',
+          description: data.error.message,
+        });
+      }
     } catch {
       toast({
         variant: 'destructive',
@@ -82,6 +152,23 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  // Se ainda está carregando, mostrar loading
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Se já está logado, não mostrar a página
+  if (user) {
+    return null;
   }
 
   return (
@@ -113,6 +200,29 @@ export default function LoginPage() {
           </CardHeader>
 
           <CardContent>
+            {getReasonMessage() && (
+              <Alert className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {getReasonMessage()}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {isBlocked && (
+              <Alert variant="destructive" className="mb-4">
+                <Lock className="h-4 w-4" />
+                <AlertDescription>
+                  <div className="space-y-2">
+                    <p>Muitas tentativas de login. Tente novamente em:</p>
+                    <p className="font-mono text-lg">
+                      {formatTimeRemaining(timeUntilReset)}
+                    </p>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
+
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -128,6 +238,8 @@ export default function LoginPage() {
                         <Input
                           placeholder="seu@email.com"
                           type="email"
+                          autoComplete="email"
+                          disabled={isBlocked}
                           {...field}
                         />
                       </FormControl>
@@ -142,11 +254,29 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>Senha</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          {...field}
-                        />
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder="••••••••"
+                            autoComplete="current-password"
+                            disabled={isBlocked}
+                            {...field}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                            disabled={isBlocked}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -155,7 +285,7 @@ export default function LoginPage() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={isLoading}
+                  disabled={isLoading || isBlocked || loginAttempts >= 5}
                   size="lg"
                 >
                   {isLoading ? 'Entrando...' : 'Entrar'}

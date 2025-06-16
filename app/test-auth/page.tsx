@@ -22,14 +22,12 @@ export default function TestAuthPage() {
       });
 
       if (error) {
-        console.error('Erro no login:', error);
         alert('Erro no login: ' + error.message + '\n\nVocê pode precisar criar uma conta primeiro em /register');
       } else {
         alert('Login realizado com sucesso!');
         router.refresh();
       }
     } catch (error) {
-      console.error('Erro:', error);
       alert('Erro: ' + error);
     } finally {
       setIsLoading(false);
@@ -43,7 +41,6 @@ export default function TestAuthPage() {
       alert('Logout realizado com sucesso!');
       router.refresh();
     } catch (error) {
-      console.error('Erro:', error);
       alert('Erro: ' + error);
     } finally {
       setIsLoading(false);

@@ -7,8 +7,8 @@ export interface ErrorContext {
   ip?: string;
   url?: string;
   method?: string;
-  params?: Record<string, any>;
-  body?: any;
+  params?: Record<string, unknown>;
+  body?: unknown;
   headers?: Record<string, string>;
 }
 
@@ -25,7 +25,7 @@ export interface ErrorMetadata {
 
 export interface AppError extends Error {
   metadata: ErrorMetadata;
-  toJSON(): Record<string, any>;
+  toJSON(): Record<string, unknown>;
   toUserFriendly(): string;
 }
 
@@ -35,7 +35,7 @@ export interface ErrorResponse {
     code: string;
     message: string;
     userMessage?: string;
-    details?: any;
+    details?: unknown;
     timestamp: string;
     requestId?: string;
   };
@@ -44,7 +44,7 @@ export interface ErrorResponse {
 export interface ValidationError {
   field: string;
   message: string;
-  value?: any;
+  value?: unknown;
   code: string;
 }
 

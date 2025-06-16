@@ -71,8 +71,7 @@ export async function GET(_request: Request) {
 }
 
 export async function POST(_request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = createRouteHandlerClient({ cookies });
 
   try {
     // Verificar se o usuário está autenticado

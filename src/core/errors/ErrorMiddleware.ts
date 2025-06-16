@@ -214,11 +214,11 @@ export class ErrorMiddleware {
   }
 
   // Utilitário para wrapper de API routes
-  public static withErrorHandling<T extends any[], R>(
+  public static withErrorHandling<T extends unknown[], R>(
     handler: (...args: T) => Promise<R>,
     config?: ErrorMiddlewareConfig
   ): (...args: T) => Promise<R> {
-    const middleware = new ErrorMiddleware(config);
+    const _middleware = new ErrorMiddleware(config);
     
     return async (...args: T): Promise<R> => {
       try {

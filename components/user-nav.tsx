@@ -12,19 +12,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
-import { User, Settings, LogOut } from 'lucide-react';
+import { User, Settings, LogOut, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 export function UserNav() {
   const router = useRouter();
-  const supabase = createClientComponentClient();
-  const { user, loading } = useAuth();
+  const { toast } = useToast();
+  const { user, loading, signOut } = useAuth();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
+    try {
+      await signOut();
+      toast({
+        title: 'Logout realizado',
+        description: 'Você foi desconectado com sucesso.',
+      });
+      router.push('/login');
+    } catch {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao fazer logout',
+        description: 'Tente novamente.',
+      });
+    }
   };
 
   // Se ainda está carregando, mostrar um placeholder
@@ -83,15 +95,19 @@ export function UserNav() {
             <p className="text-xs leading-none text-muted-foreground">
               {getUserEmail()}
             </p>
+            <div className="flex items-center space-x-1 mt-1">
+              <Shield className="h-3 w-3 text-green-500" />
+              <span className="text-xs text-green-600">Autenticado</span>
+            </div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push('/dashboard/configuracoes')}>
             <User className="mr-2 h-4 w-4" />
             <span>Perfil</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push('/dashboard/configuracoes')}>
             <Settings className="mr-2 h-4 w-4" />
             <span>Configurações</span>
           </DropdownMenuItem>
