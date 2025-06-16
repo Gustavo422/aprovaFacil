@@ -2,9 +2,10 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(_request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Verificar se o usuário está autenticado
     const {
@@ -28,7 +29,6 @@ export async function GET() {
       .eq('user_id', session.user.id);
 
     if (progressError) {
-      console.error('Erro ao buscar progresso:', progressError.message);
       return NextResponse.json(
         { error: 'Erro ao buscar progresso' },
         { status: 500 }
@@ -48,7 +48,6 @@ export async function GET() {
       .is('deleted_at', null);
 
     if (questoesError) {
-      console.error('Erro ao buscar questões:', questoesError.message);
       return NextResponse.json(
         { error: 'Erro ao buscar questões' },
         { status: 500 }
@@ -111,7 +110,6 @@ export async function GET() {
 
     return NextResponse.json(weakPointsArray);
   } catch (error) {
-    console.error('Erro inesperado ao buscar pontos fracos:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

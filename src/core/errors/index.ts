@@ -123,85 +123,95 @@ export const DefaultErrorConfig = {
   captureContext: true,
   maxRetries: 3,
   retryDelay: 1000,
-  ignoredErrors: ['USER_CANCELLED', 'NETWORK_OFFLINE'],
-  environment: (process.env.NODE_ENV as any) || 'development',
+  ignoredErrors: ['USER_CANCELLED', 'NETWORK_OFFLINE'] as string[],
+  environment: (process.env.NODE_ENV as 'development' | 'production' | 'staging') || 'development',
 } as const;
 
 // Função de inicialização do sistema
 export function initializeErrorHandling(config?: Partial<typeof DefaultErrorConfig>) {
-  const { ErrorHandler } = require('./ErrorHandler');
-  const errorHandler = ErrorHandler.getInstance();
-  
-  if (config) {
-    errorHandler.setConfig(config);
-  }
+  // Importação dinâmica para evitar dependência circular
+  import('./ErrorHandler').then(({ ErrorHandler }) => {
+    const errorHandler = ErrorHandler.getInstance();
+    
+    if (config) {
+      errorHandler.setConfig(config);
+    }
 
-  // Configurar handlers globais
-  if (typeof window !== 'undefined') {
-    // Capturar erros não tratados
-    window.addEventListener('error', (event) => {
-      errorHandler.handle(event.error || new Error(event.message));
-    });
+    // Configurar handlers globais
+    if (typeof window !== 'undefined') {
+      // Capturar erros não tratados
+      window.addEventListener('error', (event) => {
+        errorHandler.handle(event.error || new Error(event.message));
+      });
 
-    // Capturar rejeições de promises não tratadas
-    window.addEventListener('unhandledrejection', (event) => {
-      errorHandler.handle(new Error(event.reason));
-    });
-  }
+      // Capturar rejeições de promises não tratadas
+      window.addEventListener('unhandledrejection', (event) => {
+        errorHandler.handle(new Error(event.reason));
+      });
+    }
+  });
 
-  return errorHandler;
+  return null;
 }
 
 // Função para criar erro de validação com Zod
-export function createValidationError(field: string, message: string, value?: any) {
-  const { AppError } = require('./AppError');
-  return AppError.validation(field, message, value);
+export function createValidationError(field: string, message: string, value?: unknown) {
+  // Importação dinâmica para evitar dependência circular
+  return import('./AppError').then(({ AppError }) => {
+    return AppError.validation(field, message, value);
+  });
 }
 
 // Função para criar erro de autenticação
 export function createAuthError(message: string) {
-  const { AppError } = require('./AppError');
-  return AppError.authentication(message);
+  // Importação dinâmica para evitar dependência circular
+  return import('./AppError').then(({ AppError }) => {
+    return AppError.authentication(message);
+  });
 }
 
 // Função para criar erro de autorização
 export function createAuthzError(message: string) {
-  const { AppError } = require('./AppError');
-  return AppError.authorization(message);
+  // Importação dinâmica para evitar dependência circular
+  return import('./AppError').then(({ AppError }) => {
+    return AppError.authorization(message);
+  });
 }
 
 // Função para criar erro de banco de dados
 export function createDatabaseError(message: string, retryable = true) {
-  const { AppError } = require('./AppError');
-  return AppError.database(message, retryable);
+  // Importação dinâmica para evitar dependência circular
+  return import('./AppError').then(({ AppError }) => {
+    return AppError.database(message, retryable);
+  });
 }
 
 // Função para criar erro de rede
 export function createNetworkError(message: string, retryable = true) {
-  const { AppError } = require('./AppError');
-  return AppError.network(message, retryable);
+  // Importação dinâmica para evitar dependência circular
+  return import('./AppError').then(({ AppError }) => {
+    return AppError.network(message, retryable);
+  });
 }
 
 // Função para criar erro de negócio
 export function createBusinessError(message: string) {
-  const { AppError } = require('./AppError');
-  return AppError.business(message);
+  // Importação dinâmica para evitar dependência circular
+  return import('./AppError').then(({ AppError }) => {
+    return AppError.business(message);
+  });
 }
 
 // Função para criar erro do sistema
 export function createSystemError(message: string, retryable = true) {
-  const { AppError } = require('./AppError');
-  return AppError.system(message, retryable);
+  // Importação dinâmica para evitar dependência circular
+  return import('./AppError').then(({ AppError }) => {
+    return AppError.system(message, retryable);
+  });
 }
 
 // Função para verificar se um erro é retryable
-export function isRetryableError(error: Error | any): boolean {
-  const { AppError } = require('./AppError');
-  
-  if (error instanceof AppError) {
-    return error.isRetryable();
-  }
-
+export function isRetryableError(error: Error | unknown): boolean {
   const retryableCodes = [
     'NETWORK_TIMEOUT',
     'NETWORK_SERVER_ERROR',
@@ -209,27 +219,23 @@ export function isRetryableError(error: Error | any): boolean {
     'SYSTEM_OVERLOAD',
   ];
 
+  const errorMessage = error instanceof Error ? error.message : '';
+  const errorCode = (error as { code?: string }).code;
+
   return retryableCodes.some(code => 
-    error.message?.includes(code) || error.code === code
+    errorMessage?.includes(code) || errorCode === code
   );
 }
 
 // Função para obter mensagem amigável de um erro
-export function getUserFriendlyMessage(error: Error | any): string {
-  const { AppError } = require('./AppError');
-  
-  if (error instanceof AppError) {
-    return error.toUserFriendly();
-  }
-
-  return error.message || 'Ocorreu um erro inesperado. Tente novamente.';
+export function getUserFriendlyMessage(error: Error | unknown): string {
+  const errorMessage = error instanceof Error ? error.message : '';
+  return errorMessage || 'Ocorreu um erro inesperado. Tente novamente.';
 }
 
 // Função para obter código HTTP de um erro
-export function getHttpStatus(error: Error | any): number {
-  const { AppError } = require('./AppError');
-  
-  if (!(error instanceof AppError)) {
+export function getHttpStatus(error: Error | unknown): number {
+  if (!(error instanceof Error)) {
     return 500;
   }
 
@@ -263,5 +269,6 @@ export function getHttpStatus(error: Error | any): number {
     'UNKNOWN_ERROR': 500,
   };
 
-  return statusMap[error.metadata.code] || 500;
+  const errorCode = (error as { metadata?: { code?: string } }).metadata?.code;
+  return statusMap[errorCode || ''] || 500;
 } 

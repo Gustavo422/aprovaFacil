@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server';
 
 export async function GET(_request: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Verificar se o usuário está autenticado
     const {
@@ -12,11 +13,8 @@ export async function GET(_request: Request) {
     } = await supabase.auth.getSession();
 
     if (!session) {
-      console.log('Usuário não autenticado');
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
-
-    console.log('Usuário autenticado:', session.user.id);
 
     // Buscar simulados com join para concursos
     const { data: simulados, error } = await supabase
@@ -35,14 +33,11 @@ export async function GET(_request: Request) {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Erro ao buscar simulados:', error.message);
       return NextResponse.json(
         { error: 'Erro ao buscar simulados', details: error.message },
         { status: 500 }
       );
     }
-
-    console.log('Simulados encontrados:', simulados?.length || 0);
 
     return NextResponse.json({
       data: simulados || [],
@@ -51,7 +46,6 @@ export async function GET(_request: Request) {
       limit: 10,
     });
   } catch (error) {
-    console.error('Erro inesperado:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor', details: error },
       { status: 500 }

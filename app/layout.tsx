@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Toaster } from '@/components/ui/toaster';
-import { ErrorBoundary } from '@/components/error-boundary';
+import { ErrorBoundaryWrapper } from '@/components/error-boundary-wrapper';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <ErrorBoundary>{children}</ErrorBoundary>
+        <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
         <Toaster />
       </body>
     </html>

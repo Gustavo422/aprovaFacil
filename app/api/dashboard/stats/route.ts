@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Verificar se o usuário está autenticado
     const {
@@ -22,7 +23,6 @@ export async function GET() {
       .eq('user_id', session.user.id);
 
     if (progressError) {
-      console.error('Erro ao buscar progresso:', progressError.message);
       return NextResponse.json(
         { error: 'Erro ao buscar progresso' },
         { status: 500 }
@@ -134,8 +134,7 @@ export async function GET() {
       disciplineStats: [],
     });
 
-  } catch (error) {
-    console.error('Erro inesperado ao buscar estatísticas:', error);
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

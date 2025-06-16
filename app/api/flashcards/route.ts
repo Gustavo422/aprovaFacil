@@ -4,17 +4,17 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Buscar flashcards do banco
-    const { data: flashcards, error } = await supabase
+    const { data: flashcards, error: _error } = await supabase
       .from('flashcards')
       .select('*')
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Erro ao buscar flashcards:', error.message);
+    if (_error) {
       return NextResponse.json(
         { error: 'Erro ao buscar flashcards' },
         { status: 500 }
@@ -23,7 +23,6 @@ export async function GET() {
 
     return NextResponse.json(flashcards || []);
   } catch (error) {
-    console.error('Erro inesperado ao buscar flashcards:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -58,7 +57,7 @@ export async function POST(_request: Request) {
     }
 
     // Criar o flashcard
-    const { data: flashcard, error } = await supabase
+    const { data: flashcard, error: _error } = await supabase
       .from('flashcards')
       .insert({
         front,
@@ -71,8 +70,7 @@ export async function POST(_request: Request) {
       .select()
       .single();
 
-    if (error) {
-      console.error('Erro ao criar flashcard:', error);
+    if (_error) {
       return NextResponse.json(
         { error: 'Erro ao criar flashcard' },
         { status: 500 }
@@ -84,7 +82,6 @@ export async function POST(_request: Request) {
       flashcard,
     });
   } catch (error) {
-    console.error('Erro ao processar requisição:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

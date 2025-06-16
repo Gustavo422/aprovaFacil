@@ -7,7 +7,7 @@ interface Props {
   children: ReactNode;
   fallback?: ReactNode | ((error: Error, errorInfo: ErrorInfo) => ReactNode);
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
-  resetKeys?: any[];
+  resetKeys?: unknown[];
 }
 
 interface State {
@@ -34,18 +34,18 @@ export class ErrorBoundary extends Component<Props, State> {
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, _errorInfo: ErrorInfo) {
     this.setState({
       error,
-      errorInfo,
+      errorInfo: _errorInfo,
     });
 
     // Log do erro
-    this.logError(error, errorInfo);
+    this.logError(error, _errorInfo);
 
     // Callback personalizado
     if (this.props.onError) {
-      this.props.onError(error, errorInfo);
+      this.props.onError(error, _errorInfo);
     }
   }
 
