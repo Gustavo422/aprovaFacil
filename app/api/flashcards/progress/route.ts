@@ -1,19 +1,18 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = await createRouteHandlerClient();
 
   try {
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -39,7 +38,7 @@ export async function PUT(request: Request) {
     const { data: progressAtual, error: buscaError } = await supabase
       .from('user_flashcard_progress')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('flashcard_id', flashcard_id)
       .maybeSingle();
 
@@ -82,7 +81,7 @@ export async function PUT(request: Request) {
     const { data, error } = await supabase
       .from('user_flashcard_progress')
       .upsert({
-        user_id: session.user.id,
+        user_id: user.id,
         flashcard_id,
         status,
         next_review: proximaRevisao,
@@ -121,16 +120,15 @@ export async function GET(_request: Request) {
   const status = searchParams.get('status');
   const limit = Number.parseInt(searchParams.get('limit') || '10');
 
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = await createRouteHandlerClient();
 
   try {
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -150,7 +148,7 @@ export async function GET(_request: Request) {
         )
       `
       )
-      .eq('user_id', session.user.id);
+      .eq('user_id', user.id);
 
     // Aplicar filtros se fornecidos
     if (status) {

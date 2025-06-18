@@ -13,7 +13,7 @@ export async function signUp(formData: FormData) {
   const name = formData.get('name') as string;
 
   const supabase = createServerActionClient({ cookies });
-  const serverClient = createServerSupabaseClient();
+  const serverClient = await createServerSupabaseClient();
   const auditLogger = getAuditLogger();
 
   const { data, error } = await supabase.auth.signUp({
@@ -39,10 +39,11 @@ export async function signUp(formData: FormData) {
         name,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        study_time_minutes: 0,
-        total_questions_answered: 0,
-        total_correct_answers: 0,
-        average_score: 0,
+        // Temporarily removed missing columns until migration is run
+        // study_time_minutes: 0,
+        // total_questions_answered: 0,
+        // total_correct_answers: 0,
+        // average_score: 0,
       },
     ]);
 
@@ -75,7 +76,7 @@ export async function signIn(formData: FormData) {
 
   if (data.user) {
     // Atualizar último login
-    const serverClient = createServerSupabaseClient();
+    const serverClient = await createServerSupabaseClient();
     await serverClient
       .from('users')
       .update({
@@ -112,7 +113,7 @@ export async function updateUserProfile(
   userId: string,
   updates: Record<string, unknown>
 ) {
-  const serverClient = createServerSupabaseClient();
+  const serverClient = await createServerSupabaseClient();
   const auditLogger = getAuditLogger();
 
   try {
@@ -137,7 +138,7 @@ export async function updateUserProfile(
     }
 
     // Registrar atualização no log de auditoria
-    await auditLogger.logUpdate(userId, 'users', userId, currentData, updates);
+    await auditLogger.logUpdate(userId, 'users', userId, currentData as unknown, updates as unknown);
 
     return { success: true };
   } catch (error) {
@@ -147,7 +148,7 @@ export async function updateUserProfile(
 }
 
 export async function deleteUserAccount(userId: string) {
-  const serverClient = createServerSupabaseClient();
+  const serverClient = await createServerSupabaseClient();
   const auditLogger = getAuditLogger();
 
   try {
@@ -172,7 +173,7 @@ export async function deleteUserAccount(userId: string) {
     }
 
     // Registrar exclusão no log de auditoria
-    await auditLogger.logDelete(userId, 'users', userId, currentData);
+    await auditLogger.logDelete(userId, 'users', userId, currentData as unknown);
 
     // Fazer logout
     const supabase = createServerActionClient({ cookies });

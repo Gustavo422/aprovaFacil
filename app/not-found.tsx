@@ -1,6 +1,7 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-
 import {
   Card,
   CardContent,
@@ -11,6 +12,10 @@ import {
 import { FileX, Home, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="max-w-md w-full">
@@ -41,7 +46,7 @@ export default function NotFound() {
 
             <Button
               variant="outline"
-              onClick={() => window.history.back()}
+              onClick={handleGoBack}
               className="w-full"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -58,3 +63,4 @@ export default function NotFound() {
     </div>
   );
 }
+

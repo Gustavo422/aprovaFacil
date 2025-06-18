@@ -1,143 +1,109 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-// Rotas públicas (ajuste conforme necessário)
-const PUBLIC_PATHS = [
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/reset-password',
-  '/api/public',
-  '/api/auth/login',
-  '/favicon.ico',
-  '/_next',
-  '/public',
-  '/aprova_facil_logo.png',
-  '/manifest.json',
-  '/robots.txt',
-  '/sitemap.xml',
-];
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  })
 
-const AUTH_PATHS = ['/login', '/register', '/forgot-password', '/reset-password'];
-
-function isPublicPath(pathname: string) {
-  return PUBLIC_PATHS.some((publicPath) =>
-    pathname === publicPath || pathname.startsWith(publicPath + '/')
-  );
-}
-
-function isAuthPath(pathname: string) {
-  return AUTH_PATHS.some((authPath) => pathname === authPath);
-}
-
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return request.cookies.get(name)?.value
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          request.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+        },
+        remove(name: string, options: CookieOptions) {
+          request.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+        },
+      },
+    }
+  )
 
   try {
+    // Verificar se o usuário está autenticado
     const {
-      data: { session },
-      error,
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser()
 
-    const { pathname } = req.nextUrl;
+    // Rotas que requerem autenticação
+    const protectedRoutes = ['/dashboard', '/api/dashboard', '/api/simulados', '/api/flashcards', '/api/apostilas', '/api/questoes-semanais']
+    const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))
 
-    // Log da tentativa de acesso
-    console.log(`[MIDDLEWARE] ${req.method} ${pathname} - Session: ${!!session}`);
-
-    // Permitir acesso a rotas públicas
-    if (isPublicPath(pathname)) {
-      return res;
+    // Redirecionar para login se não autenticado em rota protegida
+    if (isProtectedRoute && !user) {
+      const redirectUrl = new URL('/login', request.url)
+      redirectUrl.searchParams.set('redirectedFrom', request.nextUrl.pathname)
+      return NextResponse.redirect(redirectUrl)
     }
 
-    // Se não autenticado, bloquear acesso
-    if (!session || error) {
-      console.log(`[MIDDLEWARE] Acesso negado para ${pathname} - Sem sessão`);
-      
-      if (pathname.startsWith('/api')) {
-        return new NextResponse(
-          JSON.stringify({ 
-            success: false, 
-            error: { 
-              code: 'AUTH_REQUIRED', 
-              message: 'Login obrigatório',
-              timestamp: new Date().toISOString()
-            } 
-          }),
-          { 
-            status: 401, 
-            headers: { 
-              'Content-Type': 'application/json',
-              'Cache-Control': 'no-cache, no-store, must-revalidate'
-            } 
-          }
-        );
-      }
-
-      const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/login';
-      redirectUrl.searchParams.set('redirectedFrom', pathname);
-      redirectUrl.searchParams.set('reason', 'no_session');
-      
-      return NextResponse.redirect(redirectUrl);
+    // Redirecionar para dashboard se autenticado tentando acessar login
+    if (user && request.nextUrl.pathname.startsWith('/login')) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
-    // Verificar se o token está próximo de expirar
-    if (session.expires_at) {
-      const expiresAt = new Date(session.expires_at * 1000);
-      const now = new Date();
-      const timeUntilExpiry = expiresAt.getTime() - now.getTime();
-      
-      if (timeUntilExpiry < 5 * 60 * 1000) { // 5 minutos
-        console.log(`[MIDDLEWARE] Token próximo de expirar para ${session.user.id}`);
-        
-        // Tentar renovar o token
-        const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-        
-        if (refreshError || !refreshData.session) {
-          console.log(`[MIDDLEWARE] Falha ao renovar token para ${session.user.id}`);
-          
-          const redirectUrl = req.nextUrl.clone();
-          redirectUrl.pathname = '/login';
-          redirectUrl.searchParams.set('redirectedFrom', pathname);
-          redirectUrl.searchParams.set('reason', 'token_expired');
-          
-          return NextResponse.redirect(redirectUrl);
-        }
-      }
-    }
-
-    // Se autenticado e tentar acessar páginas de auth, redirecionar
-    if (session && isAuthPath(pathname)) {
-      const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/dashboard';
-      redirectUrl.searchParams.set('reason', 'already_authenticated');
-      
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    // Adicionar headers de segurança
-    res.headers.set('X-Auth-User-ID', session.user.id);
-    res.headers.set('X-Auth-User-Email', session.user.email || '');
-    res.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-
-    return res;
+    return response
   } catch (error) {
-    console.error('[MIDDLEWARE] Erro inesperado:', error);
+    // Se houver erro na verificação de autenticação, permitir o acesso
+    // mas redirecionar para login se for rota protegida
+    const protectedRoutes = ['/dashboard', '/api/dashboard', '/api/simulados', '/api/flashcards', '/api/apostilas', '/api/questoes-semanais']
+    const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))
     
-    const { pathname } = req.nextUrl;
-    const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = '/login';
-    redirectUrl.searchParams.set('redirectedFrom', pathname);
-    redirectUrl.searchParams.set('reason', 'middleware_error');
+    if (isProtectedRoute) {
+      const redirectUrl = new URL('/login', request.url)
+      redirectUrl.searchParams.set('redirectedFrom', request.nextUrl.pathname)
+      redirectUrl.searchParams.set('reason', 'middleware_error')
+      return NextResponse.redirect(redirectUrl)
+    }
     
-    return NextResponse.redirect(redirectUrl);
+    return response
   }
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
-};
+}
+

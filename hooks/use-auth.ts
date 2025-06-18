@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { createClient } from '@/lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 
@@ -10,10 +10,14 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const router = useRouter();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const subscriptionRef = useRef<any>(null);
 
   const refreshSession = useCallback(async () => {
+    if (isRefreshing) return; // Evitar múltiplas tentativas simultâneas
+    
     setIsRefreshing(true);
     try {
       const { data, error } = await supabase.auth.refreshSession();
@@ -30,7 +34,7 @@ export function useAuth() {
     } finally {
       setIsRefreshing(false);
     }
-  }, [supabase.auth, router]);
+  }, [supabase.auth, router, isRefreshing]);
 
   const checkSessionValidity = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -50,17 +54,25 @@ export function useAuth() {
   }, [supabase.auth, refreshSession]);
 
   useEffect(() => {
+    let mounted = true;
+
     const initializeAuth = async () => {
+      if (!mounted) return;
+      
       const session = await checkSessionValidity();
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      if (mounted) {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
     };
 
     initializeAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!mounted) return;
+        
         console.log('Auth state changed:', event, session?.user?.id);
         
         if (event === 'TOKEN_REFRESHED') {
@@ -79,12 +91,23 @@ export function useAuth() {
       }
     );
 
+    subscriptionRef.current = subscription;
+
     // Verificar sessão periodicamente (a cada 4 minutos)
-    const interval = setInterval(checkSessionValidity, 4 * 60 * 1000);
+    intervalRef.current = setInterval(() => {
+      if (mounted) {
+        checkSessionValidity();
+      }
+    }, 4 * 60 * 1000);
 
     return () => {
-      subscription.unsubscribe();
-      clearInterval(interval);
+      mounted = false;
+      if (subscriptionRef.current && typeof subscriptionRef.current.unsubscribe === 'function') {
+        subscriptionRef.current.unsubscribe();
+      }
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
   }, [supabase.auth, checkSessionValidity, router]);
 

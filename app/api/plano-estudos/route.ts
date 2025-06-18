@@ -1,19 +1,18 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 
 export async function GET(_request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-
   try {
+    const supabase = await createRouteHandlerClient();
+
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -31,7 +30,7 @@ export async function GET(_request: Request) {
         )
       `
       )
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('ativo', true)
       .single();
 
@@ -79,16 +78,15 @@ export async function GET(_request: Request) {
 }
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-
   try {
+    const supabase = await createRouteHandlerClient();
+
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -157,7 +155,7 @@ export async function POST(request: Request) {
     const { data: planoEstudo, error } = await supabase
       .from('planos_estudo')
       .insert({
-        user_id: session.user.id,
+        user_id: user.id,
         concurso_id: concursoId || null,
         start_date: startDate,
         end_date: endDate,

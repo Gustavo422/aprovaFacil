@@ -1,6 +1,7 @@
 import type React from 'react';
 import { Toaster } from '@/components/ui/toaster';
 import { ErrorBoundaryWrapper } from '@/components/error-boundary-wrapper';
+import { ConcursoProvider } from '@/contexts/ConcursoContext';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
@@ -20,7 +21,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="dark" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
+        <ErrorBoundaryWrapper>
+          <ConcursoProvider>
+            {children}
+          </ConcursoProvider>
+        </ErrorBoundaryWrapper>
         <Toaster />
       </body>
     </html>

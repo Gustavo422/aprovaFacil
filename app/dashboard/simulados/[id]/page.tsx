@@ -1,7 +1,7 @@
 'use client';
 import { logger } from '@/lib/logger';
 
-import { useState, useEffect, useCallback, use } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { QuestionPlayer, SimuladoQuestion } from '@/components/question-player';
@@ -30,7 +30,7 @@ interface Simulado {
   };
 }
 
-export default function SimuladoPage({ params }: { params: Promise<{ id: string }> }) {
+export default function SimuladoPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { toast } = useToast();
   const [simulado, setSimulado] = useState<Simulado | null>(null);
@@ -38,8 +38,8 @@ export default function SimuladoPage({ params }: { params: Promise<{ id: string 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Unwrap the params Promise
-  const { id } = use(params);
+  // Extract the id directly from params
+  const { id } = params;
 
   const fetchSimulado = useCallback(async () => {
     try {

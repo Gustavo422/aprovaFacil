@@ -1,19 +1,18 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 
 export async function GET(_request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-
   try {
+    const supabase = await createRouteHandlerClient();
+
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -21,7 +20,7 @@ export async function GET(_request: Request) {
     const { data: simuladosStats, error: simuladosError } = await supabase
       .from('user_simulado_progress')
       .select('*')
-      .eq('user_id', session.user.id);
+      .eq('user_id', user.id);
 
     if (simuladosError) {
       logger.error('Erro ao buscar estatísticas de simulados:', {
@@ -58,7 +57,7 @@ export async function GET(_request: Request) {
     const { data: planoEstudo, error: planoError } = await supabase
       .from('planos_estudo')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -88,7 +87,7 @@ export async function GET(_request: Request) {
     const { data: atividadesRecentes, error: atividadesError } = await supabase
       .from('user_simulado_progress')
       .select('*, simulados(id, title, description, difficulty)')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .order('completed_at', { ascending: false })
       .limit(5);
 
@@ -131,7 +130,7 @@ export async function GET(_request: Request) {
     const { data: disciplinaStats, error: disciplinaError } = await supabase
       .from('user_discipline_stats')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .order('average_score', { ascending: false });
 
     if (disciplinaError) {

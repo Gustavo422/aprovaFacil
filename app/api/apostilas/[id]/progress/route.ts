@@ -1,5 +1,4 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 
@@ -8,16 +7,15 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = await createRouteHandlerClient();
 
   try {
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -37,7 +35,7 @@ export async function PUT(
     const { data, error } = await supabase
       .from('user_apostila_progress')
       .upsert({
-        user_id: session.user.id,
+        user_id: user.id,
         apostila_content_id,
         completed: completed !== undefined ? completed : false,
         progress_percentage:
@@ -67,12 +65,22 @@ export async function PUT(
   }
 }
 
- 
 export async function GET(
-  _request: Request,
-  { params: _params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: { id: string } }
 ) {
   try {
+    const supabase = await createRouteHandlerClient();
+
+    // Verificar se o usuário está autenticado
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    }
+
     // TODO: Implementar lógica para buscar progresso da apostila
     return NextResponse.json({ progress: 0 });
   } catch {

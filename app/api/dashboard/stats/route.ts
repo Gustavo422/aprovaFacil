@@ -1,18 +1,16 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabase = await createRouteHandlerClient();
 
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -20,7 +18,7 @@ export async function GET() {
     const { data: progress, error: progressError } = await supabase
       .from('user_simulado_progress')
       .select('*')
-      .eq('user_id', session.user.id);
+      .eq('user_id', user.id);
 
     if (progressError) {
       return NextResponse.json(

@@ -1,4 +1,4 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -7,16 +7,15 @@ export async function GET(_request: Request) {
   const { searchParams } = new URL(_request.url);
   const disciplina = searchParams.get('disciplina');
 
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = await createRouteHandlerClient();
 
   try {
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -24,7 +23,7 @@ export async function GET(_request: Request) {
     let query = supabase
       .from('user_discipline_stats')
       .select('*')
-      .eq('user_id', session.user.id);
+      .eq('user_id', user.id);
 
     // Aplicar filtro por disciplina se fornecido
     if (disciplina) {
@@ -59,16 +58,15 @@ export async function GET(_request: Request) {
 }
 
 export async function POST(_request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = await createRouteHandlerClient();
 
   try {
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -93,7 +91,7 @@ export async function POST(_request: Request) {
     const { data: statsExistentes, error: buscaError } = await supabase
       .from('user_discipline_stats')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('disciplina', disciplina)
       .maybeSingle();
 
@@ -111,7 +109,7 @@ export async function POST(_request: Request) {
     const { data, error } = await supabase
       .from('user_discipline_stats')
       .upsert({
-        user_id: session.user.id,
+        user_id: user.id,
         disciplina,
         total_questions: statsExistentes
           ? statsExistentes.total_questions + (total_questions || 0)

@@ -92,12 +92,20 @@ NEXTAUTH_URL=http://localhost:3000
 Execute os scripts SQL na ordem correta:
 
 ```bash
-# 1. Schema do banco
-psql -h seu_host -U seu_usuario -d seu_banco -f scripts/schema.sql
+# 1. Schema do banco (obrigatório)
+psql -h seu_host -U seu_usuario -d seu_banco -f docs/database/database_schema.sql
 
-# 2. Dados iniciais (opcional)
-psql -h seu_host -U seu_usuario -d seu_banco -f scripts/seed.sql
+# 2. Triggers e índices (obrigatório)
+psql -h seu_host -U seu_usuario -d seu_banco -f docs/database/add_triggers_and_indexes.sql
+
+# 3. Dados de exemplo (opcional)
+psql -h seu_host -U seu_usuario -d seu_banco -f docs/database/sample_data.sql
 ```
+
+**Alternativa usando Supabase Dashboard:**
+1. Acesse [supabase.com](https://supabase.com)
+2. Abra o SQL Editor do seu projeto
+3. Execute o arquivo `docs/database/database_setup_complete.sql` (contém todos os scripts)
 
 ### 5. Execute o projeto
 
@@ -138,7 +146,14 @@ study-app/
 ├── hooks/               # Custom hooks
 ├── styles/              # Estilos globais
 ├── public/              # Arquivos estáticos
-└── scripts/             # Scripts SQL
+├── scripts/             # Scripts de automação
+├── docs/                # Documentação
+│   ├── database/        # Scripts e documentação do banco
+│   ├── development/     # Guias de desenvolvimento
+│   └── deployment/      # Guias de deploy
+└── src/                 # Código fonte organizado
+    ├── core/            # Lógica central
+    └── features/        # Funcionalidades específicas
 ```
 
 ## 🎯 Funcionalidades Detalhadas
@@ -198,7 +213,47 @@ npm run start        # Inicia o servidor de produção
 
 # Qualidade de código
 npm run lint         # Executa o ESLint
+npm run lint:fix     # Corrige problemas de linting automaticamente
+
+# Testes
+npm run test         # Executa os testes
+npm run test:watch   # Executa testes em modo watch
 ```
+
+## 🧪 Testando o Sistema
+
+### Páginas de Teste Disponíveis
+
+- **`/teste-sistema`** - Testa conexão com banco e APIs
+- **`/teste-selecao`** - Testa contexto global de concursos
+- **`/test-auth`** - Testa sistema de autenticação
+
+### Verificações Importantes
+
+1. **Banco de Dados**: Verifique se todas as tabelas foram criadas
+2. **APIs**: Teste os endpoints principais
+3. **Autenticação**: Teste login/logout
+4. **Contexto**: Verifique se o sistema de concursos funciona
+
+## 🗄️ Banco de Dados
+
+### Tabelas Principais
+
+- **`concurso_categorias`** - Categorias de concursos
+- **`concursos`** - Concursos específicos
+- **`categoria_disciplinas`** - Disciplinas por categoria
+- **`simulados`** - Simulados de questões
+- **`simulado_questions`** - Questões dos simulados
+- **`flashcards`** - Flashcards de estudo
+- **`apostilas`** - Apostilas de estudo
+- **`user_simulado_progress`** - Progresso em simulados
+
+### Scripts SQL Disponíveis
+
+- `docs/database/database_schema.sql` - Schema completo
+- `docs/database/database_setup_complete.sql` - Setup completo
+- `docs/database/sample_data.sql` - Dados de exemplo
+- `docs/database/add_triggers_and_indexes.sql` - Triggers e índices
 
 ## 🌐 Deploy
 
@@ -214,6 +269,36 @@ npm run lint         # Executa o ESLint
 - Railway
 - Render
 - DigitalOcean App Platform
+
+## 🐛 Solução de Problemas
+
+### Problemas Comuns
+
+1. **Erro de conexão com banco**
+   - Verifique as variáveis de ambiente
+   - Confirme se o Supabase está online
+   - Execute os scripts SQL necessários
+
+2. **Tabelas não existem**
+   - Execute `docs/database/database_setup_complete.sql`
+   - Verifique se as foreign keys foram criadas
+
+3. **Erro de autenticação**
+   - Verifique as chaves do Supabase
+   - Confirme se o email foi confirmado
+   - Teste em `/test-auth`
+
+### Logs e Debug
+
+- Use `npm run dev` para ver logs detalhados
+- Verifique o console do navegador
+- Use as páginas de teste para diagnóstico
+
+## 📚 Documentação Adicional
+
+- **`docs/development/`** - Guias de desenvolvimento
+- **`docs/database/`** - Documentação do banco de dados
+- **`docs/deployment/`** - Guias de deploy
 
 ## 🤝 Contribuição
 

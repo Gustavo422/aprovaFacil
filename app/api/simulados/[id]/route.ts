@@ -1,4 +1,4 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -7,15 +7,15 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createRouteHandlerClient();
     const { id } = await params;
 
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -53,7 +53,7 @@ export async function GET(
     const { data: progress, error: progressError } = await supabase
       .from('user_simulado_progress')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('simulado_id', id)
       .maybeSingle();
 
@@ -80,15 +80,15 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createRouteHandlerClient();
     const { id } = await params;
 
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -113,7 +113,7 @@ export async function POST(
     const { data: userProfile, error: profileError } = await supabase
       .from('users')
       .select('id')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .maybeSingle();
 
     if (profileError) {
@@ -128,9 +128,9 @@ export async function POST(
       const { error: createProfileError } = await supabase
         .from('users')
         .insert({
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Usuário',
+          id: user.id,
+          email: user.email,
+          name: user.user_metadata?.name || user.email?.split('@')[0] || 'Usuário',
           created_at: new Date().toISOString(),
         });
 
@@ -146,7 +146,7 @@ export async function POST(
     const { data: existingProgress, error: checkError } = await supabase
       .from('user_simulado_progress')
       .select('id')
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('simulado_id', id)
       .maybeSingle();
 
@@ -175,7 +175,7 @@ export async function POST(
       const { error } = await supabase
         .from('user_simulado_progress')
         .insert({
-          user_id: session.user.id,
+          user_id: user.id,
           simulado_id: id,
           score: score,
           time_taken_minutes: Math.round(timeTaken / 60), // Converter segundos para minutos

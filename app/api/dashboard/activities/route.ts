@@ -1,61 +1,134 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabase = await createRouteHandlerClient();
 
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Buscar progresso recente em simulados
-    const { data: progress, error: progressError } = await supabase
+    const activities = [];
+
+    // Buscar atividades de simulados
+    const { data: simuladoProgress } = await supabase
       .from('user_simulado_progress')
       .select(`
         *,
-        simulados!inner(
-          id,
-          title
+        simulados (
+          title,
+          difficulty
         )
       `)
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .order('completed_at', { ascending: false })
       .limit(10);
 
-    if (progressError) {
-      return NextResponse.json(
-        { error: 'Erro ao buscar progresso' },
-        { status: 500 }
-      );
+    if (simuladoProgress) {
+      for (const progress of simuladoProgress) {
+        activities.push({
+          id: `simulado-${progress.id}`,
+          type: 'simulado',
+          title: progress.simulados?.title || 'Simulado',
+          description: `Pontuação: ${progress.score}% - ${progress.simulados?.difficulty || 'Médio'}`,
+          time: progress.time_taken_minutes ? `${progress.time_taken_minutes}min` : '',
+          created_at: progress.completed_at,
+          score: progress.score,
+          improvement: 0, // Será calculado comparando com simulados anteriores
+        });
+      }
     }
 
-    // Converter para formato de atividades
-    const activities = (progress || []).map(p => ({
-      id: p.id,
-      type: 'simulado' as const,
-      title: p.simulados?.title || 'Simulado',
-      description: `Concluído com ${Math.round(p.score || 0)}% de acerto`,
-      time: p.completed_at,
-      created_at: p.completed_at,
-    }));
+    // Buscar atividades de flashcards
+    const { data: flashcardProgress } = await supabase
+      .from('user_flashcard_progress')
+      .select(`
+        *,
+        flashcards (
+          front,
+          disciplina
+        )
+      `)
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(5);
 
-    // TODO: Adicionar outras atividades como questões semanais e flashcards
-    // Por enquanto, retornamos apenas atividades de simulados
+    if (flashcardProgress) {
+      for (const progress of flashcardProgress) {
+        activities.push({
+          id: `flashcard-${progress.id}`,
+          type: 'flashcard',
+          title: 'Revisão de Flashcard',
+          description: `${progress.flashcards?.disciplina || 'Disciplina'} - ${progress.status}`,
+          time: '',
+          created_at: progress.updated_at,
+        });
+      }
+    }
 
-    return NextResponse.json(activities);
+    // Buscar atividades de apostilas
+    const { data: apostilaProgress } = await supabase
+      .from('user_apostila_progress')
+      .select(`
+        *,
+        apostila_content (
+          title,
+          apostilas (
+            title
+          )
+        )
+      `)
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(5);
 
-  } catch (_error) {
+    if (apostilaProgress) {
+      for (const progress of apostilaProgress) {
+        activities.push({
+          id: `apostila-${progress.id}`,
+          type: 'questao',
+          title: 'Estudo de Apostila',
+          description: `${progress.apostila_content?.apostilas?.title || 'Apostila'} - ${progress.progress_percentage}% concluído`,
+          time: '',
+          created_at: progress.updated_at,
+        });
+      }
+    }
+
+    // Ordenar todas as atividades por data
+    activities.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    // Calcular melhorias para simulados
+    if (simuladoProgress && simuladoProgress.length > 1) {
+      for (let i = 0; i < activities.length; i++) {
+        const activity = activities[i];
+        if (activity.type === 'simulado' && activity.score) {
+          // Encontrar simulado anterior
+          const previousSimulado = simuladoProgress.find((p, index) => 
+            index > simuladoProgress.findIndex(sp => sp.id === activity.id.replace('simulado-', ''))
+          );
+          
+          if (previousSimulado && previousSimulado.score) {
+            activity.improvement = activity.score - previousSimulado.score;
+          }
+        }
+      }
+    }
+
+    return NextResponse.json(activities.slice(0, 10));
+
+  } catch (error) {
+    console.error('Erro ao buscar atividades:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
     );
   }
-} 
+}
+
