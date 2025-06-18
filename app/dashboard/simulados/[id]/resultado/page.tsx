@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Clock, CheckCircle, XCircle, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { use, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { logger } from '@/lib/logger';
 
@@ -63,8 +63,8 @@ interface UserProgress {
   answers: Record<number, string>;
 }
 
-export default function ResultadoPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function ResultadoPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const router = useRouter();
   const [simulado, setSimulado] = useState<Simulado | null>(null);
   const [questoes, setQuestoes] = useState<SimuladoQuestion[]>([]);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -62,45 +62,49 @@ export default function QuestoesSemanaisPage() {
     timeSpent: number;
   } | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // Buscar questão semanal atual
-        const questoesResponse = await fetch('/api/questoes-semanais');
-        if (!questoesResponse.ok) {
-          throw new Error('Erro ao carregar questões semanais');
-        }
-        const questoesData = await questoesResponse.json();
-        
-        if (questoesData.questaoSemanal) {
-          setQuestaoSemanal(questoesData.questaoSemanal);
-          setQuestoes(questoesData.questoes || []);
-        }
-        
-        if (questoesData.historico) {
-          setHistorico(questoesData.historico);
-        }
-
-      } catch (error) {
-        logger.error('Erro ao buscar questões semanais:', {
-          error: error instanceof Error ? error.message : String(error),
-        });
-        setError('Erro ao carregar questões semanais. Tente novamente.');
-      } finally {
-        setLoading(false);
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Buscar questão semanal atual
+      const questoesResponse = await fetch('/api/questoes-semanais');
+      if (!questoesResponse.ok) {
+        throw new Error('Erro ao carregar questões semanais');
       }
-    };
+      const questoesData = await questoesResponse.json();
+      
+      if (questoesData.questaoSemanal) {
+        setQuestaoSemanal(questoesData.questaoSemanal);
+        setQuestoes(questoesData.questoes || []);
+      } else {
+        setQuestaoSemanal(null);
+        setQuestoes([]);
+      }
+      
+      if (questoesData.historico) {
+        setHistorico(questoesData.historico);
+      }
 
-    fetchData();
+    } catch (error) {
+      logger.error('Erro ao buscar questões semanais:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      setError('Erro ao carregar questões semanais. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const handleStart = () => {
-    setIsStarted(true);
-  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  const handleComplete = (
+  const handleStart = useCallback(() => {
+    setIsStarted(true);
+  }, []);
+
+  const handleComplete = useCallback((
     answers: Record<number, string>,
     timeSpent: number
   ) => {
@@ -118,16 +122,22 @@ export default function QuestoesSemanaisPage() {
     });
 
     setIsCompleted(true);
-  };
+  }, [questaoSemanal, questoes]);
 
-  const formatDate = (dateString: string) => {
+  const handleRetry = useCallback(() => {
+    setIsStarted(false);
+    setIsCompleted(false);
+    setResults(null);
+  }, []);
+
+  const formatDate = useCallback((dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
     }).format(date);
-  };
+  }, []);
 
   if (loading) {
     return (
@@ -142,7 +152,7 @@ export default function QuestoesSemanaisPage() {
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <h2 className="text-xl font-semibold">Erro ao carregar questões semanais</h2>
         <p className="text-muted-foreground">{error}</p>
-        <Button onClick={() => window.location.reload()}>
+        <Button onClick={fetchData}>
           Tentar novamente
         </Button>
       </div>
@@ -275,11 +285,7 @@ export default function QuestoesSemanaisPage() {
               <CardFooter>
                 <Button
                   className="w-full"
-                  onClick={() => {
-                    setIsStarted(false);
-                    setIsCompleted(false);
-                    setResults(null);
-                  }}
+                  onClick={handleRetry}
                 >
                   Refazer Questões
                 </Button>

@@ -1,7 +1,7 @@
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { SidebarNav } from '@/components/sidebar-nav';
 import { UserNav } from '@/components/user-nav';
 import { AuthGuard } from '@/components/auth-guard';
@@ -62,17 +62,29 @@ export default function DashboardLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleSidebarToggle = useCallback(() => {
+    setSidebarOpen(prev => !prev);
+  }, []);
+
+  const handleSidebarClose = useCallback(() => {
+    setSidebarOpen(false);
+  }, []);
+
+  const memoizedSidebarItems = useMemo(() => sidebarNavItems, []);
+
+  const fallbackComponent = useMemo(() => (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center space-y-4">
+        <LoadingSpinner size="lg" />
+        <p className="text-muted-foreground">Verificando autenticação...</p>
+      </div>
+    </div>
+  ), []);
+
   return (
     <AuthGuard 
       requireAuth={true}
-      fallback={
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <LoadingSpinner size="lg" />
-            <p className="text-muted-foreground">Verificando autenticação...</p>
-          </div>
-        </div>
-      }
+      fallback={fallbackComponent}
     >
       <div className="flex min-h-screen bg-background">
         {/* Sidebar as Sheet for both Mobile and Desktop */}
@@ -85,7 +97,7 @@ export default function DashboardLayout({
             <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
             <div className="flex flex-col h-full">
               <nav className="flex-1 px-4 py-12">
-                <SidebarNav items={sidebarNavItems} />
+                <SidebarNav items={memoizedSidebarItems} />
               </nav>
             </div>
           </SheetContent>
@@ -100,7 +112,7 @@ export default function DashboardLayout({
                 <Button
                   size="icon"
                   className="bg-accent text-accent-foreground"
-                  onClick={() => setSidebarOpen(true)}
+                  onClick={handleSidebarToggle}
                 >
                   <Menu className="h-full w-full" />
                   <span className="sr-only">Abrir menu</span>

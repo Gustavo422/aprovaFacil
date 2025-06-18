@@ -1,6 +1,5 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function GET(_request: Request) {
@@ -8,16 +7,21 @@ export async function GET(_request: Request) {
   const concursoId = searchParams.get('concurso_id');
   const disciplina = searchParams.get('disciplina');
 
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-
   try {
+    // Criar cliente Supabase corretamente
+    const supabase = await createRouteHandlerClient();
+
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (authError || !user) {
+      logger.error('Erro de autenticação:', {
+        error: authError?.message || 'Usuário não autenticado',
+        user: user?.id,
+      });
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -40,6 +44,7 @@ export async function GET(_request: Request) {
       logger.error('Erro ao buscar mapa de assuntos:', {
         error: error.message,
         details: error,
+        userId: user.id,
       });
       return NextResponse.json(
         { error: 'Erro ao buscar mapa de assuntos' },
@@ -51,12 +56,13 @@ export async function GET(_request: Request) {
     const { data: statusAssuntos, error: statusError } = await supabase
       .from('user_mapa_assuntos_status')
       .select('*')
-      .eq('user_id', session.user.id);
+      .eq('user_id', user.id);
 
     if (statusError) {
       logger.error('Erro ao buscar status dos assuntos:', {
         error: statusError.message,
         details: statusError,
+        userId: user.id,
       });
       return NextResponse.json(
         { error: 'Erro ao buscar status dos assuntos' },
@@ -85,12 +91,19 @@ export async function GET(_request: Request) {
       assuntosPorDisciplina[assunto.disciplina].push(assunto);
     });
 
+    logger.info('Mapa de assuntos buscado com sucesso:', {
+      userId: user.id,
+      totalAssuntos: assuntos.length,
+      disciplinas: Object.keys(assuntosPorDisciplina),
+    });
+
     return NextResponse.json({
       assuntosPorDisciplina,
     });
   } catch (error) {
     logger.error('Erro ao processar requisição:', {
       error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
     });
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
@@ -100,16 +113,21 @@ export async function GET(_request: Request) {
 }
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-
   try {
+    // Criar cliente Supabase corretamente
+    const supabase = await createRouteHandlerClient();
+
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (authError || !user) {
+      logger.error('Erro de autenticação:', {
+        error: authError?.message || 'Usuário não autenticado',
+        user: user?.id,
+      });
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -141,12 +159,22 @@ export async function POST(request: Request) {
       logger.error('Erro ao criar assunto:', {
         error: error.message,
         details: error,
+        userId: user.id,
+        disciplina,
+        tema,
       });
       return NextResponse.json(
         { error: 'Erro ao criar assunto' },
         { status: 500 }
       );
     }
+
+    logger.info('Assunto criado com sucesso:', {
+      userId: user.id,
+      assuntoId: assunto.id,
+      disciplina,
+      tema,
+    });
 
     return NextResponse.json({
       message: 'Assunto criado com sucesso',
@@ -155,6 +183,7 @@ export async function POST(request: Request) {
   } catch (error) {
     logger.error('Erro ao processar requisição:', {
       error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
     });
     return NextResponse.json(
       { error: 'Erro interno do servidor' },

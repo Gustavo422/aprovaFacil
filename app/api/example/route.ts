@@ -7,8 +7,7 @@ import {
   withInputValidation,
 } from '@/middleware/error-handler';
 import { createValidationError, withErrorHandling } from '@/lib/error-utils';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 
 // Exemplo de validador
@@ -39,16 +38,15 @@ function validateUserData(data: Record<string, unknown>) {
 
 // Handler principal da API
 async function handleGet(_request: NextRequest) {
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = await createRouteHandlerClient();
 
   try {
     // Verificar se o usuário está autenticado
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
@@ -56,7 +54,7 @@ async function handleGet(_request: NextRequest) {
     const { data, error } = await supabase
       .from('users')
       .select('*')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
 
     if (error) {

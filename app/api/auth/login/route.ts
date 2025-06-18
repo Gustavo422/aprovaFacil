@@ -1,13 +1,11 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 import { rateLimiter } from '@/lib/rate-limiter';
 import { logger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabase = await createRouteHandlerClient();
     
     const body = await request.json();
     const { email, password } = body;
@@ -96,21 +94,6 @@ export async function POST(request: Request) {
         email: data.user.email,
         ip: clientIP
       });
-
-      // Atualizar último login no banco
-      try {
-        await supabase
-          .from('users')
-          .update({
-            last_login_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            login_count: supabase.rpc('increment', { n: 1 })
-          })
-          .eq('id', data.user.id);
-      } catch (dbError) {
-        logger.error('Erro ao atualizar último login', { error: dbError });
-        // Não falhar o login por erro na atualização
-      }
 
       return NextResponse.json({
         success: true,

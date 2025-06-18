@@ -15,18 +15,135 @@ export interface Database {
           email: string;
           name: string;
           created_at: string;
+          total_questions_answered: number;
+          total_correct_answers: number;
+          study_time_minutes: number;
+          average_score: number;
+          updated_at: string;
         };
         Insert: {
           id?: string;
           email: string;
           name: string;
           created_at?: string;
+          total_questions_answered?: number;
+          total_correct_answers?: number;
+          study_time_minutes?: number;
+          average_score?: number;
+          updated_at?: string;
         };
         Update: {
           id?: string;
           email?: string;
           name?: string;
           created_at?: string;
+          total_questions_answered?: number;
+          total_correct_answers?: number;
+          study_time_minutes?: number;
+          average_score?: number;
+          updated_at?: string;
+        };
+      };
+      concurso_categorias: {
+        Row: {
+          id: string;
+          nome: string;
+          slug: string;
+          descricao: string | null;
+          cor_primaria: string;
+          cor_secundaria: string;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          nome: string;
+          slug: string;
+          descricao?: string | null;
+          cor_primaria?: string;
+          cor_secundaria?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          nome?: string;
+          slug?: string;
+          descricao?: string | null;
+          cor_primaria?: string;
+          cor_secundaria?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      categoria_disciplinas: {
+        Row: {
+          id: string;
+          categoria_id: string;
+          nome: string;
+          peso: number;
+          horas_semanais: number;
+          ordem: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          categoria_id: string;
+          nome: string;
+          peso: number;
+          horas_semanais: number;
+          ordem: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          categoria_id?: string;
+          nome?: string;
+          peso?: number;
+          horas_semanais?: number;
+          ordem?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      user_concurso_preferences: {
+        Row: {
+          id: string;
+          user_id: string;
+          concurso_id: string;
+          selected_at: string;
+          can_change_until: string;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          concurso_id: string;
+          selected_at?: string;
+          can_change_until: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          concurso_id?: string;
+          selected_at?: string;
+          can_change_until?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
         };
       };
       concursos: {
@@ -40,6 +157,11 @@ export interface Database {
           is_active: boolean;
           created_at: string;
           updated_at: string;
+          categoria_id: string | null;
+          edital_url: string | null;
+          data_prova: string | null;
+          vagas: number | null;
+          salario: number | null;
         };
         Insert: {
           id?: string;
@@ -51,6 +173,11 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
+          categoria_id?: string | null;
+          edital_url?: string | null;
+          data_prova?: string | null;
+          vagas?: number | null;
+          salario?: number | null;
         };
         Update: {
           id?: string;
@@ -62,6 +189,11 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
+          categoria_id?: string | null;
+          edital_url?: string | null;
+          data_prova?: string | null;
+          vagas?: number | null;
+          salario?: number | null;
         };
       };
       simulados: {
@@ -78,6 +210,8 @@ export interface Database {
           updated_at: string;
           deleted_at: string | null;
           created_by: string | null;
+          categoria_id: string | null;
+          disciplinas: Json | null;
         };
         Insert: {
           id?: string;
@@ -92,6 +226,8 @@ export interface Database {
           updated_at?: string;
           deleted_at?: string | null;
           created_by?: string | null;
+          categoria_id?: string | null;
+          disciplinas?: Json | null;
         };
         Update: {
           id?: string;
@@ -106,6 +242,8 @@ export interface Database {
           updated_at?: string;
           deleted_at?: string | null;
           created_by?: string | null;
+          categoria_id?: string | null;
+          disciplinas?: Json | null;
         };
       };
       simulado_questions: {
@@ -124,6 +262,9 @@ export interface Database {
           updated_at: string;
           deleted_at: string | null;
           concurso_id: string | null;
+          categoria_id: string | null;
+          disciplina: string | null;
+          peso_disciplina: number | null;
         };
         Insert: {
           id?: string;
@@ -140,6 +281,9 @@ export interface Database {
           updated_at?: string;
           deleted_at?: string | null;
           concurso_id?: string | null;
+          categoria_id?: string | null;
+          disciplina?: string | null;
+          peso_disciplina?: number | null;
         };
         Update: {
           id?: string;
@@ -156,6 +300,9 @@ export interface Database {
           updated_at?: string;
           deleted_at?: string | null;
           concurso_id?: string | null;
+          categoria_id?: string | null;
+          disciplina?: string | null;
+          peso_disciplina?: number | null;
         };
       };
       user_simulado_progress: {
@@ -250,6 +397,8 @@ export interface Database {
           subtema: string | null;
           concurso_id: string | null;
           created_at: string;
+          categoria_id: string | null;
+          peso_disciplina: number | null;
         };
         Insert: {
           id?: string;
@@ -258,6 +407,8 @@ export interface Database {
           subtema?: string | null;
           concurso_id?: string | null;
           created_at?: string;
+          categoria_id?: string | null;
+          peso_disciplina?: number | null;
         };
         Update: {
           id?: string;
@@ -266,6 +417,8 @@ export interface Database {
           subtema?: string | null;
           concurso_id?: string | null;
           created_at?: string;
+          categoria_id?: string | null;
+          peso_disciplina?: number | null;
         };
       };
       user_mapa_assuntos_status: {
@@ -330,6 +483,8 @@ export interface Database {
           subtema: string | null;
           created_at: string;
           concurso_id: string | null;
+          categoria_id: string | null;
+          peso_disciplina: number | null;
         };
         Insert: {
           id?: string;
@@ -340,6 +495,8 @@ export interface Database {
           subtema?: string | null;
           created_at?: string;
           concurso_id?: string | null;
+          categoria_id?: string | null;
+          peso_disciplina?: number | null;
         };
         Update: {
           id?: string;
@@ -350,6 +507,8 @@ export interface Database {
           subtema?: string | null;
           created_at?: string;
           concurso_id?: string | null;
+          categoria_id?: string | null;
+          peso_disciplina?: number | null;
         };
       };
       user_flashcard_progress: {
@@ -388,6 +547,8 @@ export interface Database {
           description: string | null;
           concurso_id: string | null;
           created_at: string;
+          categoria_id: string | null;
+          disciplinas: Json | null;
         };
         Insert: {
           id?: string;
@@ -395,6 +556,8 @@ export interface Database {
           description?: string | null;
           concurso_id?: string | null;
           created_at?: string;
+          categoria_id?: string | null;
+          disciplinas?: Json | null;
         };
         Update: {
           id?: string;
@@ -402,6 +565,8 @@ export interface Database {
           description?: string | null;
           concurso_id?: string | null;
           created_at?: string;
+          categoria_id?: string | null;
+          disciplinas?: Json | null;
         };
       };
       apostila_content: {

@@ -14,6 +14,7 @@ import {
   BookOpen,
   Settings,
 } from 'lucide-react';
+import { useMemo } from 'react';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {
@@ -26,7 +27,7 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
 export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
   const pathname = usePathname();
 
-  const iconMap = {
+  const iconMap = useMemo(() => ({
     LayoutDashboard,
     FileText,
     ListChecks,
@@ -35,7 +36,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
     Layers,
     BookOpen,
     Settings,
-  };
+  }), []);
 
   return (
     <nav className={cn('space-y-1', className)} {...props}>

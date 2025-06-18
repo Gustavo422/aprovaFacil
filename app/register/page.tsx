@@ -92,10 +92,11 @@ export default function RegisterPage() {
             name: values.name,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            study_time_minutes: 0,
-            total_questions_answered: 0,
-            total_correct_answers: 0,
-            average_score: 0,
+            // Temporarily removed missing columns until migration is run
+            // study_time_minutes: 0,
+            // total_questions_answered: 0,
+            // total_correct_answers: 0,
+            // average_score: 0,
           },
         ]);
 

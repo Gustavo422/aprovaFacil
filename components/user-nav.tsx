@@ -16,13 +16,14 @@ import { useRouter } from 'next/navigation';
 import { User, Settings, LogOut, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
+import { useCallback, useMemo } from 'react';
 
 export function UserNav() {
   const router = useRouter();
   const { toast } = useToast();
   const { user, loading, signOut } = useAuth();
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     try {
       await signOut();
       toast({
@@ -37,7 +38,41 @@ export function UserNav() {
         description: 'Tente novamente.',
       });
     }
-  };
+  }, [signOut, toast, router]);
+
+  const handleProfileClick = useCallback(() => {
+    router.push('/dashboard/configuracoes');
+  }, [router]);
+
+  const handleSettingsClick = useCallback(() => {
+    router.push('/dashboard/configuracoes');
+  }, [router]);
+
+  // Obter as iniciais do nome do usuário
+  const getUserInitials = useCallback(() => {
+    if (!user) return 'U';
+    const name = user.user_metadata?.name || user.email?.split('@')[0] || 'U';
+    return name
+      .split(' ')
+      .map((n: string) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  }, [user]);
+
+  const getUserName = useCallback(() => {
+    if (!user) return 'Usuário';
+    return user.user_metadata?.name || user.email?.split('@')[0] || 'Usuário';
+  }, [user]);
+
+  const getUserEmail = useCallback(() => {
+    if (!user) return 'Email não disponível';
+    return user.email || 'Email não disponível';
+  }, [user]);
+
+  const userInitials = useMemo(() => getUserInitials(), [getUserInitials]);
+  const userName = useMemo(() => getUserName(), [getUserName]);
+  const userEmail = useMemo(() => getUserEmail(), [getUserEmail]);
 
   // Se ainda está carregando, mostrar um placeholder
   if (loading) {
@@ -57,33 +92,14 @@ export function UserNav() {
     return null;
   }
 
-  // Obter as iniciais do nome do usuário
-  const getUserInitials = () => {
-    const name = user.user_metadata?.name || user.email?.split('@')[0] || 'U';
-    return name
-      .split(' ')
-      .map((n: string) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const getUserName = () => {
-    return user.user_metadata?.name || user.email?.split('@')[0] || 'Usuário';
-  };
-
-  const getUserEmail = () => {
-    return user.email || 'Email não disponível';
-  };
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={user.user_metadata?.avatar_url || undefined} alt={getUserName()} />
+            <AvatarImage src={user.user_metadata?.avatar_url || undefined} alt={userName} />
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
-              {getUserInitials()}
+              {userInitials}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -91,9 +107,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{getUserName()}</p>
+            <p className="text-sm font-medium leading-none">{userName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              {getUserEmail()}
+              {userEmail}
             </p>
             <div className="flex items-center space-x-1 mt-1">
               <Shield className="h-3 w-3 text-green-500" />
@@ -103,11 +119,11 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push('/dashboard/configuracoes')}>
+          <DropdownMenuItem onClick={handleProfileClick}>
             <User className="mr-2 h-4 w-4" />
             <span>Perfil</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push('/dashboard/configuracoes')}>
+          <DropdownMenuItem onClick={handleSettingsClick}>
             <Settings className="mr-2 h-4 w-4" />
             <span>Configurações</span>
           </DropdownMenuItem>

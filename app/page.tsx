@@ -14,7 +14,7 @@ import {
   BookOpen,
   Settings,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { SidebarNav } from '@/components/sidebar-nav';
 import { UserNav } from '@/components/user-nav';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
@@ -117,6 +117,16 @@ const featureItems = [
 export default function HomePage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleSidebarToggle = useCallback(() => {
+    setSidebarOpen(prev => !prev);
+  }, []);
+
+  const handleSidebarClose = useCallback(() => {
+    setSidebarOpen(false);
+  }, []);
+
+  const memoizedFeatureItems = useMemo(() => featureItems, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       {/* Mobile Sidebar */}
@@ -144,7 +154,7 @@ export default function HomePage() {
               <Button
                 size="icon"
                 className="bg-accent text-accent-foreground"
-                onClick={() => setSidebarOpen(true)}
+                onClick={handleSidebarToggle}
               >
                 <Menu className="h-full w-full" />
                 <span className="sr-only">Abrir menu</span>
@@ -198,7 +208,7 @@ export default function HomePage() {
               </div>
 
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                {featureItems.map(item => {
+                {memoizedFeatureItems.map(item => {
                   const IconComponent = item.icon;
                   return (
                     <Link href={item.href} key={item.title}>
