@@ -2,6 +2,7 @@ import { AppError as IAppError, ErrorHandler as IErrorHandler, ErrorNotifier, Er
 import { AppError } from './AppError';
 import { ErrorLogger } from './ErrorLogger';
 import { captureRequestContext, captureBrowserContext } from './ErrorLogger';
+import { logger } from '../utils/logger';
 
 export class ErrorHandler {
   private static instance: ErrorHandler;
@@ -32,7 +33,7 @@ export class ErrorHandler {
       maxRetries: 3,
       retryDelay: 1000,
       ignoredErrors: ['USER_CANCELLED', 'NETWORK_OFFLINE'],
-      environment: (process.env.NODE_ENV as any) || 'development',
+      environment: (process.env.NODE_ENV as 'development' | 'production' | 'staging') || 'development',
     };
   }
 
@@ -53,7 +54,7 @@ export class ErrorHandler {
         // Mostrar mensagem de acesso negado
         if (typeof window !== 'undefined') {
           // Você pode usar um toast ou modal aqui
-          console.warn('Access denied:', error.toUserFriendly());
+          logger.warn('Access denied', { error: error as Error });
         }
       }
     });
@@ -63,7 +64,7 @@ export class ErrorHandler {
       if (error.metadata.category === 'network') {
         // Verificar conectividade e tentar reconectar
         if (typeof window !== 'undefined' && !navigator.onLine) {
-          console.warn('Network is offline');
+          logger.warn('Network is offline', {});
         }
       }
     });
@@ -72,12 +73,12 @@ export class ErrorHandler {
     this.handlers.push(async (error: IAppError) => {
       if (error.metadata.severity === 'critical') {
         // Notificar administradores ou mostrar tela de erro crítica
-        console.error('Critical error detected:', error.message);
+        logger.error('Critical error detected', { error: error as Error });
       }
     });
   }
 
-  public async handle(error: Error | IAppError, context?: any): Promise<void> {
+  public async handle(error: Error | IAppError, context?: Record<string, unknown>): Promise<void> {
     let appError: IAppError;
 
     // Converter erro genérico para AppError se necessário
@@ -127,8 +128,12 @@ export class ErrorHandler {
       }
 
     } catch (handlingError) {
-      console.error('Error handling failed:', handlingError);
-      console.error('Original error:', error);
+      logger.error('Error handling failed', { 
+        error: handlingError instanceof Error ? handlingError : new Error(String(handlingError))
+      });
+      logger.error('Original error', { 
+        error: error instanceof Error ? error : new Error(String(error))
+      });
     }
   }
 
@@ -190,7 +195,7 @@ export class ErrorHandler {
     throw lastError!;
   }
 
-  private isRetryableError(error: any): boolean {
+  private isRetryableError(error: unknown): boolean {
     if (error instanceof AppError) {
       return error.isRetryable();
     }
@@ -203,8 +208,9 @@ export class ErrorHandler {
       'SYSTEM_OVERLOAD',
     ];
 
+    const errorObj = error as { message?: string; code?: string };
     return retryableCodes.some(code => 
-      error.message?.includes(code) || error.code === code
+      errorObj.message?.includes(code) || errorObj.code === code
     );
   }
 
@@ -215,7 +221,7 @@ export class ErrorHandler {
   // Utilitário para capturar erros em funções assíncronas
   public async captureAsync<T>(
     operation: () => Promise<T>,
-    context?: any
+    context?: Record<string, unknown>
   ): Promise<T | null> {
     try {
       return await operation();
@@ -228,7 +234,7 @@ export class ErrorHandler {
   // Utilitário para capturar erros em funções síncronas
   public captureSync<T>(
     operation: () => T,
-    context?: any
+    context?: Record<string, unknown>
   ): T | null {
     try {
       return operation();
@@ -239,9 +245,9 @@ export class ErrorHandler {
   }
 
   // Utilitário para criar boundary de erro
-  public createErrorBoundary<T extends any[], R>(
+  public createErrorBoundary<T extends unknown[], R>(
     fn: (...args: T) => R | Promise<R>,
-    context?: any
+    context?: Record<string, unknown>
   ): (...args: T) => Promise<R | null> {
     return async (...args: T): Promise<R | null> => {
       try {
@@ -255,11 +261,11 @@ export class ErrorHandler {
   }
 }
 
-// Instância global do error handler
-export const errorHandler = ErrorHandler.getInstance();
+// Instância singleton
+const errorHandler = ErrorHandler.getInstance();
 
-// Utilitários de conveniência
-export const handleError = (error: Error | IAppError, context?: any) => 
+// Funções utilitárias exportadas
+export const handleError = (error: Error | IAppError, context?: Record<string, unknown>) => 
   errorHandler.handle(error, context);
 
 export const withRetry = <T>(
@@ -270,10 +276,10 @@ export const withRetry = <T>(
 
 export const captureAsync = <T>(
   operation: () => Promise<T>,
-  context?: any
+  context?: Record<string, unknown>
 ) => errorHandler.captureAsync(operation, context);
 
 export const captureSync = <T>(
   operation: () => T,
-  context?: any
+  context?: Record<string, unknown>
 ) => errorHandler.captureSync(operation, context); 

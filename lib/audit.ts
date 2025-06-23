@@ -1,6 +1,7 @@
-import { createServerSupabaseClient } from './supabase';
-import { logger } from '@/lib/logger';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { headers } from 'next/headers';
+import { logger } from '@/lib/logger';
+import { Database, Json } from './database.types';
 
 export type AuditAction =
   | 'CREATE'
@@ -20,27 +21,18 @@ export interface AuditLogData {
   action: AuditAction;
   tableName: string;
   recordId?: string | null;
-  oldValues?: unknown;
-  newValues?: unknown;
+  oldValues?: Json | null;
+  newValues?: Json | null;
   metadata?: Record<string, unknown>;
 }
 
 export class AuditLogger {
-  private static instance: AuditLogger;
-  private supabase = createServerSupabaseClient();
+  private supabase: SupabaseClient<Database>;
 
-  private constructor() {}
-
-  public static getInstance(): AuditLogger {
-    if (!AuditLogger.instance) {
-      AuditLogger.instance = new AuditLogger();
-    }
-    return AuditLogger.instance;
+  constructor(supabaseClient: SupabaseClient<Database>) {
+    this.supabase = supabaseClient;
   }
 
-  /**
-   * Registra uma ação de auditoria
-   */
   async log(data: AuditLogData): Promise<void> {
     try {
       const headersList = await headers();
@@ -74,9 +66,6 @@ export class AuditLogger {
     }
   }
 
-  /**
-   * Registra login do usuário
-   */
   async logLogin(userId: string): Promise<void> {
     await this.log({
       userId,
@@ -87,9 +76,6 @@ export class AuditLogger {
     });
   }
 
-  /**
-   * Registra logout do usuário
-   */
   async logLogout(userId: string): Promise<void> {
     await this.log({
       userId,
@@ -99,65 +85,53 @@ export class AuditLogger {
     });
   }
 
-  /**
-   * Registra criação de recurso
-   */
   async logCreate(
     userId: string,
     tableName: string,
     recordId: string,
-    newValues: unknown
+    newValues: Record<string, unknown>
   ): Promise<void> {
     await this.log({
       userId,
       action: 'CREATE',
       tableName,
       recordId,
-      newValues,
+      newValues: newValues as Json,
     });
   }
 
-  /**
-   * Registra atualização de recurso
-   */
   async logUpdate(
     userId: string,
     tableName: string,
     recordId: string,
-    oldValues: unknown,
-    newValues: unknown
+    oldValues: Record<string, unknown> | null,
+    newValues: Record<string, unknown>
   ): Promise<void> {
     await this.log({
       userId,
       action: 'UPDATE',
       tableName,
       recordId,
-      oldValues,
-      newValues,
+      oldValues: oldValues as Json,
+      newValues: newValues as Json,
     });
   }
 
-  /**
-   * Registra exclusão de recurso
-   */
   async logDelete(
     userId: string,
     tableName: string,
     recordId: string,
-    oldValues: unknown
+    oldValues: Record<string, unknown> | null
   ): Promise<void> {
     await this.log({
       userId,
       action: 'DELETE',
       tableName,
       recordId,
-      oldValues,
+      oldValues: oldValues as Json,
     });
   }
 
-  /**
-   * Registra acesso a recurso
-   */
   async logAccess(
     userId: string,
     tableName: string,
@@ -171,9 +145,6 @@ export class AuditLogger {
     });
   }
 
-  /**
-   * Registra conclusão de simulado
-   */
   async logSimuladoComplete(
     userId: string,
     simuladoId: string,
@@ -193,9 +164,6 @@ export class AuditLogger {
     });
   }
 
-  /**
-   * Registra conclusão de questões semanais
-   */
   async logQuestaoComplete(
     userId: string,
     questaoId: string,
@@ -213,128 +181,79 @@ export class AuditLogger {
     });
   }
 
-  /**
-   * Registra atualização de progresso
-   */
   async logProgressUpdate(
     userId: string,
     tableName: string,
     recordId: string,
-    oldProgress: unknown,
-    newProgress: unknown
+    oldProgress: Record<string, unknown> | null,
+    newProgress: Record<string, unknown>
   ): Promise<void> {
     await this.log({
       userId,
       action: 'UPDATE_PROGRESS',
       tableName,
       recordId,
-      oldValues: oldProgress,
-      newValues: newProgress,
+      oldValues: oldProgress as Json,
+      newValues: newProgress as Json,
     });
   }
 
-  /**
-   * Obtém logs de auditoria de um usuário
-   */
-  async getUserLogs(userId: string, limit: number = 50): Promise<unknown[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('audit_logs')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(limit);
+  async getUserLogs(userId: string, limit: number = 50): Promise<AuditLogData[]> {
+    const { data, error } = await this.supabase
+      .from('audit_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
 
-      if (error) {
-        logger.error('Erro ao buscar logs do usuário:', {
-          error: error.message,
-          details: error,
-        });
-        return [];
-      }
-
-      return data || [];
-    } catch (error) {
-      logger.error('Erro ao buscar logs do usuário:', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+    if (error) {
+      logger.error('Erro ao buscar logs do usuário:', { error: error.message, details: error });
       return [];
     }
+
+    return data || [];
   }
 
-  /**
-   * Obtém logs de auditoria de um recurso específico
-   */
-  async getResourceLogs(
-    tableName: string,
-    recordId: string,
-    limit: number = 50
-  ): Promise<unknown[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('audit_logs')
-        .select('*')
-        .eq('table_name', tableName)
-        .eq('record_id', recordId)
-        .order('created_at', { ascending: false })
-        .limit(limit);
+  async getResourceLogs(tableName: string, recordId: string, limit: number = 50): Promise<AuditLogData[]> {
+    const { data, error } = await this.supabase
+      .from('audit_logs')
+      .select('*')
+      .eq('table_name', tableName)
+      .eq('record_id', recordId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
 
-      if (error) {
-        logger.error('Erro ao buscar logs do recurso:', {
-          error: error.message,
-          details: error,
-        });
-        return [];
-      }
-
-      return data || [];
-    } catch (error) {
-      logger.error('Erro ao buscar logs do recurso:', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+    if (error) {
+      logger.error('Erro ao buscar logs do recurso:', { error: error.message, details: error });
       return [];
     }
+
+    return data || [];
   }
 
-  /**
-   * Obtém logs de auditoria por período
-   */
-  async getLogsByPeriod(
-    startDate: string,
-    endDate: string,
-    userId?: string
-  ): Promise<unknown[]> {
-    try {
-      let query = this.supabase
-        .from('audit_logs')
-        .select('*')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate)
-        .order('created_at', { ascending: false });
+  async getLogsByPeriod(startDate: string, endDate: string, userId?: string): Promise<AuditLogData[]> {
+    let query = this.supabase
+      .from('audit_logs')
+      .select('*')
+      .gte('created_at', startDate)
+      .lte('created_at', endDate)
+      .order('created_at', { ascending: false });
 
-      if (userId) {
-        query = query.eq('user_id', userId);
-      }
+    if (userId) {
+      query = query.eq('user_id', userId);
+    }
 
-      const { data, error } = await query;
+    const { data, error } = await query;
 
-      if (error) {
-        logger.error('Erro ao buscar logs por período:', {
-          error: error.message,
-          details: error,
-        });
-        return [];
-      }
-
-      return data || [];
-    } catch (error) {
-      logger.error('Erro ao buscar logs por período:', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+    if (error) {
+      logger.error('Erro ao buscar logs por período:', { error: error.message, details: error });
       return [];
     }
+
+    return data || [];
   }
 }
 
-// Função utilitária para obter instância do logger
-export const getAuditLogger = () => AuditLogger.getInstance();
+export const getAuditLogger = (supabaseClient: SupabaseClient<Database>) => {
+  return new AuditLogger(supabaseClient);
+};

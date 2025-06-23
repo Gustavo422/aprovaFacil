@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/src/features/auth/hooks/use-auth';
 import { SessionMonitor } from '@/components/session-monitor';
 import { AuthStatus } from '@/components/auth-status';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,7 +19,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
 export default function ConfiguracoesPage() {

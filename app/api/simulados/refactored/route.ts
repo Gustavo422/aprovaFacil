@@ -1,12 +1,10 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { SimuladosRepository } from '@/src/core/database/repositories/simulados-repository';
 import { SimuladosService } from '@/src/features/simulados/services/simulados-service';
 
 export async function GET(_request: Request) {
   try {
-    const cookieStore = cookies();
     const supabase = await createRouteHandlerClient();
 
     // Verificar se o usuário está autenticado

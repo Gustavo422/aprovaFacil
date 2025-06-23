@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { logger } from '../../../core/utils/logger';
 
 interface RetryOptions {
   maxRetries?: number;
@@ -52,7 +53,7 @@ export function useAuthRetry() {
             const delay = baseDelay * Math.pow(2, attempt);
             setIsRetrying(true);
 
-            console.log(
+            logger.info(
               `Rate limit atingido. Tentativa ${attempt + 1}/${actualMaxRetries + 1}. Aguardando ${delay}ms...`
             );
 
@@ -87,7 +88,7 @@ export function useAuthRetry() {
         const delay = baseDelay * Math.pow(2, attempt);
         setIsRetrying(true);
 
-        console.log(
+        logger.info(
           `Rate limit atingido. Tentativa ${attempt + 1}/${actualMaxRetries + 1}. Aguardando ${delay}ms...`
         );
 

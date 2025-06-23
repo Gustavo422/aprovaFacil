@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { FlashcardsService } from '../services/flashcards-service';
-import { FlashcardData, FlashcardFilters, UserFlashcardProgressInsert, UserFlashcardProgress } from '@/src/core/database/types';
-import { useErrorHandler } from '../../shared/hooks/use-error-handler';
+import { FlashcardData, FlashcardFilters, FlashcardProgressData } from '@/src/core/database/types';
+import { useErrorHandler } from '@/src/features/shared/hooks/use-error-handler';
+import { useAuth } from '@/src/features/auth/hooks/use-auth';
 
 interface UseFlashcardsOptions {
   autoLoad?: boolean;
@@ -12,23 +13,25 @@ interface UseFlashcardsOptions {
   limit?: number;
 }
 
+interface FlashcardStats {
+  totalFlashcards: number;
+  studiedFlashcards: number;
+  correctAnswers: number;
+  wrongAnswers: number;
+  accuracyRate: number;
+}
+
 interface UseFlashcardsReturn {
   flashcards: FlashcardData[];
   loading: boolean;
   error: Error | null;
-  stats: {
-    total_flashcards: number;
-    flashcards_estudados: number;
-    acertos: number;
-    erros: number;
-    taxa_acerto: number;
-  } | null;
+  stats: FlashcardStats | null;
   loadFlashcards: (filters?: FlashcardFilters) => Promise<void>;
-  loadFlashcardsByConcurso: (concursoId: string, limit?: number) => Promise<void>;
-  loadRandomFlashcards: (concursoId: string, limit?: number) => Promise<void>;
-  saveProgress: (progress: UserFlashcardProgressInsert) => Promise<UserFlashcardProgress | null>;
+  loadByConcurso: (concursoId: string, limit?: number) => Promise<void>;
+  loadRandom: (concursoId: string, limit?: number) => Promise<void>;
+  saveProgress: (progress: Omit<FlashcardProgressData, 'id' | 'created_at' | 'updated_at'>) => Promise<FlashcardProgressData | null>;
   loadUserStats: (userId: string) => Promise<void>;
-  loadFlashcardsForReview: (userId: string, limit?: number) => Promise<void>;
+  loadForReview: (userId: string, limit?: number) => Promise<void>;
   reset: () => void;
 }
 
@@ -41,7 +44,7 @@ export function useFlashcards(options: UseFlashcardsOptions = {}): UseFlashcards
   } = options;
 
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
-  const [stats, setStats] = useState<UseFlashcardsReturn['stats']>(null);
+  const [stats, setStats] = useState<FlashcardStats | null>(null);
   const [loading, setLoading] = useState(false);
 
   const errorHandler = useErrorHandler({
@@ -52,107 +55,117 @@ export function useFlashcards(options: UseFlashcardsOptions = {}): UseFlashcards
 
   const service = useMemo(() => new FlashcardsService(), []);
 
-  const loadFlashcards = useCallback(async (filters?: FlashcardFilters) => {
-    setLoading(true);
-    try {
-      const result = await service.getFlashcards(page, limit, filters);
-      if (result.success) {
-        setFlashcards(result.data || []);
-      } else {
-        throw new Error(result.error);
+  // Função utilitária para centralizar carregamento e tratamento de erro/loading
+  const handleLoad = useCallback(
+    async <T>(fn: () => Promise<T>, onSuccess?: (data: T) => void) => {
+      setLoading(true);
+      try {
+        const result = await fn();
+        onSuccess?.(result);
+      } catch (error) {
+        errorHandler.execute(() => {
+          throw error;
+        });
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      errorHandler.execute(() => {
-        throw error;
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [page, limit, service, errorHandler]);
+    },
+    [errorHandler]
+  );
 
-  const loadFlashcardsByConcurso = useCallback(async (concursoId: string, limit?: number) => {
-    setLoading(true);
-    try {
-      const result = await service.getFlashcardsByConcurso(concursoId, limit);
-      if (result.success) {
-        setFlashcards(result.data || []);
-      } else {
-        throw new Error(result.error);
-      }
-    } catch (error) {
-      errorHandler.execute(() => {
-        throw error;
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [service, errorHandler]);
+  const loadFlashcards = useCallback(
+    async (filters?: FlashcardFilters) => {
+      await handleLoad(
+        async () => {
+          const result = await service.getFlashcards(page, limit, filters);
+          if (!result.success) throw new Error(result.error);
+          return result.data || [];
+        },
+        setFlashcards
+      );
+    },
+    [page, limit, service, handleLoad]
+  );
 
-  const loadRandomFlashcards = useCallback(async (concursoId: string, limit: number = 10) => {
-    setLoading(true);
-    try {
-      const result = await service.getRandomFlashcardsByConcurso(concursoId, limit);
-      if (result.success) {
-        setFlashcards(result.data || []);
-      } else {
-        throw new Error(result.error);
-      }
-    } catch (error) {
-      errorHandler.execute(() => {
-        throw error;
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [service, errorHandler]);
+  const loadByConcurso = useCallback(
+    async (concursoId: string, lim?: number) => {
+      await handleLoad(
+        async () => {
+          const result = await service.getFlashcardsByConcurso(concursoId, lim);
+          if (!result.success) throw new Error(result.error);
+          return result.data || [];
+        },
+        setFlashcards
+      );
+    },
+    [service, handleLoad]
+  );
 
-  const saveProgress = useCallback(async (progress: UserFlashcardProgressInsert) => {
-    try {
-      const result = await service.saveUserProgress(progress);
-      if (!result.success) {
-        throw new Error(result.error);
-      }
-      return result.data;
-    } catch (error) {
-      errorHandler.execute(() => {
-        throw error;
-      });
-      return null;
-    }
-  }, [service, errorHandler]);
+  const loadRandom = useCallback(
+    async (concursoId: string, lim: number = 10) => {
+      await handleLoad(
+        async () => {
+          const result = await service.getRandomFlashcardsByConcurso(concursoId, lim);
+          if (!result.success) throw new Error(result.error);
+          return result.data || [];
+        },
+        setFlashcards
+      );
+    },
+    [service, handleLoad]
+  );
 
-  const loadUserStats = useCallback(async (userId: string) => {
-    try {
-      const result = await service.getUserStats(userId);
-      if (result.success) {
-        setStats(result.data);
-      } else {
-        throw new Error(result.error);
+  const saveProgress = useCallback(
+    async (progress: Omit<FlashcardProgressData, 'id' | 'created_at' | 'updated_at'>) => {
+      try {
+        const result = await service.saveUserProgress(progress);
+        if (!result.success) throw new Error(result.error);
+        return result.data;
+      } catch (error) {
+        errorHandler.execute(() => {
+          throw error;
+        });
+        return null;
       }
-    } catch (error) {
-      errorHandler.execute(() => {
-        throw error;
-      });
-    }
-  }, [service, errorHandler]);
+    },
+    [service, errorHandler]
+  );
 
-  const loadFlashcardsForReview = useCallback(async (userId: string, limit: number = 20) => {
-    setLoading(true);
-    try {
-      const result = await service.getFlashcardsForReview(userId, limit);
-      if (result.success) {
-        setFlashcards(result.data || []);
-      } else {
-        throw new Error(result.error);
-      }
-    } catch (error) {
-      errorHandler.execute(() => {
-        throw error;
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [service, errorHandler]);
+  const loadUserStats = useCallback(
+    async (userId: string) => {
+      await handleLoad(
+        async () => {
+          const result = await service.getUserStats(userId);
+          if (!result.success) throw new Error(result.error);
+          // Padroniza nomes para camelCase e garante que todos os campos sejam number
+          const { total_flashcards, flashcards_estudados, acertos, erros, taxa_acerto } = result.data || {};
+          return {
+            totalFlashcards: total_flashcards ?? 0,
+            studiedFlashcards: flashcards_estudados ?? 0,
+            correctAnswers: acertos ?? 0,
+            wrongAnswers: erros ?? 0,
+            accuracyRate: taxa_acerto ?? 0,
+          };
+        },
+        setStats
+      );
+    },
+    [service, handleLoad]
+  );
+
+  const loadForReview = useCallback(
+    async (userId: string, lim: number = 20) => {
+      await handleLoad(
+        async () => {
+          const result = await service.getFlashcardsForReview(userId, lim);
+          if (!result.success) throw new Error(result.error);
+          return result.data || [];
+        },
+        setFlashcards
+      );
+    },
+    [service, handleLoad]
+  );
 
   const reset = useCallback(() => {
     setFlashcards([]);
@@ -161,7 +174,6 @@ export function useFlashcards(options: UseFlashcardsOptions = {}): UseFlashcards
     errorHandler.reset();
   }, [errorHandler]);
 
-  // Auto-load se configurado
   useEffect(() => {
     if (autoLoad && Object.keys(initialFilters).length > 0) {
       loadFlashcards(initialFilters);
@@ -174,16 +186,15 @@ export function useFlashcards(options: UseFlashcardsOptions = {}): UseFlashcards
     error: errorHandler.error,
     stats,
     loadFlashcards,
-    loadFlashcardsByConcurso,
-    loadRandomFlashcards,
+    loadByConcurso,
+    loadRandom,
     saveProgress,
     loadUserStats,
-    loadFlashcardsForReview,
+    loadForReview,
     reset,
   };
 }
 
-// Hook especializado para estudo de flashcards
 export function useFlashcardStudy(concursoId: string, limit: number = 10) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [studySession, setStudySession] = useState<{
@@ -197,13 +208,15 @@ export function useFlashcardStudy(concursoId: string, limit: number = 10) {
     flashcards,
     loading,
     error,
-    loadRandomFlashcards,
+    loadRandom,
     saveProgress,
     reset: resetFlashcards,
   } = useFlashcards();
 
-  const startStudySession = useCallback(async () => {
-    await loadRandomFlashcards(concursoId, limit);
+  const { user } = useAuth();
+
+  const startSession = useCallback(async () => {
+    await loadRandom(concursoId, limit);
     setCurrentIndex(0);
     setStudySession({
       startTime: new Date(),
@@ -211,35 +224,33 @@ export function useFlashcardStudy(concursoId: string, limit: number = 10) {
       completedCards: 0,
       correctAnswers: 0,
     });
-  }, [concursoId, limit, loadRandomFlashcards]);
+  }, [concursoId, limit, loadRandom]);
 
-  const answerCard = useCallback(async (
-    flashcardId: string,
-    acertou: boolean,
-    tempoResposta?: number
-  ) => {
-    if (!studySession) return;
+  const answerCard = useCallback(
+    async (flashcardId: string, acertou: boolean, tempoResposta?: number) => {
+      if (!studySession || !user) return;
+      await saveProgress({
+        user_id: user.id,
+        flashcard_id: flashcardId,
+        acertou,
+        tentativas: 1,
+        tempo_resposta: tempoResposta,
+      });
+      setStudySession(prev =>
+        prev
+          ? {
+              ...prev,
+              completedCards: prev.completedCards + 1,
+              correctAnswers: prev.correctAnswers + (acertou ? 1 : 0),
+            }
+          : null
+      );
+      setCurrentIndex(prev => prev + 1);
+    },
+    [studySession, saveProgress, user]
+  );
 
-    // Salvar progresso
-    await saveProgress({
-      user_id: 'current-user-id', // Deve vir do contexto de auth
-      flashcard_id: flashcardId,
-      acertou,
-      tempo_resposta: tempoResposta,
-    });
-
-    // Atualizar sessão
-    setStudySession(prev => prev ? {
-      ...prev,
-      completedCards: prev.completedCards + 1,
-      correctAnswers: prev.correctAnswers + (acertou ? 1 : 0),
-    } : null);
-
-    // Próximo card
-    setCurrentIndex(prev => prev + 1);
-  }, [studySession, saveProgress]);
-
-  const resetStudySession = useCallback(() => {
+  const resetSession = useCallback(() => {
     setCurrentIndex(0);
     setStudySession(null);
     resetFlashcards();
@@ -255,9 +266,9 @@ export function useFlashcardStudy(concursoId: string, limit: number = 10) {
     isSessionComplete,
     loading,
     error,
-    startStudySession,
+    startSession,
     answerCard,
-    resetStudySession,
+    resetSession,
     totalCards: flashcards.length,
     progress: studySession ? (studySession.completedCards / studySession.totalCards) * 100 : 0,
   };

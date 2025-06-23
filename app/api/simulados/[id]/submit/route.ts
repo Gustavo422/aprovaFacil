@@ -1,6 +1,8 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 // Schema de validação para submissão de simulado
 const submitSimuladoSchema = z.object({
@@ -135,7 +137,7 @@ export async function POST(
     }
 
     if (progressResult.error) {
-      console.error('Erro ao salvar progresso:', progressResult.error);
+      logger.error('Erro ao salvar progresso:', { error: progressResult.error });
       return NextResponse.json(
         { error: 'Erro ao salvar progresso do simulado' },
         { status: 500 }
@@ -172,7 +174,9 @@ export async function POST(
     });
 
   } catch (error) {
-    console.error('Erro ao processar submissão:', error);
+    logger.error('Erro ao processar submissão:', { 
+      error: error instanceof Error ? error.message : String(error)
+    });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -188,11 +192,22 @@ export async function POST(
   }
 }
 
+interface DetailedResult {
+  questionId: string;
+  questionNumber: number;
+  userAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+  discipline?: string;
+  topic?: string;
+  difficulty?: string;
+}
+
 // Função auxiliar para atualizar estatísticas por disciplina
 async function updateDisciplineStats(
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
-  results: any[]
+  results: DetailedResult[]
 ) {
   try {
     // Agrupar resultados por disciplina
@@ -258,8 +273,9 @@ async function updateDisciplineStats(
       }
     }
   } catch (error) {
-    console.error('Erro ao atualizar estatísticas por disciplina:', error);
-    // Não falhar a operação principal por causa deste erro
+    logger.error('Erro ao atualizar estatísticas de disciplina:', { 
+      error: error instanceof Error ? error.message : String(error) 
+    });
   }
 }
 

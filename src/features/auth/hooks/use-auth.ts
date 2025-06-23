@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import { logger } from '../../../core/utils/logger';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -22,7 +23,7 @@ export function useAuth() {
         } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('Erro ao obter sessão:', error);
+          logger.error('Erro ao obter sessão', { error: error as Error });
         }
         
         if (mounted) {
@@ -31,7 +32,7 @@ export function useAuth() {
           setInitialized(true);
         }
       } catch (error) {
-        console.error('Erro ao inicializar autenticação:', error);
+        logger.error('Erro ao inicializar autenticação', { error: error as Error });
         if (mounted) {
           setLoading(false);
           setInitialized(true);
@@ -45,7 +46,7 @@ export function useAuth() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id);
+      logger.info('Auth state changed', { event, userId: session?.user?.id });
       
       if (mounted) {
         setUser(session?.user ?? null);
@@ -69,18 +70,23 @@ export function useAuth() {
   }, [supabase.auth]);
 
   const signIn = async (email: string, password: string) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
-      if (error) throw error;
-      
-      return { data, error: null };
+
+      if (error) {
+        logger.error('Sign in error', { error: error as Error });
+        throw error;
+      }
+
+      logger.info('Sign in successful', { userId: data.user?.id });
+      return data;
     } catch (error) {
-      return { data: null, error };
+      logger.error('Sign in failed', { error: error as Error });
+      throw error;
     } finally {
       setLoading(false);
     }

@@ -4,7 +4,7 @@ import { logger } from '@/lib/logger';
 export interface AuditLogEntry {
   userId: string;
   action: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
   success: boolean;
@@ -12,16 +12,15 @@ export interface AuditLogEntry {
 }
 
 export class AuditLogger {
-  private supabase = createServerSupabaseClient();
-
   async logAuthEvent(entry: AuditLogEntry) {
     try {
+      const supabase = await createServerSupabaseClient();
       const logEntry = {
         ...entry,
         created_at: new Date().toISOString()
       };
 
-      const { error } = await this.supabase
+      const { error } = await supabase
         .from('audit_logs')
         .insert({
           user_id: entry.userId,
@@ -44,7 +43,7 @@ export class AuditLogger {
     }
   }
 
-  async logLogin(userId: string, success: boolean, details: Record<string, any> = {}) {
+  async logLogin(userId: string, success: boolean, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId,
       action: 'LOGIN',
@@ -57,7 +56,7 @@ export class AuditLogger {
     });
   }
 
-  async logLogout(userId: string, details: Record<string, any> = {}) {
+  async logLogout(userId: string, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId,
       action: 'LOGOUT',
@@ -70,7 +69,7 @@ export class AuditLogger {
     });
   }
 
-  async logFailedLogin(email: string, reason: string, details: Record<string, any> = {}) {
+  async logFailedLogin(email: string, reason: string, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId: 'anonymous',
       action: 'LOGIN_FAILED',
@@ -86,7 +85,7 @@ export class AuditLogger {
     });
   }
 
-  async logPasswordReset(userId: string, success: boolean, details: Record<string, any> = {}) {
+  async logPasswordReset(userId: string, success: boolean, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId,
       action: 'PASSWORD_RESET',
@@ -99,7 +98,7 @@ export class AuditLogger {
     });
   }
 
-  async logAccountLocked(userId: string, reason: string, details: Record<string, any> = {}) {
+  async logAccountLocked(userId: string, reason: string, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId,
       action: 'ACCOUNT_LOCKED',
@@ -114,7 +113,7 @@ export class AuditLogger {
     });
   }
 
-  async logSuspiciousActivity(userId: string, activity: string, details: Record<string, any> = {}) {
+  async logSuspiciousActivity(userId: string, activity: string, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId,
       action: 'SUSPICIOUS_ACTIVITY',
@@ -129,7 +128,7 @@ export class AuditLogger {
     });
   }
 
-  async logSessionRefresh(userId: string, success: boolean, details: Record<string, any> = {}) {
+  async logSessionRefresh(userId: string, success: boolean, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId,
       action: 'SESSION_REFRESH',
@@ -142,7 +141,7 @@ export class AuditLogger {
     });
   }
 
-  async logAccessDenied(userId: string, resource: string, reason: string, details: Record<string, any> = {}) {
+  async logAccessDenied(userId: string, resource: string, reason: string, details: Record<string, unknown> = {}) {
     await this.logAuthEvent({
       userId,
       action: 'ACCESS_DENIED',
@@ -161,7 +160,8 @@ export class AuditLogger {
   // Método para buscar logs de um usuário específico
   async getUserLogs(userId: string, limit: number = 50, offset: number = 0) {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from('audit_logs')
         .select('*')
         .eq('user_id', userId)
@@ -183,7 +183,8 @@ export class AuditLogger {
   // Método para buscar logs de atividades suspeitas
   async getSuspiciousActivityLogs(limit: number = 50) {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from('audit_logs')
         .select('*')
         .in('action', ['LOGIN_FAILED', 'SUSPICIOUS_ACTIVITY', 'ACCOUNT_LOCKED', 'ACCESS_DENIED'])

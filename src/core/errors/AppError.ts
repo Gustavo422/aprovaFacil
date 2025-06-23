@@ -28,7 +28,7 @@ export class AppError extends Error implements IAppError {
     Object.setPrototypeOf(this, AppError.prototype);
   }
 
-  public toJSON(): Record<string, any> {
+  public toJSON(): Record<string, unknown> {
     return {
       name: this.name,
       message: this.message,
@@ -118,7 +118,7 @@ export class AppError extends Error implements IAppError {
   public static validation(
     field: string,
     message: string,
-    value?: any
+    _value?: unknown
   ): AppError {
     return AppError.create(
       'VALIDATION_ERROR',

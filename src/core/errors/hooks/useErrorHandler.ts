@@ -1,28 +1,30 @@
-import { useCallback, useRef, useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { AppError } from '../AppError';
-import { errorHandler } from '../ErrorHandler';
-import { captureBrowserContext } from '../ErrorLogger';
+import { logger } from '../../utils/logger';
 
-export interface UseErrorHandlerOptions {
+interface ErrorHandlerConfig {
   showUserFriendly?: boolean;
   logErrors?: boolean;
   onError?: (error: AppError) => void;
+  maxRetries?: number;
+  retryDelay?: number;
 }
 
-export interface ErrorState {
+interface ErrorState {
   error: AppError | null;
   isLoading: boolean;
   retryCount: number;
 }
 
-export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
+export function useErrorHandler(config: ErrorHandlerConfig = {}) {
   const {
-    showUserFriendly = true,
     logErrors = true,
     onError,
-  } = options;
+    maxRetries = 3,
+    retryDelay = 1000,
+  } = config;
 
-  const [errorState, setErrorState] = useState<ErrorState>({
+  const [state, setState] = useState<ErrorState>({
     error: null,
     isLoading: false,
     retryCount: 0,
@@ -30,112 +32,138 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
 
   const retryTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  const handleError = useCallback(async (error: Error | AppError) => {
-    let appError: AppError;
-
-    if (error instanceof AppError) {
-      appError = error;
-    } else {
-      appError = AppError.fromError(error, {
-        code: 'REACT_ERROR',
-        category: 'system',
-        severity: 'medium',
-        retryable: false,
-        userFriendly: true,
-      });
-    }
-
-    // Adicionar contexto do navegador
-    appError.addContext(captureBrowserContext());
-
-    // Log do erro se habilitado
-    if (logErrors) {
-      await errorHandler.handle(appError);
-    }
-
-    // Atualizar estado
-    setErrorState(prev => ({
+  const clearError = useCallback(() => {
+    setState(prev => ({
       ...prev,
-      error: appError,
+      error: null,
+      retryCount: 0,
+    }));
+  }, []);
+
+  const setError = useCallback((error: AppError) => {
+    setState(prev => ({
+      ...prev,
+      error,
       isLoading: false,
     }));
 
-    // Callback personalizado
+    if (logErrors) {
+      logger.error('Error in useErrorHandler', { error });
+    }
+
     if (onError) {
-      onError(appError);
+      onError(error);
     }
   }, [logErrors, onError]);
 
-  const clearError = useCallback(() => {
-    setErrorState({
-      error: null,
-      isLoading: false,
-      retryCount: 0,
-    });
-  }, []);
-
-  const retry = useCallback(async (operation: () => Promise<any>) => {
-    setErrorState(prev => ({
+  const setLoading = useCallback((loading: boolean) => {
+    setState(prev => ({
       ...prev,
-      isLoading: true,
-      retryCount: prev.retryCount + 1,
+      isLoading: loading,
     }));
-
-    try {
-      const result = await operation();
-      setErrorState(prev => ({
-        ...prev,
-        error: null,
-        isLoading: false,
-      }));
-      return result;
-    } catch (error) {
-      await handleError(error as Error);
-      throw error;
-    }
-  }, [handleError]);
-
-  const executeWithRetry = useCallback(async <T>(
-    operation: () => Promise<T>,
-    maxRetries: number = 3,
-    delay: number = 1000
-  ): Promise<T> => {
-    setErrorState(prev => ({ ...prev, isLoading: true }));
-
-    try {
-      const result = await errorHandler.withRetry(operation, maxRetries, delay);
-      setErrorState(prev => ({
-        ...prev,
-        error: null,
-        isLoading: false,
-      }));
-      return result;
-    } catch (error) {
-      await handleError(error as Error);
-      throw error;
-    }
-  }, [handleError]);
+  }, []);
 
   const executeSafely = useCallback(async <T>(
     operation: () => Promise<T>
   ): Promise<T | null> => {
-    setErrorState(prev => ({ ...prev, isLoading: true }));
+    setLoading(true);
+    clearError();
 
     try {
       const result = await operation();
-      setErrorState(prev => ({
-        ...prev,
-        error: null,
-        isLoading: false,
-      }));
+      setLoading(false);
       return result;
     } catch (error) {
-      await handleError(error as Error);
+      const appError = error instanceof AppError 
+        ? error 
+        : AppError.fromError(error as Error, {
+            code: 'UNKNOWN_ERROR',
+            category: 'unknown',
+            severity: 'medium',
+            retryable: false,
+            userFriendly: true,
+          });
+
+      setError(appError);
       return null;
     }
-  }, [handleError]);
+  }, [setLoading, clearError, setError]);
 
-  // Limpar timeout ao desmontar
+  const executeWithRetry = useCallback(async <T>(
+    operation: () => Promise<T>,
+    customMaxRetries?: number,
+    customDelay?: number
+  ): Promise<T | null> => {
+    const maxRetriesCount = customMaxRetries ?? maxRetries;
+    const delay = customDelay ?? retryDelay;
+    let lastError: AppError;
+
+    for (let attempt = 0; attempt <= maxRetriesCount; attempt++) {
+      setState(prev => ({
+        ...prev,
+        isLoading: true,
+        retryCount: attempt,
+      }));
+
+      try {
+        const result = await operation();
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: null,
+        }));
+        return result;
+      } catch (error) {
+        lastError = error instanceof AppError 
+          ? error 
+          : AppError.fromError(error as Error, {
+              code: 'UNKNOWN_ERROR',
+              category: 'unknown',
+              severity: 'medium',
+              retryable: true,
+              userFriendly: true,
+            });
+
+        // Se não é o último attempt e o erro é retryable
+        if (attempt < maxRetriesCount && lastError.isRetryable()) {
+          const backoffDelay = delay * Math.pow(2, attempt);
+          
+          // Limpar timeout anterior se existir
+          if (retryTimeoutRef.current) {
+            clearTimeout(retryTimeoutRef.current);
+          }
+
+          // Aguardar antes da próxima tentativa
+          await new Promise<void>((resolve) => {
+            retryTimeoutRef.current = setTimeout(resolve, backoffDelay);
+          });
+          
+          continue;
+        }
+        
+        break;
+      }
+    }
+
+    // Se chegou aqui, todas as tentativas falharam
+    setError(lastError!);
+    return null;
+  }, [maxRetries, retryDelay, setError]);
+
+  const retry = useCallback(async () => {
+    if (state.error && state.retryCount < maxRetries) {
+      setState(prev => ({
+        ...prev,
+        retryCount: prev.retryCount + 1,
+      }));
+      
+      // Aqui você pode implementar a lógica de retry
+      // Por exemplo, executar a última operação novamente
+      logger.info('Retrying operation', { retryCount: state.retryCount + 1 });
+    }
+  }, [state.error, state.retryCount, maxRetries]);
+
+  // Cleanup do timeout no unmount
   const cleanup = useCallback(() => {
     if (retryTimeoutRef.current) {
       clearTimeout(retryTimeoutRef.current);
@@ -143,62 +171,36 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
   }, []);
 
   return {
-    error: errorState.error,
-    isLoading: errorState.isLoading,
-    retryCount: errorState.retryCount,
-    handleError,
+    error: state.error,
+    isLoading: state.isLoading,
+    retryCount: state.retryCount,
+    executeSafely,
+    executeWithRetry,
     clearError,
     retry,
-    executeWithRetry,
-    executeSafely,
     cleanup,
-    userMessage: errorState.error?.toUserFriendly() || null,
   };
 }
 
-export function useErrorBoundary() {
-  const [error, setError] = useState<Error | null>(null);
-
-  const handleError = useCallback((error: Error) => {
-    setError(error);
-  }, []);
-
-  const resetError = useCallback(() => {
-    setError(null);
-  }, []);
-
-  return {
-    error,
-    handleError,
-    resetError,
-    hasError: error !== null,
-  };
-}
-
+// Hook para toast de erro
 export function useErrorToast() {
-  const showError = useCallback((error: Error | AppError) => {
-    let message: string;
-    
-    if (error instanceof AppError) {
-      message = error.toUserFriendly();
-    } else {
-      message = error.message || 'Ocorreu um erro inesperado';
-    }
-
-    // Aqui você pode integrar com seu sistema de toast
+  const showError = useCallback((error: AppError) => {
+    // Implementar integração com sistema de toast
     // Por exemplo, usando react-hot-toast, react-toastify, etc.
-    console.error('Error Toast:', message);
-    
-    // Exemplo com react-hot-toast:
-    // toast.error(message);
+    logger.error('Error toast', { error });
   }, []);
 
-  return { showError };
+  const showSuccess = useCallback((message: string) => {
+    logger.info('Success toast', { message });
+  }, []);
+
+  return { showError, showSuccess };
 }
 
+// Hook para monitoramento de status da rede
 export function useNetworkStatus() {
   const [isOnline, setIsOnline] = useState(
-    typeof window !== 'undefined' ? navigator.onLine : true
+    typeof navigator !== 'undefined' ? navigator.onLine : true
   );
 
   const handleOnline = useCallback(() => {
@@ -209,7 +211,7 @@ export function useNetworkStatus() {
     setIsOnline(false);
   }, []);
 
-  // Adicionar listeners quando o componente montar
+  // Adicionar event listeners
   if (typeof window !== 'undefined') {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -221,22 +223,23 @@ export function useNetworkStatus() {
   };
 }
 
+// Hook para recuperação de erro
 export function useErrorRecovery() {
   const [recoveryAttempts, setRecoveryAttempts] = useState(0);
   const maxRecoveryAttempts = 3;
 
   const attemptRecovery = useCallback(async (
-    recoveryFn: () => Promise<void>
+    recoveryOperation: () => Promise<void>
   ): Promise<boolean> => {
     if (recoveryAttempts >= maxRecoveryAttempts) {
       return false;
     }
 
     try {
-      await recoveryFn();
+      await recoveryOperation();
       setRecoveryAttempts(0);
       return true;
-    } catch (error) {
+    } catch {
       setRecoveryAttempts(prev => prev + 1);
       return false;
     }
@@ -246,11 +249,12 @@ export function useErrorRecovery() {
     setRecoveryAttempts(0);
   }, []);
 
+  const canAttemptRecovery = recoveryAttempts < maxRecoveryAttempts;
+
   return {
     recoveryAttempts,
-    maxRecoveryAttempts,
     attemptRecovery,
     resetRecoveryAttempts,
-    canAttemptRecovery: recoveryAttempts < maxRecoveryAttempts,
+    canAttemptRecovery,
   };
 } 

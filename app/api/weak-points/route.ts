@@ -107,7 +107,7 @@ export async function GET() {
       .slice(0, 10); // Top 10 pontos fracos
 
     return NextResponse.json(weakPointsArray);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

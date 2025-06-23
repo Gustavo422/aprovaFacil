@@ -1,6 +1,7 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
 
 // Schema de validação para criação de simulado
 const createSimuladoSchema = z.object({
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
       .single();
 
     if (simuladoError) {
-      console.error('Erro ao criar simulado:', simuladoError);
+      logger.error('Erro ao criar simulado:', { error: simuladoError });
       return NextResponse.json(
         { error: 'Erro ao criar simulado' },
         { status: 500 }
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
       .select();
 
     if (questionsError) {
-      console.error('Erro ao inserir questões:', questionsError);
+      logger.error('Erro ao inserir questões:', { error: questionsError });
       
       // Reverter criação do simulado
       await supabase
@@ -127,7 +128,9 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-    console.error('Erro ao processar criação de simulado:', error);
+    logger.error('Erro ao processar criação de simulado:', { 
+      error: error instanceof Error ? error.message : String(error)
+    });
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(

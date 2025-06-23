@@ -121,10 +121,6 @@ export default function HomePage() {
     setSidebarOpen(prev => !prev);
   }, []);
 
-  const handleSidebarClose = useCallback(() => {
-    setSidebarOpen(false);
-  }, []);
-
   const memoizedFeatureItems = useMemo(() => featureItems, []);
 
   return (

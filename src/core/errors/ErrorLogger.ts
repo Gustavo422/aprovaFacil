@@ -1,4 +1,5 @@
 import { AppError, ErrorContext } from './types';
+import { logger } from '../utils/logger';
 
 interface ILogger {
   log(error: AppError): Promise<void>;
@@ -39,11 +40,11 @@ export class ErrorLogger {
   }
 
   public async log(error: AppError): Promise<void> {
-    const promises = this.loggers.map(logger => 
-      logger.log(error).catch((logError: Error) => {
+    const promises = this.loggers.map(loggerInstance => 
+      loggerInstance.log(error).catch((logError: Error) => {
         // Fallback para console se outros loggers falharem
-        console.error('Logger failed:', logError);
-        console.error('Original error:', error);
+        logger.error('Logger failed', { error: logError });
+        logger.error('Original error', { error: error as Error });
       })
     );
 
@@ -67,15 +68,13 @@ class ConsoleLogger implements ILogger {
     const timestamp = new Date().toISOString();
     const context = error.metadata.context;
     
-    console.group(`🚨 ERROR [${timestamp}] - ${error.metadata.code}`);
-    console.error('Message:', error.message);
-    console.error('Category:', error.metadata.category);
-    console.error('Severity:', error.metadata.severity);
-    console.error('Retryable:', error.metadata.retryable);
-    console.error('User Friendly:', error.metadata.userFriendly);
-    
-    if (context) {
-      console.error('Context:', {
+    logger.error(`ERROR [${timestamp}] - ${error.metadata.code}`, {
+      message: error.message,
+      category: error.metadata.category,
+      severity: error.metadata.severity,
+      retryable: error.metadata.retryable,
+      userFriendly: error.metadata.userFriendly,
+      context: context ? {
         userId: context.userId,
         sessionId: context.sessionId,
         requestId: context.requestId,
@@ -83,18 +82,10 @@ class ConsoleLogger implements ILogger {
         method: context.method,
         userAgent: context.userAgent,
         ip: context.ip,
-      });
-    }
-    
-    if (error.metadata.stack) {
-      console.error('Stack:', error.metadata.stack);
-    }
-    
-    if (error.metadata.cause) {
-      console.error('Cause:', error.metadata.cause);
-    }
-    
-    console.groupEnd();
+      } : undefined,
+      stack: error.metadata.stack,
+      cause: error.metadata.cause,
+    });
   }
 }
 
@@ -111,7 +102,7 @@ class FileLogger implements ILogger {
     };
 
     // Simulação de logging para arquivo
-    console.log('📄 FILE LOG:', JSON.stringify(logEntry, null, 2));
+    logger.info('FILE LOG', { logEntry });
   }
 }
 
@@ -133,7 +124,7 @@ class ExternalServiceLogger implements ILogger {
         await this.logToDataDog(error);
       }
     } catch (logError) {
-      console.error('Failed to log to external service:', logError);
+      logger.error('Failed to log to external service', { error: logError as Error });
     }
   }
 
@@ -151,13 +142,13 @@ class ExternalServiceLogger implements ILogger {
     //     metadata: error.metadata,
     //   },
     // });
-    console.log('📡 SENTRY LOG:', error.metadata.code);
+    logger.info('SENTRY LOG', { code: error.metadata.code });
   }
 
   private async logToLogRocket(error: AppError): Promise<void> {
     // Implementação com LogRocket
     // LogRocket.captureException(error);
-    console.log('📡 LOGROCKET LOG:', error.metadata.code);
+    logger.info('LOGROCKET LOG', { code: error.metadata.code });
   }
 
   private async logToDataDog(error: AppError): Promise<void> {
@@ -167,22 +158,31 @@ class ExternalServiceLogger implements ILogger {
     //   error_category: error.metadata.category,
     //   error_severity: error.metadata.severity,
     // });
-    console.log('📡 DATADOG LOG:', error.metadata.code);
+    logger.info('DATADOG LOG', { code: error.metadata.code });
   }
 }
 
 // Utilitário para capturar contexto da requisição
-export function captureRequestContext(req?: any): Partial<ErrorContext> {
+export function captureRequestContext(req?: unknown): Partial<ErrorContext> {
   if (!req) return {};
 
+  const reqObj = req as {
+    url?: string;
+    method?: string;
+    headers?: Record<string, string>;
+    connection?: { remoteAddress?: string };
+    body?: unknown;
+    params?: Record<string, unknown>;
+  };
+
   return {
-    url: req.url,
-    method: req.method,
-    userAgent: req.headers?.['user-agent'],
-    ip: req.headers?.['x-forwarded-for'] || req.connection?.remoteAddress,
-    headers: req.headers,
-    body: req.body,
-    params: req.params,
+    url: reqObj.url,
+    method: reqObj.method,
+    userAgent: reqObj.headers?.['user-agent'],
+    ip: reqObj.headers?.['x-forwarded-for'] || reqObj.connection?.remoteAddress,
+    headers: reqObj.headers,
+    body: reqObj.body,
+    params: reqObj.params,
   };
 }
 

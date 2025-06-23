@@ -66,10 +66,6 @@ export default function DashboardLayout({
     setSidebarOpen(prev => !prev);
   }, []);
 
-  const handleSidebarClose = useCallback(() => {
-    setSidebarOpen(false);
-  }, []);
-
   const memoizedSidebarItems = useMemo(() => sidebarNavItems, []);
 
   const fallbackComponent = useMemo(() => (

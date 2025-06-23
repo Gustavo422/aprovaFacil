@@ -96,12 +96,12 @@ export async function POST(_request: Request) {
 
     // Obter os dados do corpo da requisição
     const body = await _request.json();
-    const { title, description, url, concurso_id } = body;
+    const { title, description, concurso_id } = body;
 
     // Validar os dados obrigatórios
-    if (!title || !url) {
+    if (!title) {
       return NextResponse.json(
-        { error: 'Título e URL são obrigatórios' },
+        { error: 'Título é obrigatório' },
         { status: 400 }
       );
     }
@@ -112,7 +112,6 @@ export async function POST(_request: Request) {
       .insert({
         title,
         description,
-        url,
         concurso_id,
       })
       .select()

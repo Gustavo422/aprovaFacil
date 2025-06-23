@@ -1,6 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/database.types';
 import { PaginatedResponse } from './types';
+import { logger } from '@/lib/logger';
 
 export abstract class BaseRepository<T, InsertT, UpdateT> {
   protected supabase: SupabaseClient<Database>;
@@ -47,7 +48,7 @@ export abstract class BaseRepository<T, InsertT, UpdateT> {
         totalPages: Math.ceil((count || 0) / limit),
       };
     } catch (error) {
-      console.error(`Erro ao buscar ${this.tableName}:`, error);
+      logger.error(`Erro ao buscar ${this.tableName}:`, { error });
       throw error; // Relança o erro original para tratamento na camada de serviço
     }
   }
@@ -70,7 +71,7 @@ export abstract class BaseRepository<T, InsertT, UpdateT> {
 
       return data;
     } catch (error) {
-      console.error(`Erro ao buscar ${this.tableName} por ID:`, error);
+      logger.error(`Erro ao buscar ${this.tableName} por ID:`, { error });
       throw error;
     }
   }
@@ -90,7 +91,7 @@ export abstract class BaseRepository<T, InsertT, UpdateT> {
 
       return result;
     } catch (error) {
-      console.error(`Erro ao criar ${this.tableName}:`, error);
+      logger.error(`Erro ao criar ${this.tableName}:`, { error });
       throw error;
     }
   }
@@ -111,7 +112,7 @@ export abstract class BaseRepository<T, InsertT, UpdateT> {
 
       return result;
     } catch (error) {
-      console.error(`Erro ao atualizar ${this.tableName}:`, error);
+      logger.error(`Erro ao atualizar ${this.tableName}:`, { error });
       throw error;
     }
   }
@@ -147,7 +148,7 @@ export abstract class BaseRepository<T, InsertT, UpdateT> {
         if (error) throw error;
       }
     } catch (error) {
-      console.error(`Erro ao deletar ${this.tableName}:`, error);
+      logger.error(`Erro ao deletar ${this.tableName}:`, { error });
       throw error;
     }
   }
@@ -171,7 +172,7 @@ export abstract class BaseRepository<T, InsertT, UpdateT> {
 
       return data || [];
     } catch (error) {
-      console.error(`Erro ao buscar ${this.tableName} por filtros:`, error);
+      logger.error(`Erro ao buscar ${this.tableName} por filtros:`, { error });
       throw error;
     }
   }
@@ -199,7 +200,7 @@ export abstract class BaseRepository<T, InsertT, UpdateT> {
 
       return count || 0;
     } catch (error) {
-      console.error(`Erro ao contar ${this.tableName}:`, error);
+      logger.error(`Erro ao contar ${this.tableName}:`, { error });
       throw error;
     }
   }

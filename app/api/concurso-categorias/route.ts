@@ -1,6 +1,5 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // ========================================
@@ -51,7 +50,7 @@ export async function GET(_request: Request) {
     }
 
     return NextResponse.json({
-      categorias: categorias || [],
+      data: categorias || [],
     });
   } catch (error) {
     logger.error('Erro interno:', {

@@ -25,9 +25,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
-import { useAuthRetry } from '@/hooks/use-auth-retry';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -45,9 +43,7 @@ const formSchema = z.object({
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { retryWithBackoff, getRateLimitMessage } = useAuthRetry();
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClientComponentClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,60 +57,36 @@ export default function RegisterPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      const result = await retryWithBackoff(async () => {
-        return await supabase.auth.signUp({
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           email: values.email,
           password: values.password,
-          options: {
-            data: {
-              name: values.name,
-            },
-          },
-        });
+          name: values.name,
+        }),
       });
 
-      // Se chegou aqui, não há erro ou o retry funcionou
-      if (result.error) {
+      const data = await response.json();
+
+      if (!response.ok) {
         toast({
           variant: 'destructive',
           title: 'Erro ao criar conta',
-          description: (result.error as Error).message,
+          description: data.error?.message || 'Ocorreu um erro. Tente novamente.',
         });
         return;
       }
 
-      // Create user profile in the database
-      if (result.data.user) {
-        const { error: profileError } = await supabase.from('users').insert([
-          {
-            id: result.data.user.id,
-            email: values.email,
-            name: values.name,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            // Temporarily removed missing columns until migration is run
-            // study_time_minutes: 0,
-            // total_questions_answered: 0,
-            // total_correct_answers: 0,
-            // average_score: 0,
-          },
-        ]);
-
-        if (profileError) {
-          toast({
-            variant: 'destructive',
-            title: 'Erro ao criar perfil',
-            description: profileError.message,
-          });
-          return;
-        }
+      if (data.success) {
+        toast({
+          title: 'Conta criada com sucesso',
+          description: 'Verifique seu e-mail para confirmar sua conta.',
+        });
+        router.push('/login');
       }
-
-      toast({
-        title: 'Conta criada com sucesso',
-        description: 'Verifique seu e-mail para confirmar sua conta.',
-      });
-      router.push('/login');
     } catch (error: unknown) {
       logger.error('Erro no registro', {
         error: error instanceof Error ? error.message : String(error),
@@ -123,7 +95,7 @@ export default function RegisterPage() {
       toast({
         variant: 'destructive',
         title: 'Erro ao criar conta',
-        description: getRateLimitMessage(error),
+        description: 'Ocorreu um erro inesperado. Tente novamente.',
       });
     } finally {
       setIsLoading(false);

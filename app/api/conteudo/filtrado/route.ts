@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 import { NextResponse } from 'next/server';
-import { ConteudoFilters, ConteudoFiltradoResponse } from '@/types/concurso';
+import { ConteudoFiltradoResponse } from '@/types/concurso';
 
 // ========================================
 // GET - Buscar conteúdo filtrado
@@ -115,7 +115,7 @@ export async function GET(request: Request) {
     // BUSCAR APOSTILAS
     // ========================================
 
-    let apostilasQuery = supabase
+    const apostilasQuery = supabase
       .from('apostilas')
       .select(`
         *,

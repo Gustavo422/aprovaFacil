@@ -1,5 +1,6 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -124,7 +125,9 @@ export async function GET() {
     return NextResponse.json(activities.slice(0, 10));
 
   } catch (error) {
-    console.error('Erro ao buscar atividades:', error);
+    logger.error('Erro ao buscar atividades:', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

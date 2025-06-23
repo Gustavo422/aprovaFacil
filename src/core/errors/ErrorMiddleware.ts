@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { ErrorHandler } from './ErrorHandler';
 import { AppError } from './AppError';
-import { errorHandler } from './ErrorHandler';
 import { ErrorResponse, ValidationErrorResponse } from './types';
-import { captureRequestContext } from './ErrorLogger';
 
 export interface ErrorMiddlewareConfig {
   includeStack?: boolean;
@@ -77,7 +76,7 @@ export class ErrorMiddleware {
 
     // Log do erro se habilitado
     if (this.config.logErrors) {
-      await errorHandler.handle(appError, request);
+      await ErrorHandler.getInstance().handle(appError, request);
     }
 
     // Criar resposta de erro
@@ -230,7 +229,7 @@ export class ErrorMiddleware {
         }
         
         // Para outros casos, usar o error handler
-        await errorHandler.handle(error as Error);
+        await ErrorHandler.getInstance().handle(error as Error);
         throw error;
       }
     };
