@@ -1,7 +1,7 @@
 'use client';
 import { logger } from '@/lib/logger';
-
 import { useState, useEffect } from 'react';
+import { ConcursoComCategoria, ConcursoCategoria } from '@/types/concurso';
 
 import {
   Card,
@@ -37,13 +37,7 @@ interface Simulado {
   updated_at: string;
   deleted_at: string | null;
   created_by: string | null;
-  concursos?: {
-    id: string;
-    nome: string;
-    categoria: string;
-    ano: number | null;
-    banca: string | null;
-  };
+  concursos?: ConcursoComCategoria;
 }
 
 const getDifficultyColor = (difficulty: string) => {
@@ -64,50 +58,36 @@ export default function SimuladosPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todos');
-  const [concursos, setConcursos] = useState<
-    {
-      id: string;
-      nome: string;
-      categoria: string;
-      ano: number | null;
-      banca: string | null;
-    }[]
-  >([]);
+  const [categorias, setCategorias] = useState<ConcursoCategoria[]>([]);
 
   useEffect(() => {
-    fetchSimulados();
-    fetchConcursos();
+    const fetchData = async () => {
+      try {
+        const [simuladosRes, categoriasRes] = await Promise.all([
+          fetch('/api/simulados'),
+          fetch('/api/concurso-categorias'),
+        ]);
+
+        if (simuladosRes.ok) {
+          const data = await simuladosRes.json();
+          setSimulados(data.data || []);
+        }
+
+        if (categoriasRes.ok) {
+          const data = await categoriasRes.json();
+          setCategorias(data.data || []);
+        }
+      } catch (error) {
+        logger.error('Erro ao buscar dados da página de simulados', {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
-
-  const fetchSimulados = async () => {
-    try {
-      const response = await fetch('/api/simulados');
-      if (response.ok) {
-        const data = await response.json();
-        setSimulados(data.data || []);
-      }
-    } catch (error) {
-      logger.error('Erro ao buscar simulados', {
-        error: error instanceof Error ? error.message : String(error),
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchConcursos = async () => {
-    try {
-      const response = await fetch('/api/concursos');
-      if (response.ok) {
-        const data = await response.json();
-        setConcursos(data.concursos || []);
-      }
-    } catch (error) {
-      logger.error('Erro ao buscar concursos', {
-        error: error instanceof Error ? error.message : String(error),
-      });
-    }
-  };
 
   const filteredSimulados = simulados.filter(simulado => {
     const matchesSearch =
@@ -117,8 +97,7 @@ export default function SimuladosPage() {
 
     const matchesCategory =
       selectedCategory === 'todos' ||
-      (simulado.concursos &&
-        simulado.concursos.categoria.toLowerCase() === selectedCategory);
+      (simulado.concursos?.concurso_categorias?.slug === selectedCategory);
 
     return matchesSearch && matchesCategory;
   });
@@ -145,27 +124,27 @@ export default function SimuladosPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-1">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Buscar simulados..."
-              className="pl-9"
+              placeholder="Buscar por título ou descrição..."
+              className="pl-10"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectTrigger className="w-full sm:w-[200px]">
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todas as categorias</SelectItem>
-              {concursos.map(concurso => (
+              {categorias.map(categoria => (
                 <SelectItem
-                  key={concurso.id}
-                  value={concurso.categoria.toLowerCase()}
+                  key={categoria.id}
+                  value={categoria.slug ?? ''}
                 >
-                  {concurso.nome}
+                  {categoria.nome}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -194,9 +173,9 @@ export default function SimuladosPage() {
                 <div className="flex items-start justify-between">
                   <FileText className="h-8 w-8 text-primary flex-shrink-0" />
                   <div className="flex flex-col gap-1 items-end">
-                    {simulado.concursos && (
+                    {simulado.concursos?.concurso_categorias && (
                       <Badge variant="secondary" className="text-xs">
-                        {simulado.concursos.categoria}
+                        {simulado.concursos.concurso_categorias.nome}
                       </Badge>
                     )}
                     {simulado.concursos?.ano && (

@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { User, Settings, LogOut, Shield } from 'lucide-react';
-import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/src/features/auth/hooks/use-auth';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
 import { useCallback, useMemo } from 'react';
 
 export function UserNav() {

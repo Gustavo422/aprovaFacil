@@ -1,75 +1,48 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AppError } from '../AppError';
-import { errorHandler } from '../ErrorHandler';
+import { ErrorHandler } from '../ErrorHandler';
 import { captureBrowserContext } from '../ErrorLogger';
 
 interface Props {
-  children: ReactNode;
-  fallback?: ReactNode | ((error: Error, errorInfo: ErrorInfo) => ReactNode);
-  onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  children: React.ReactNode;
+  fallback?: React.ReactNode | ((error: Error, errorInfo: { componentStack: string }) => React.ReactNode);
+  onError?: (error: Error, errorInfo: { componentStack: string }) => void;
   resetKeys?: unknown[];
 }
 
-interface State {
-  hasError: boolean;
-  error: Error | null;
-  errorInfo: ErrorInfo | null;
-}
+export function ErrorBoundary({
+  children,
+  fallback,
+  onError,
+  resetKeys = [],
+}: Props) {
+  const [hasError, setHasError] = React.useState(false);
+  const [error, setError] = React.useState<Error | null>(null);
+  const [errorInfo, setErrorInfo] = React.useState<{ componentStack: string } | null>(null);
+  const prevResetKeys = useRef(resetKeys);
 
-export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null,
-      errorInfo: null,
-    };
-  }
-
-  static getDerivedStateFromError(error: Error): State {
-    return {
-      hasError: true,
-      error,
-      errorInfo: null,
-    };
-  }
-
-  componentDidCatch(error: Error, _errorInfo: ErrorInfo) {
-    this.setState({
-      error,
-      errorInfo: _errorInfo,
-    });
-
-    // Log do erro
-    this.logError(error, _errorInfo);
-
-    // Callback personalizado
-    if (this.props.onError) {
-      this.props.onError(error, _errorInfo);
+  // Reset on resetKeys change
+  useEffect(() => {
+    if (hasError && prevResetKeys.current !== resetKeys) {
+      setHasError(false);
+      setError(null);
+      setErrorInfo(null);
+      prevResetKeys.current = resetKeys;
     }
-  }
+  }, [resetKeys, hasError]);
 
-  componentDidUpdate(prevProps: Props) {
-    // Reset do erro quando resetKeys mudar
-    if (
-      this.state.hasError &&
-      prevProps.resetKeys !== this.props.resetKeys
-    ) {
-      this.setState({
-        hasError: false,
-        error: null,
-        errorInfo: null,
-      });
-    }
-  }
+  // Error boundary logic
+  const handleError = async (err: Error, info: { componentStack: string }) => {
+    setHasError(true);
+    setError(err);
+    setErrorInfo(info);
 
-  private async logError(error: Error, errorInfo: ErrorInfo) {
+    // Log error
     let appError: AppError;
-
-    if (error instanceof AppError) {
-      appError = error;
+    if (err instanceof AppError) {
+      appError = err;
     } else {
-      appError = AppError.fromError(error, {
+      appError = AppError.fromError(err, {
         code: 'REACT_ERROR_BOUNDARY',
         category: 'system',
         severity: 'high',
@@ -77,59 +50,44 @@ export class ErrorBoundary extends Component<Props, State> {
         userFriendly: true,
       });
     }
-
-    // Adicionar contexto do navegador
     appError.addContext(captureBrowserContext());
+    await ErrorHandler.getInstance().handle(appError);
 
-    await errorHandler.handle(appError);
-  }
-
-  private handleReset = () => {
-    this.setState({
-      hasError: false,
-      error: null,
-      errorInfo: null,
-    });
+    if (onError) onError(err, info);
   };
 
-  render() {
-    if (this.state.hasError) {
-      const { fallback } = this.props;
-      const { error, errorInfo } = this.state;
+  // Simular captura de erro em filhos (substitua por react-error-boundary para produção)
+  // Aqui, para fins didáticos, não há try/catch real na renderização dos filhos.
 
-      if (fallback) {
-        if (typeof fallback === 'function') {
-          return fallback(error!, errorInfo!);
-        }
-        return fallback;
+  if (hasError && error) {
+    if (fallback) {
+      if (typeof fallback === 'function') {
+        return fallback(error, errorInfo!);
       }
-
-      return (
-        <div className="error-boundary">
-          <div className="error-boundary-content">
-            <h2>Algo deu errado</h2>
-            <p>
-              Ocorreu um erro inesperado. Por favor, tente recarregar a página.
-            </p>
-            {process.env.NODE_ENV === 'development' && error && (
-              <details className="error-details">
-                <summary>Detalhes do erro (desenvolvimento)</summary>
-                <pre>{error.toString()}</pre>
-                {errorInfo && (
-                  <pre>{errorInfo.componentStack}</pre>
-                )}
-              </details>
-            )}
-            <button onClick={this.handleReset} className="error-reset-button">
-              Tentar novamente
-            </button>
-          </div>
-        </div>
-      );
+      return fallback;
     }
-
-    return this.props.children;
+    return (
+      <div className="error-boundary">
+        <div className="error-boundary-content">
+          <h2>Algo deu errado</h2>
+          <p>Ocorreu um erro inesperado. Por favor, tente recarregar a página.</p>
+          {process.env.NODE_ENV === 'development' && error && (
+            <details className="error-details">
+              <summary>Detalhes do erro (desenvolvimento)</summary>
+              <pre>{error.toString()}</pre>
+              {errorInfo && <pre>{errorInfo.componentStack}</pre>}
+            </details>
+          )}
+          <button onClick={() => { setHasError(false); setError(null); setErrorInfo(null); }} className="error-reset-button">
+            Tentar novamente
+          </button>
+        </div>
+      </div>
+    );
   }
+
+  // Render children normally
+  return <>{children}</>;
 }
 
 // Hook para usar dentro de componentes funcionais
@@ -159,7 +117,7 @@ export function DefaultErrorFallback({
   onReset 
 }: { 
   error: Error; 
-  errorInfo: ErrorInfo; 
+  errorInfo: { componentStack: string }; 
   onReset: () => void;
 }) {
   return (
@@ -170,7 +128,6 @@ export function DefaultErrorFallback({
         <p>
           Encontramos um problema inesperado. Nossa equipe foi notificada e está trabalhando para resolver.
         </p>
-        
         <div className="error-actions">
           <button onClick={onReset} className="retry-button">
             Tentar novamente
@@ -182,7 +139,6 @@ export function DefaultErrorFallback({
             Recarregar página
           </button>
         </div>
-
         {process.env.NODE_ENV === 'development' && (
           <details className="error-details">
             <summary>Detalhes técnicos (desenvolvimento)</summary>

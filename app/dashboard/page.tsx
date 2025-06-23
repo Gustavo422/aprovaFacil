@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { ExportJsonButton } from '@/components/ui/export-json-button';
 import {
   FileText,
   ListChecks,
@@ -33,13 +34,6 @@ import { logger } from '@/lib/logger';
 import {
   LineChart,
   Line,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -100,8 +94,6 @@ interface RecentActivity {
   score?: number;
   improvement?: number;
 }
-
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1', '#d084d0'];
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
@@ -204,10 +196,22 @@ export default function DashboardPage() {
 
   // Determinar status de aprovação
   const getApprovalStatus = (probability: number) => {
-    if (probability >= 80) return { text: 'Excelente', color: 'text-green-600', bg: 'bg-green-100' };
-    if (probability >= 60) return { text: 'Bom', color: 'text-blue-600', bg: 'bg-blue-100' };
-    if (probability >= 40) return { text: 'Regular', color: 'text-yellow-600', bg: 'bg-yellow-100' };
-    return { text: 'Precisa Melhorar', color: 'text-red-600', bg: 'bg-red-100' };
+    if (probability >= 80) return { text: 'Excelente', bg: 'bg-green-100', color: 'text-green-800' };
+    if (probability >= 60) return { text: 'Bom', bg: 'bg-blue-100', color: 'text-blue-800' };
+    if (probability >= 40) return { text: 'Regular', bg: 'bg-yellow-100', color: 'text-yellow-800' };
+    return { text: 'Precisa Melhorar', bg: 'bg-red-100', color: 'text-red-800' };
+  };
+
+  const getDashboardData = () => {
+    return {
+      performanceStats,
+      recentActivities,
+      exportInfo: {
+        timestamp: new Date().toISOString(),
+        exportType: 'dashboard-performance',
+        version: '1.0'
+      }
+    };
   };
 
   if (loading) {
@@ -647,6 +651,16 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
+      </div>
+
+      {/* Botão de Exportação */}
+      <div className="flex justify-end pt-6 border-t">
+        <ExportJsonButton
+          data={getDashboardData()}
+          filename="dashboard-performance-report"
+          variant="default"
+          className="bg-indigo-600 hover:bg-indigo-700"
+        />
       </div>
     </div>
   );

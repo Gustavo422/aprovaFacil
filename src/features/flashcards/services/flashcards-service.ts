@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 import { FlashcardsRepository } from '@/src/core/database/repositories/flashcards-repository';
 import {
   FlashcardData,
@@ -7,23 +7,23 @@ import {
   FlashcardInsert,
   FlashcardUpdate,
 } from '@/src/core/database/types';
+import { withServiceErrorHandling } from '@/src/features/shared/utils/serviceUtils';
 
 export class FlashcardsService {
   private repository: FlashcardsRepository;
 
   constructor() {
-    const supabase = createServerSupabaseClient();
+    const supabase = createClient();
     this.repository = new FlashcardsRepository(supabase);
   }
 
   /**
    * Busca todos os flashcards com paginação
    */
-  async getFlashcards(page: number = 1, limit: number = 10, filters?: FlashcardFilters) {
-    try {
-      const response = await this.repository.findAll(page, limit, filters);
+  async getFlashcards(page: number = 1, limit: number = 10, filters?: Record<string, unknown>) {
+    return withServiceErrorHandling(async () => {
+      const response = await this.repository.findAll(page, limit, filters as Record<string, unknown>);
       return {
-        success: true,
         data: response.data,
         pagination: {
           page: response.page,
@@ -32,240 +32,116 @@ export class FlashcardsService {
           totalPages: response.totalPages
         }
       };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+    });
   }
 
   /**
    * Busca um flashcard por ID
    */
   async getFlashcardById(id: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       const flashcard = await this.repository.findById(id);
-      return {
-        success: true,
-        data: flashcard
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return flashcard;
+    });
   }
 
   /**
    * Cria um novo flashcard
    */
   async createFlashcard(data: FlashcardInsert) {
-    try {
+    return withServiceErrorHandling(async () => {
       const flashcard = await this.repository.create(data);
-      return {
-        success: true,
-        data: flashcard
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return flashcard;
+    });
   }
 
   /**
    * Atualiza um flashcard
    */
   async updateFlashcard(id: string, data: FlashcardUpdate) {
-    try {
+    return withServiceErrorHandling(async () => {
       const flashcard = await this.repository.update(id, data);
-      return {
-        success: true,
-        data: flashcard
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return flashcard;
+    });
   }
 
   /**
    * Remove um flashcard
    */
   async deleteFlashcard(id: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       await this.repository.delete(id);
-      return {
-        success: true,
-        data: null
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido'
-      };
-    }
+      return null;
+    });
   }
 
   /**
    * Busca flashcards por concurso
    */
   async getFlashcardsByConcurso(concursoId: string, limit?: number) {
-    try {
+    return withServiceErrorHandling(async () => {
       const flashcards = await this.repository.findByConcurso(concursoId, limit);
-      return {
-        success: true,
-        data: flashcards
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+      return flashcards;
+    });
   }
 
   /**
    * Busca flashcards aleatórios por concurso
    */
   async getRandomFlashcardsByConcurso(concursoId: string, limit: number = 10) {
-    try {
+    return withServiceErrorHandling(async () => {
       const flashcards = await this.repository.findRandomByConcurso(concursoId, limit);
-      return {
-        success: true,
-        data: flashcards
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+      return flashcards;
+    });
   }
 
   /**
    * Busca flashcards com filtros avançados
    */
   async getFlashcardsByFilters(filters: FlashcardFilters, limit?: number) {
-    try {
+    return withServiceErrorHandling(async () => {
       const flashcards = await this.repository.findByFilters(filters, limit);
-      return {
-        success: true,
-        data: flashcards
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+      return flashcards;
+    });
   }
 
   /**
    * Salva o progresso do usuário em um flashcard
    */
   async saveUserProgress(progress: Omit<FlashcardProgressData, 'id' | 'created_at' | 'updated_at'>) {
-    try {
+    return withServiceErrorHandling(async () => {
       const userProgress = await this.repository.saveUserProgress(progress);
-      return {
-        success: true,
-        data: userProgress
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return userProgress;
+    });
   }
 
   /**
    * Busca o progresso do usuário em flashcards
    */
   async getUserProgress(userId: string, flashcardId?: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       const progress = await this.repository.getUserProgress(userId, flashcardId);
-      return {
-        success: true,
-        data: progress
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+      return progress;
+    });
   }
 
   /**
    * Busca estatísticas do usuário
    */
   async getUserStats(userId: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       const stats = await this.repository.getUserStats(userId);
-      return {
-        success: true,
-        data: stats
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return stats;
+    });
   }
 
   /**
    * Busca flashcards para revisão
    */
   async getFlashcardsForReview(userId: string, limit: number = 20) {
-    try {
-      // Implementar lógica de repetição espaçada
-      const progress = await this.repository.getUserProgress(userId);
-      const now = new Date();
-      
-      // Filtrar flashcards que precisam de revisão
-      const needsReview = progress.filter((p: FlashcardProgressData) => {
-        if (!p.proxima_revisao) return true;
-        return new Date(p.proxima_revisao) <= now;
-      });
-
-      // Buscar os flashcards
-      const flashcardIds = needsReview.map((p: FlashcardProgressData) => p.flashcard_id);
-      const flashcards: FlashcardData[] = [];
-      
-      for (const id of flashcardIds.slice(0, limit)) {
-        const flashcard = await this.repository.findById(id);
-        if (flashcard) {
-          flashcards.push(flashcard);
-        }
-      }
-
-      return {
-        success: true,
-        data: flashcards
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+    return withServiceErrorHandling(async () => {
+      const flashcards = await this.repository.findForReview(userId, limit);
+      return flashcards;
+    });
   }
 } 

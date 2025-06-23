@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 import { ApostilasRepository } from '@/src/core/database/repositories/apostilas-repository';
 import {
   // Apostila,
@@ -11,12 +11,13 @@ import {
   UserApostilaProgressInsert,
   // ApostilaWithContent,
 } from '@/src/core/database/types';
+import { withServiceErrorHandling } from '@/src/features/shared/utils/serviceUtils';
 
 export class ApostilasService {
   private repository: ApostilasRepository;
 
   constructor() {
-    const supabase = createServerSupabaseClient();
+    const supabase = createClient();
     this.repository = new ApostilasRepository(supabase);
   }
 
@@ -24,10 +25,9 @@ export class ApostilasService {
    * Busca todas as apostilas com paginação
    */
   async getApostilas(page: number = 1, limit: number = 10, filters?: Record<string, unknown>) {
-    try {
+    return withServiceErrorHandling(async () => {
       const response = await this.repository.findAllWithContent(page, limit, filters);
       return {
-        success: true,
         data: response.data,
         pagination: {
           page: response.page,
@@ -36,70 +36,37 @@ export class ApostilasService {
           totalPages: response.totalPages
         }
       };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+    });
   }
 
   /**
    * Busca uma apostila por ID com conteúdo
    */
   async getApostilaById(id: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       const apostila = await this.repository.findByIdWithContent(id);
-      return {
-        success: true,
-        data: apostila
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return apostila;
+    });
   }
 
   /**
    * Busca apostilas por concurso
    */
   async getApostilasByConcurso(concursoId: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       const apostilas = await this.repository.findByConcurso(concursoId);
-      return {
-        success: true,
-        data: apostilas
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+      return apostilas;
+    });
   }
 
   /**
    * Cria uma nova apostila
    */
   async createApostila(data: ApostilaInsert) {
-    try {
+    return withServiceErrorHandling(async () => {
       const apostila = await this.repository.create(data);
-      return {
-        success: true,
-        data: apostila
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return apostila;
+    });
   }
 
   /**
@@ -109,181 +76,97 @@ export class ApostilasService {
     apostila: ApostilaInsert,
     content: Omit<ApostilaContent, 'id' | 'apostila_id' | 'created_at'>[]
   ) {
-    try {
+    return withServiceErrorHandling(async () => {
       const result = await this.repository.createWithContent(apostila, content);
-      return {
-        success: true,
-        data: result
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return result;
+    });
   }
 
   /**
    * Atualiza uma apostila
    */
   async updateApostila(id: string, data: ApostilaUpdate) {
-    try {
+    return withServiceErrorHandling(async () => {
       const apostila = await this.repository.update(id, data);
-      return {
-        success: true,
-        data: apostila
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return apostila;
+    });
   }
 
   /**
    * Remove uma apostila
    */
   async deleteApostila(id: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       await this.repository.delete(id);
-      return {
-        success: true,
-        data: null
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido'
-      };
-    }
+      return null;
+    });
   }
 
   /**
    * Adiciona conteúdo a uma apostila
    */
   async addContent(apostilaId: string, content: Omit<ApostilaContent, 'id' | 'apostila_id' | 'created_at'>) {
-    try {
+    return withServiceErrorHandling(async () => {
       const result = await this.repository.addContent(apostilaId, content);
-      return {
-        success: true,
-        data: result
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return result;
+    });
   }
 
   /**
    * Atualiza conteúdo de uma apostila
    */
   async updateContent(contentId: string, content: ApostilaContentUpdate) {
-    try {
+    return withServiceErrorHandling(async () => {
       const result = await this.repository.updateContent(contentId, content);
-      return {
-        success: true,
-        data: result
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return result;
+    });
   }
 
   /**
    * Remove conteúdo de uma apostila
    */
   async removeContent(contentId: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       await this.repository.removeContent(contentId);
-      return {
-        success: true,
-        data: null
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido'
-      };
-    }
+      return null;
+    });
   }
 
   /**
    * Salva o progresso do usuário
    */
   async saveUserProgress(progress: UserApostilaProgressInsert) {
-    try {
+    return withServiceErrorHandling(async () => {
       const result = await this.repository.saveUserProgress(progress);
-      return {
-        success: true,
-        data: result
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return result;
+    });
   }
 
   /**
    * Busca o progresso do usuário
    */
   async getUserProgress(userId: string, apostilaId?: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       const progress = await this.repository.getUserProgress(userId, apostilaId);
-      return {
-        success: true,
-        data: progress
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: []
-      };
-    }
+      return progress;
+    });
   }
 
   /**
    * Busca estatísticas do usuário
    */
   async getUserStats(userId: string) {
-    try {
+    return withServiceErrorHandling(async () => {
       const stats = await this.repository.getUserStats(userId);
-      return {
-        success: true,
-        data: stats
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-        data: null
-      };
-    }
+      return stats;
+    });
   }
 
   /**
    * Calcula progresso geral de uma apostila
    */
-  async calculateApostilaProgress(userId: string, apostilaId: string): Promise<{
-    total_modules: number;
-    completed_modules: number;
-    progress_percentage: number;
-    estimated_time_remaining: number; // em minutos
-  }> {
-    try {
+  async calculateApostilaProgress(userId: string, apostilaId: string) {
+    return withServiceErrorHandling(async () => {
       const apostila = await this.repository.findByIdWithContent(apostilaId);
       const progress = await this.repository.getUserProgress(userId, apostilaId);
 
@@ -304,8 +187,6 @@ export class ApostilasService {
         progress_percentage,
         estimated_time_remaining
       };
-    } catch (error) {
-      throw new Error(`Erro ao calcular progresso da apostila: ${error}`);
-    }
+    });
   }
 } 

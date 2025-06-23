@@ -1,11 +1,10 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function GET(_request: Request) {
   const { searchParams } = new URL(_request.url);
-  const categoria = searchParams.get('categoria');
+  const categoriaId = searchParams.get('categoria_id');
   const ano = searchParams.get('ano');
   const banca = searchParams.get('banca');
   const isActive = searchParams.get('is_active');
@@ -13,7 +12,6 @@ export async function GET(_request: Request) {
   try {
     const supabase = await createRouteHandlerClient();
 
-    // Verificar se o usuário está autenticado
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -22,12 +20,12 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Construir a query base
-    let query = supabase.from('concursos').select('*');
+    let query = supabase
+      .from('concursos')
+      .select('*, concurso_categorias(*)');
 
-    // Aplicar filtros se fornecidos
-    if (categoria) {
-      query = query.eq('categoria', categoria);
+    if (categoriaId) {
+      query = query.eq('categoria_id', categoriaId);
     }
 
     if (ano) {
@@ -42,28 +40,25 @@ export async function GET(_request: Request) {
       query = query.eq('is_active', isActive === 'true');
     }
 
-    // Executar a query
-    const { data: concursos, error } = await query;
+    const { data, error } = await query;
 
     if (error) {
       logger.error('Erro ao buscar concursos:', {
         error: error instanceof Error ? error.message : String(error),
       });
       return NextResponse.json(
-        { error: error instanceof Error ? error.message : String(error) },
+        { error: 'Erro interno ao buscar concursos.' },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({
-      concursos,
-    });
+    return NextResponse.json({ data });
   } catch (error) {
-    logger.error('Erro ao processar requisição:', {
+    logger.error('Erro ao processar requisição GET /api/concursos:', {
       error: error instanceof Error ? error.message : String(error),
     });
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : String(error) },
+      { error: 'Erro interno no servidor.' },
       { status: 500 }
     );
   }
@@ -73,7 +68,6 @@ export async function POST(_request: Request) {
   try {
     const supabase = await createRouteHandlerClient();
 
-    // Verificar se o usuário está autenticado
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -82,30 +76,38 @@ export async function POST(_request: Request) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Obter os dados do corpo da requisição
     const body = await _request.json();
-    const { nome, descricao, categoria, ano, banca, is_active } = body;
+    const { nome, descricao, categoria_id, ano, banca, is_active, edital_url, data_prova, vagas, salario } = body;
 
-    // Validar os dados obrigatórios
-    if (!nome || !categoria) {
+    if (!nome || !categoria_id) {
       return NextResponse.json(
-        { error: 'Nome e categoria são obrigatórios' },
+        { error: 'Nome e categoria_id são obrigatórios' },
         { status: 400 }
       );
     }
 
-    // Criar o concurso
-    const { data: concurso, error } = await supabase
+    const { data, error } = await supabase
       .from('concursos')
       .insert({
         nome,
         descricao,
-        categoria,
+        categoria_id,
         ano: ano ? parseInt(ano) : null,
         banca,
         is_active: is_active !== undefined ? is_active : true,
+        edital_url,
+        data_prova,
+        vagas,
+        salario
       })
-      .select()
+      .select(`
+        *,
+        concurso_categorias (
+          id,
+          nome,
+          slug
+        )
+      `)
       .single();
 
     if (error) {
@@ -113,21 +115,21 @@ export async function POST(_request: Request) {
         error: error instanceof Error ? error.message : String(error),
       });
       return NextResponse.json(
-        { error: error instanceof Error ? error.message : String(error) },
+        { error: 'Erro interno ao criar concurso.' },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       message: 'Concurso criado com sucesso',
-      concurso,
+      data,
     });
   } catch (error) {
-    logger.error('Erro ao processar requisição:', {
+    logger.error('Erro ao processar requisição POST /api/concursos:', {
       error: error instanceof Error ? error.message : String(error),
     });
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : String(error) },
+      { error: 'Erro interno no servidor.' },
       { status: 500 }
     );
   }

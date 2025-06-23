@@ -266,6 +266,29 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
   }
 
   /**
+   * Busca flashcards que precisam de revisão para um usuário
+   */
+  async findForReview(userId: string, limit: number = 20): Promise<FlashcardData[]> {
+    // Busca progresso do usuário
+    const progress = await this.getUserProgress(userId);
+    const now = new Date();
+    // Filtra os que precisam de revisão
+    const needsReview = progress.filter((p: any) => {
+      if (!p.proxima_revisao) return true;
+      return new Date(p.proxima_revisao) <= now;
+    });
+    // Busca os flashcards correspondentes
+    const flashcardIds = needsReview.map((p: any) => p.flashcard_id).slice(0, limit);
+    if (flashcardIds.length === 0) return [];
+    const { data, error } = await this.supabase
+      .from(this.tableName)
+      .select('*')
+      .in('id', flashcardIds);
+    if (error) throw error;
+    return data || [];
+  }
+
+  /**
    * Invalida cache relacionado aos flashcards
    */
   private invalidateCache(flashcardId?: string): void {

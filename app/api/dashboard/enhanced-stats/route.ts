@@ -1,5 +1,6 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -36,7 +37,7 @@ export async function GET() {
       .order('average_score', { ascending: false });
 
     if (disciplineError) {
-      console.error('Erro ao buscar estatísticas por disciplina:', disciplineError);
+      logger.error('Erro ao buscar estatísticas por disciplina:', { error: disciplineError });
     }
 
     // Calcular estatísticas básicas
@@ -44,8 +45,6 @@ export async function GET() {
     let totalQuestoes = 0;
     let totalStudyTime = 0;
     let totalScore = 0;
-    let totalCorrectAnswers = 0;
-    let totalQuestions = 0;
 
     // Calcular histórico de performance
     const performanceHistory = [];
@@ -129,7 +128,7 @@ export async function GET() {
     let studyStreak = 0;
     if (progress && progress.length > 0) {
       const today = new Date();
-      let currentDate = new Date(today);
+      const currentDate = new Date(today);
       
       for (let i = 0; i < 30; i++) {
         const dayProgress = progress.find(p => {
@@ -194,7 +193,9 @@ export async function GET() {
     });
 
   } catch (error) {
-    console.error('Erro ao buscar estatísticas aprimoradas:', error);
+    logger.error('Erro ao buscar estatísticas aprimoradas:', { 
+      error: error instanceof Error ? error.message : String(error)
+    });
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

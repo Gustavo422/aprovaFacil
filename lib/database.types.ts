@@ -6,43 +6,26 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+export type User = {
+  id: string;
+  email: string;
+  nome: string;
+  created_at: string;
+  updated_at: string;
+  study_time_minutes: number;
+  total_questions_answered: number;
+  total_correct_answers: number;
+  average_score: number;
+  last_login?: Date;
+}
+
 export interface Database {
   public: {
     Tables: {
       users: {
-        Row: {
-          id: string;
-          email: string;
-          name: string;
-          created_at: string;
-          total_questions_answered: number;
-          total_correct_answers: number;
-          study_time_minutes: number;
-          average_score: number;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          email: string;
-          name: string;
-          created_at?: string;
-          total_questions_answered?: number;
-          total_correct_answers?: number;
-          study_time_minutes?: number;
-          average_score?: number;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          email?: string;
-          name?: string;
-          created_at?: string;
-          total_questions_answered?: number;
-          total_correct_answers?: number;
-          study_time_minutes?: number;
-          average_score?: number;
-          updated_at?: string;
-        };
+        Row: User;
+        Insert: Partial<User>;
+        Update: Partial<User>;
       };
       concurso_categorias: {
         Row: {
@@ -151,7 +134,6 @@ export interface Database {
           id: string;
           nome: string;
           descricao: string | null;
-          categoria: string;
           ano: number | null;
           banca: string | null;
           is_active: boolean;
@@ -167,7 +149,6 @@ export interface Database {
           id?: string;
           nome: string;
           descricao?: string | null;
-          categoria: string;
           ano?: number | null;
           banca?: string | null;
           is_active?: boolean;
@@ -183,7 +164,7 @@ export interface Database {
           id?: string;
           nome?: string;
           descricao?: string | null;
-          categoria?: string;
+
           ano?: number | null;
           banca?: string | null;
           is_active?: boolean;
@@ -255,7 +236,7 @@ export interface Database {
           alternatives: Json;
           correct_answer: string;
           explanation: string | null;
-          discipline: string | null;
+
           topic: string | null;
           difficulty: string | null;
           created_at: string;
@@ -274,7 +255,6 @@ export interface Database {
           alternatives: Json;
           correct_answer: string;
           explanation?: string | null;
-          discipline?: string | null;
           topic?: string | null;
           difficulty?: string | null;
           created_at?: string;
@@ -293,7 +273,6 @@ export interface Database {
           alternatives?: Json;
           correct_answer?: string;
           explanation?: string | null;
-          discipline?: string | null;
           topic?: string | null;
           difficulty?: string | null;
           created_at?: string;

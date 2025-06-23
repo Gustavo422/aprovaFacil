@@ -65,35 +65,21 @@ async function readSQLFile(filePath) {
 async function setupDatabase() {
   console.log('🚀 Iniciando configuração do banco de dados...\n');
   
-  // Lista de arquivos SQL na ordem de execução
-  const sqlFiles = [
-    { path: 'clean_database.sql', name: 'Limpeza do Banco' },
-    { path: 'database_schema.sql', name: 'Schema do Banco' },
-    { path: 'prepare_restructure.sql', name: 'Reestruturação' },
-    { path: 'add_triggers_and_indexes.sql', name: 'Triggers e Índices' },
-    { path: 'sample_data.sql', name: 'Dados de Exemplo' }
-  ];
+  // Usar o arquivo completo de configuração
+  const sqlFile = { path: 'docs/database/database_setup_complete.sql', name: 'Configuração Completa do Banco' };
   
-  let successCount = 0;
-  
-  for (const file of sqlFiles) {
-    const sqlContent = await readSQLFile(file.path);
-    if (sqlContent) {
-      const success = await executeSQL(sqlContent, file.name);
-      if (success) successCount++;
+  const sqlContent = await readSQLFile(sqlFile.path);
+  if (sqlContent) {
+    const success = await executeSQL(sqlContent, sqlFile.name);
+    if (success) {
+      console.log('\n🎉 Banco de dados configurado com sucesso!');
+      console.log('Agora você pode testar o sistema de concursos.');
+    } else {
+      console.log('\n⚠️  Erro na configuração do banco de dados.');
+      console.log('Verifique os logs acima para mais detalhes.');
     }
-    console.log(''); // Linha em branco para separar
-  }
-  
-  console.log('📊 Resumo da execução:');
-  console.log(`✅ ${successCount}/${sqlFiles.length} arquivos executados com sucesso`);
-  
-  if (successCount === sqlFiles.length) {
-    console.log('\n🎉 Banco de dados configurado com sucesso!');
-    console.log('Agora você pode testar o sistema de concursos.');
   } else {
-    console.log('\n⚠️  Alguns arquivos não foram executados completamente.');
-    console.log('Verifique os logs acima para mais detalhes.');
+    console.log('\n❌ Não foi possível ler o arquivo SQL.');
   }
 }
 

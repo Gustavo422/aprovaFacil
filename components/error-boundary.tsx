@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
 
 interface ErrorBoundaryState {
   hasError: boolean;

@@ -22,11 +22,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/src/features/auth/hooks/use-auth';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 

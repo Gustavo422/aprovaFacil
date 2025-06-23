@@ -60,8 +60,8 @@ export async function middleware(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser()
 
-    // Rotas que requerem autenticação
-    const protectedRoutes = ['/dashboard', '/api/dashboard', '/api/simulados', '/api/flashcards', '/api/apostilas', '/api/questoes-semanais']
+    // Rotas que requerem autenticação (removendo /api/admin e /admin por enquanto)
+    const protectedRoutes = ['/', '/dashboard', '/api/dashboard', '/api/simulados', '/api/flashcards', '/api/apostilas', '/api/questoes-semanais']
     const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))
 
     // Redirecionar para login se não autenticado em rota protegida
@@ -80,7 +80,7 @@ export async function middleware(request: NextRequest) {
   } catch (error) {
     // Se houver erro na verificação de autenticação, permitir o acesso
     // mas redirecionar para login se for rota protegida
-    const protectedRoutes = ['/dashboard', '/api/dashboard', '/api/simulados', '/api/flashcards', '/api/apostilas', '/api/questoes-semanais']
+    const protectedRoutes = ['/', '/dashboard', '/api/dashboard', '/api/simulados', '/api/flashcards', '/api/apostilas', '/api/questoes-semanais']
     const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))
     
     if (isProtectedRoute) {
@@ -96,14 +96,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!api/|_next/static|_next/image|favicon.ico|login|register|forgot-password|reset-password|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"
   ],
 }
-

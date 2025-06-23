@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Card, 
@@ -29,23 +29,17 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useConcurso, useConcursoActions } from '@/contexts/ConcursoContext';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
+import { useConcursoActions } from '@/contexts/ConcursoContext';
 import { 
   ConcursoCategoria, 
-  Concurso, 
-  ConcursoCategoriaSlug,
-  BancaOrganizadora,
   ConcursoComCategoria
 } from '@/types/concurso';
+import { logger } from '@/lib/logger';
 
 // ========================================
 // TIPOS
 // ========================================
-
-interface CategoriaComConcursos extends ConcursoCategoria {
-  concursos: Concurso[];
-}
 
 // ========================================
 // COMPONENTE
@@ -54,8 +48,7 @@ interface CategoriaComConcursos extends ConcursoCategoria {
 export function ConcursoSelector() {
   const router = useRouter();
   const { toast } = useToast();
-  const { selectConcurso, loadCategories, loadConcursosByCategory } = useConcursoActions();
-  const { state } = useConcurso();
+  const { selectConcurso, loadConcursosByCategory } = useConcursoActions();
   
   const [categorias, setCategorias] = useState<ConcursoCategoria[]>([]);
   const [concursos, setConcursos] = useState<ConcursoComCategoria[]>([]);
@@ -70,7 +63,32 @@ export function ConcursoSelector() {
   // CARREGAR DADOS
   // ========================================
 
+  const loadAllConcursos = useCallback(async () => {
+    try {
+      const response = await fetch('/api/concursos?is_active=true');
+      if (response.ok) {
+        const data = await response.json();
+        setConcursos(data.concursos || []);
+      }
+    } catch (error) {
+      logger.error('Erro ao carregar concursos:', { error });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
+    const loadCategorias = async () => {
+      try {
+        const response = await fetch('/api/concurso-categorias?is_active=true');
+        if (response.ok) {
+          const data = await response.json();
+          setCategorias(data.categorias || []);
+        }
+      } catch (error) {
+        logger.error('Erro ao carregar categorias:', { error });
+      }
+    };
     loadCategorias();
   }, []);
 
@@ -80,33 +98,7 @@ export function ConcursoSelector() {
     } else {
       loadAllConcursos();
     }
-  }, [selectedCategoria]);
-
-  const loadCategorias = async () => {
-    try {
-      const response = await fetch('/api/concurso-categorias?is_active=true');
-      if (response.ok) {
-        const data = await response.json();
-        setCategorias(data.categorias || []);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar categorias:', error);
-    }
-  };
-
-  const loadAllConcursos = async () => {
-    try {
-      const response = await fetch('/api/concursos?is_active=true');
-      if (response.ok) {
-        const data = await response.json();
-        setConcursos(data.concursos || []);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar concursos:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [selectedCategoria, loadConcursosByCategory, loadAllConcursos]);
 
   // ========================================
   // FILTRAR CONCURSOS
@@ -152,7 +144,7 @@ export function ConcursoSelector() {
       // Redirecionar para o dashboard
       router.push('/dashboard');
     } catch (error) {
-      console.error('Erro ao selecionar concurso:', error);
+      logger.error('Erro ao selecionar concurso:', { error });
       toast({
         title: "Erro",
         description: error instanceof Error ? error.message : "Não foi possível selecionar o concurso. Tente novamente.",

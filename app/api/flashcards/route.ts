@@ -1,5 +1,4 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -16,13 +15,13 @@ export async function GET() {
     }
 
     // Buscar flashcards do banco
-    const { data: flashcards, error: _error } = await supabase
+    const { data: flashcards, error } = await supabase
       .from('flashcards')
       .select('*')
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
-    if (_error) {
+    if (error) {
       return NextResponse.json(
         { error: 'Erro ao buscar flashcards' },
         { status: 500 }
@@ -30,7 +29,7 @@ export async function GET() {
     }
 
     return NextResponse.json(flashcards || []);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -64,7 +63,7 @@ export async function POST(_request: Request) {
     }
 
     // Criar o flashcard
-    const { data: flashcard, error: _error } = await supabase
+    const { data: flashcard, error } = await supabase
       .from('flashcards')
       .insert({
         front,
@@ -77,7 +76,7 @@ export async function POST(_request: Request) {
       .select()
       .single();
 
-    if (_error) {
+    if (error) {
       return NextResponse.json(
         { error: 'Erro ao criar flashcard' },
         { status: 500 }
@@ -88,7 +87,7 @@ export async function POST(_request: Request) {
       message: 'Flashcard criado com sucesso',
       flashcard,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

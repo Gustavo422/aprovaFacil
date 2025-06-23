@@ -1,13 +1,13 @@
 'use client';
 
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/src/features/auth/hooks/use-auth';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Clock, Shield, AlertTriangle, RefreshCw } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
 
 interface SessionInfo {
   expiresAt: Date;

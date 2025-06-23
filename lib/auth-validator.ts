@@ -7,10 +7,10 @@ export async function validateAuth() {
 
     const {
       data: { user },
-      error,
+      error: _error,
     } = await supabase.auth.getUser();
 
-    if (!user || error) {
+    if (!user || _error) {
       return {
         success: false,
         error: 'Não autorizado',
@@ -43,12 +43,8 @@ export async function validateAuth() {
       user,
       session,
     };
-  } catch (error) {
-    return {
-      success: false,
-      error: 'Erro de autenticação',
-      status: 500,
-    };
+  } catch {
+    return false;
   }
 }
 

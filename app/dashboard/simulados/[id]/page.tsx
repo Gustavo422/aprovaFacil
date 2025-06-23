@@ -3,7 +3,7 @@ import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/src/features/shared/hooks/use-toast';
 import { QuestionPlayer, SimuladoQuestion } from '@/components/question-player';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';

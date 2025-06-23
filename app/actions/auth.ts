@@ -14,14 +14,14 @@ export async function signUp(formData: FormData) {
 
   const supabase = createServerActionClient({ cookies });
   const serverClient = await createServerSupabaseClient();
-  const auditLogger = getAuditLogger();
+  const auditLogger = getAuditLogger(serverClient);
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        name,
+        nome: name,
       },
     },
   });
@@ -36,21 +36,20 @@ export async function signUp(formData: FormData) {
       {
         id: data.user.id,
         email,
-        name,
+        nome: name,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        // Temporarily removed missing columns until migration is run
-        // study_time_minutes: 0,
-        // total_questions_answered: 0,
-        // total_correct_answers: 0,
-        // average_score: 0,
+        study_time_minutes: 0,
+        total_questions_answered: 0,
+        total_correct_answers: 0,
+        average_score: 0,
       },
     ]);
 
     // Registrar criação do usuário no log de auditoria
     await auditLogger.logCreate(data.user.id, 'users', data.user.id, {
       email,
-      name,
+      nome: name,
       created_at: new Date().toISOString(),
     });
   }
@@ -63,7 +62,8 @@ export async function signIn(formData: FormData) {
   const password = formData.get('password') as string;
 
   const supabase = createServerActionClient({ cookies });
-  const auditLogger = getAuditLogger();
+  const serverClient = await createServerSupabaseClient();
+  const auditLogger = getAuditLogger(serverClient);
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -76,7 +76,6 @@ export async function signIn(formData: FormData) {
 
   if (data.user) {
     // Atualizar último login
-    const serverClient = await createServerSupabaseClient();
     await serverClient
       .from('users')
       .update({
@@ -94,7 +93,8 @@ export async function signIn(formData: FormData) {
 
 export async function signOut() {
   const supabase = createServerActionClient({ cookies });
-  const auditLogger = getAuditLogger();
+  const serverClient = await createServerSupabaseClient();
+  const auditLogger = getAuditLogger(serverClient);
 
   const {
     data: { user },
@@ -114,7 +114,7 @@ export async function updateUserProfile(
   updates: Record<string, unknown>
 ) {
   const serverClient = await createServerSupabaseClient();
-  const auditLogger = getAuditLogger();
+  const auditLogger = getAuditLogger(serverClient);
 
   try {
     // Buscar dados atuais
@@ -138,7 +138,13 @@ export async function updateUserProfile(
     }
 
     // Registrar atualização no log de auditoria
-    await auditLogger.logUpdate(userId, 'users', userId, currentData as unknown, updates as unknown);
+    await auditLogger.logUpdate(
+      userId,
+      'users',
+      userId,
+      currentData,
+      updates
+    );
 
     return { success: true };
   } catch (error) {
@@ -149,7 +155,7 @@ export async function updateUserProfile(
 
 export async function deleteUserAccount(userId: string) {
   const serverClient = await createServerSupabaseClient();
-  const auditLogger = getAuditLogger();
+  const auditLogger = getAuditLogger(serverClient);
 
   try {
     // Buscar dados atuais
@@ -158,6 +164,10 @@ export async function deleteUserAccount(userId: string) {
       .select('*')
       .eq('id', userId)
       .single();
+
+    if (typeof currentData !== 'object' || currentData === null) {
+      throw new Error('Dados inválidos para log de auditoria');
+    }
 
     // Soft delete do usuário
     const { error } = await serverClient
@@ -173,7 +183,7 @@ export async function deleteUserAccount(userId: string) {
     }
 
     // Registrar exclusão no log de auditoria
-    await auditLogger.logDelete(userId, 'users', userId, currentData as unknown);
+    await auditLogger.logDelete(userId, 'users', userId, currentData as Record<string, unknown>);
 
     // Fazer logout
     const supabase = createServerActionClient({ cookies });

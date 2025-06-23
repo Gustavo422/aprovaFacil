@@ -1,5 +1,4 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logger';
 

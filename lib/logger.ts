@@ -52,10 +52,12 @@ class Logger {
         reset: '\x1b[0m', // Reset
       };
 
+      // eslint-disable-next-line no-console
       console.log(
         `${colors[level]}[${level.toUpperCase()}]${colors.reset} ${entry.message}`
       );
       if (context) {
+        // eslint-disable-next-line no-console
         console.log(`${colors.debug}Context:${colors.reset}`, context);
       }
     } else {
