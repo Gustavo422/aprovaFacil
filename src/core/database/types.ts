@@ -52,7 +52,7 @@ export type UserFlashcardProgress = Tables['user_flashcard_progress']['Row'];
 export type UserFlashcardProgressInsert = Tables['user_flashcard_progress']['Insert'];
 export type UserFlashcardProgressUpdate = Tables['user_flashcard_progress']['Update'];
 
-export type Apostila = Tables['apostilas']['Row'];
+export type Apostila = Tables['apostilas']['Row'] & { slug: string };
 export type ApostilaInsert = Tables['apostilas']['Insert'];
 export type ApostilaUpdate = Tables['apostilas']['Update'];
 
@@ -151,7 +151,7 @@ export interface PerformanceStats {
     scoreImprovement: number;
   };
   disciplineStats: Array<{
-    disciplina: string;
+    discipline: string;
     total_questions: number;
     correct_answers: number;
     accuracy_rate: number;
@@ -168,19 +168,6 @@ export interface RecentActivity {
 }
 
 // Tipos específicos para flashcards (baseados no schema atual)
-export interface FlashcardData {
-  id: string;
-  pergunta: string;
-  resposta: string;
-  explicacao?: string;
-  materia: string;
-  assunto: string;
-  nivel_dificuldade: 'facil' | 'medio' | 'dificil';
-  concurso_id: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface FlashcardProgressData {
   id: string;
   user_id: string;
@@ -196,7 +183,13 @@ export interface FlashcardProgressData {
 
 export interface FlashcardFilters {
   concurso_id?: string;
-  materia?: string;
-  assunto?: string;
+  discipline?: string;
+  tema?: string;
   nivel_dificuldade?: 'facil' | 'medio' | 'dificil';
+}
+
+export interface ApostilaFilters {
+  concurso_id?: string;
+  discipline?: string;
+  tema?: string;
 } 

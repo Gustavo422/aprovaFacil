@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/src/features/auth/hooks/use-auth';
+import type { AuthSession } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Clock, Shield, AlertTriangle, RefreshCw } from 'lucide-react';
 import { useToast } from '@/src/features/shared/hooks/use-toast';
+import { createClient } from '@/lib/supabase';
 
 interface SessionInfo {
   expiresAt: Date;
@@ -17,9 +19,27 @@ interface SessionInfo {
 }
 
 export function SessionMonitor() {
-  const { user, session, loading, refreshSession, isRefreshing } = useAuth();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+    };
+    fetchSession();
+
+    // Escutar mudanças na sessão
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
 
   useEffect(() => {
     if (!session?.expires_at) {
@@ -29,13 +49,11 @@ export function SessionMonitor() {
 
     const updateSessionInfo = () => {
       if (!session?.expires_at) return;
-      
       const expiresAt = new Date(session.expires_at * 1000);
       const now = new Date();
       const timeRemaining = expiresAt.getTime() - now.getTime();
       const isExpired = timeRemaining <= 0;
       const isExpiringSoon = timeRemaining < 5 * 60 * 1000 && timeRemaining > 0; // 5 minutos
-
       setSessionInfo({
         expiresAt,
         timeRemaining,
@@ -46,14 +64,15 @@ export function SessionMonitor() {
 
     updateSessionInfo();
     const interval = setInterval(updateSessionInfo, 1000); // Atualizar a cada segundo
-
     return () => clearInterval(interval);
   }, [session]);
 
   const handleRefreshSession = async () => {
+    setIsRefreshing(true);
     try {
-      const success = await refreshSession();
-      if (success) {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (!error && data.session) {
+        setSession(data.session);
         toast({
           title: 'Sessão renovada',
           description: 'Sua sessão foi renovada com sucesso.',
@@ -71,6 +90,8 @@ export function SessionMonitor() {
         title: 'Erro ao renovar sessão',
         description: 'Não foi possível renovar sua sessão.',
       });
+    } finally {
+      setIsRefreshing(false);
     }
   };
 

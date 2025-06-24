@@ -15,7 +15,7 @@ export interface FlashcardData {
   id: string | number;
   front: string;
   back: string;
-  disciplina?: string;
+  discipline?: string;
   tema?: string;
   subtema?: string;
 }
@@ -75,7 +75,7 @@ export function Flashcard({
         <CardHeader className="pb-3">
           <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <span className="text-base md:text-lg">
-              {flashcard.disciplina || 'Flashcard'}
+              {flashcard.discipline || 'Flashcard'}
             </span>
             {flashcard.tema && (
               <span className="text-xs md:text-sm font-normal text-muted-foreground">

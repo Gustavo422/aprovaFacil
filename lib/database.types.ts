@@ -9,7 +9,7 @@ export type Json =
 export type User = {
   id: string;
   email: string;
-  nome: string;
+  name: string;
   created_at: string;
   updated_at: string;
   study_time_minutes: number;
@@ -30,7 +30,7 @@ export interface Database {
       concurso_categorias: {
         Row: {
           id: string;
-          nome: string;
+          name: string;
           slug: string;
           descricao: string | null;
           cor_primaria: string;
@@ -41,7 +41,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
-          nome: string;
+          name: string;
           slug: string;
           descricao?: string | null;
           cor_primaria?: string;
@@ -52,7 +52,7 @@ export interface Database {
         };
         Update: {
           id?: string;
-          nome?: string;
+          name?: string;
           slug?: string;
           descricao?: string | null;
           cor_primaria?: string;
@@ -66,7 +66,7 @@ export interface Database {
         Row: {
           id: string;
           categoria_id: string;
-          nome: string;
+          name: string;
           peso: number;
           horas_semanais: number;
           ordem: number;
@@ -77,7 +77,7 @@ export interface Database {
         Insert: {
           id?: string;
           categoria_id: string;
-          nome: string;
+          name: string;
           peso: number;
           horas_semanais: number;
           ordem: number;
@@ -88,7 +88,7 @@ export interface Database {
         Update: {
           id?: string;
           categoria_id?: string;
-          nome?: string;
+          name?: string;
           peso?: number;
           horas_semanais?: number;
           ordem?: number;
@@ -132,7 +132,7 @@ export interface Database {
       concursos: {
         Row: {
           id: string;
-          nome: string;
+          name: string;
           descricao: string | null;
           ano: number | null;
           banca: string | null;
@@ -147,7 +147,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
-          nome: string;
+          name: string;
           descricao?: string | null;
           ano?: number | null;
           banca?: string | null;
@@ -162,7 +162,7 @@ export interface Database {
         };
         Update: {
           id?: string;
-          nome?: string;
+          name?: string;
           descricao?: string | null;
 
           ano?: number | null;
@@ -192,7 +192,7 @@ export interface Database {
           deleted_at: string | null;
           created_by: string | null;
           categoria_id: string | null;
-          disciplinas: Json | null;
+          disciplines: Json | null;
         };
         Insert: {
           id?: string;
@@ -208,7 +208,7 @@ export interface Database {
           deleted_at?: string | null;
           created_by?: string | null;
           categoria_id?: string | null;
-          disciplinas?: Json | null;
+          disciplines?: Json | null;
         };
         Update: {
           id?: string;
@@ -224,7 +224,7 @@ export interface Database {
           deleted_at?: string | null;
           created_by?: string | null;
           categoria_id?: string | null;
-          disciplinas?: Json | null;
+          disciplines?: Json | null;
         };
       };
       simulado_questions: {
@@ -244,8 +244,8 @@ export interface Database {
           deleted_at: string | null;
           concurso_id: string | null;
           categoria_id: string | null;
-          disciplina: string | null;
-          peso_disciplina: number | null;
+          discipline: string | null;
+          peso_discipline: number | null;
         };
         Insert: {
           id?: string;
@@ -262,8 +262,8 @@ export interface Database {
           deleted_at?: string | null;
           concurso_id?: string | null;
           categoria_id?: string | null;
-          disciplina?: string | null;
-          peso_disciplina?: number | null;
+          discipline?: string | null;
+          peso_discipline?: number | null;
         };
         Update: {
           id?: string;
@@ -280,8 +280,8 @@ export interface Database {
           deleted_at?: string | null;
           concurso_id?: string | null;
           categoria_id?: string | null;
-          disciplina?: string | null;
-          peso_disciplina?: number | null;
+          discipline?: string | null;
+          peso_discipline?: number | null;
         };
       };
       user_simulado_progress: {
@@ -371,33 +371,33 @@ export interface Database {
       mapa_assuntos: {
         Row: {
           id: string;
-          disciplina: string;
+          discipline: string;
           tema: string;
           subtema: string | null;
           concurso_id: string | null;
           created_at: string;
           categoria_id: string | null;
-          peso_disciplina: number | null;
+          peso_discipline: number | null;
         };
         Insert: {
           id?: string;
-          disciplina: string;
+          discipline: string;
           tema: string;
           subtema?: string | null;
           concurso_id?: string | null;
           created_at?: string;
           categoria_id?: string | null;
-          peso_disciplina?: number | null;
+          peso_discipline?: number | null;
         };
         Update: {
           id?: string;
-          disciplina?: string;
+          discipline?: string;
           tema?: string;
           subtema?: string | null;
           concurso_id?: string | null;
           created_at?: string;
           categoria_id?: string | null;
-          peso_disciplina?: number | null;
+          peso_discipline?: number | null;
         };
       };
       user_mapa_assuntos_status: {
@@ -457,37 +457,37 @@ export interface Database {
           id: string;
           front: string;
           back: string;
-          disciplina: string;
+          discipline: string;
           tema: string;
           subtema: string | null;
           created_at: string;
           concurso_id: string | null;
           categoria_id: string | null;
-          peso_disciplina: number | null;
+          peso_discipline: number | null;
         };
         Insert: {
           id?: string;
           front: string;
           back: string;
-          disciplina: string;
+          discipline: string;
           tema: string;
           subtema?: string | null;
           created_at?: string;
           concurso_id?: string | null;
           categoria_id?: string | null;
-          peso_disciplina?: number | null;
+          peso_discipline?: number | null;
         };
         Update: {
           id?: string;
           front?: string;
           back?: string;
-          disciplina?: string;
+          discipline?: string;
           tema?: string;
           subtema?: string | null;
           created_at?: string;
           concurso_id?: string | null;
           categoria_id?: string | null;
-          peso_disciplina?: number | null;
+          peso_discipline?: number | null;
         };
       };
       user_flashcard_progress: {
@@ -527,7 +527,7 @@ export interface Database {
           concurso_id: string | null;
           created_at: string;
           categoria_id: string | null;
-          disciplinas: Json | null;
+          disciplines: Json | null;
         };
         Insert: {
           id?: string;
@@ -536,7 +536,7 @@ export interface Database {
           concurso_id?: string | null;
           created_at?: string;
           categoria_id?: string | null;
-          disciplinas?: Json | null;
+          disciplines?: Json | null;
         };
         Update: {
           id?: string;
@@ -545,7 +545,7 @@ export interface Database {
           concurso_id?: string | null;
           created_at?: string;
           categoria_id?: string | null;
-          disciplinas?: Json | null;
+          disciplines?: Json | null;
         };
       };
       apostila_content: {
@@ -700,7 +700,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          disciplina: string;
+          discipline: string;
           total_questions: number;
           correct_answers: number;
           average_score: number;
@@ -712,7 +712,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          disciplina: string;
+          discipline: string;
           total_questions?: number;
           correct_answers?: number;
           average_score?: number;
@@ -724,7 +724,7 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string;
-          disciplina?: string;
+          discipline?: string;
           total_questions?: number;
           correct_answers?: number;
           average_score?: number;

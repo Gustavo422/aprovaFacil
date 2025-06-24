@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server';
 
 export async function GET(_request: Request) {
   const { searchParams } = new URL(_request.url);
+  const id = searchParams.get('id');
   const concursoId = searchParams.get('concurso_id');
 
   const supabase = await createRouteHandlerClient();
 
   try {
-    // Verificar se o usuário está autenticado
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -18,15 +18,22 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Construir a query base
-    let query = supabase.from('apostilas').select('*');
+    let query;
 
-    // Aplicar filtro por concurso se fornecido
-    if (concursoId) {
-      query = query.eq('concurso_id', concursoId);
+    if (id) {
+      // Se um ID for fornecido, busca uma única apostila com seu conteúdo
+      query = supabase
+        .from('apostilas')
+        .select('*, apostila_content(*)')
+        .eq('id', id);
+    } else {
+      // Caso contrário, busca uma lista de apostilas
+      query = supabase.from('apostilas').select('*');
+      if (concursoId) {
+        query = query.eq('concurso_id', concursoId);
+      }
     }
 
-    // Executar a query
     const { data: apostilas, error } = await query;
 
     if (error) {
@@ -39,7 +46,8 @@ export async function GET(_request: Request) {
       );
     }
 
-    // Buscar informações dos concursos separadamente se necessário
+    // A lógica para enriquecer com dados do concurso é principalmente para listas,
+    // mas pode ser mantida para consistência.
     if (apostilas && apostilas.length > 0) {
       const concursoIds = apostilas
         .map(a => a.concurso_id)

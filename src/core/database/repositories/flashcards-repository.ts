@@ -2,7 +2,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@/lib/database.types';
 import { BaseRepository } from '../base-repository';
 import {
-  FlashcardData,
+  Flashcard,
   FlashcardProgressData,
   FlashcardFilters,
   FlashcardInsert,
@@ -17,7 +17,7 @@ import {
 import { flashcardsCache, userProgressCache, createCacheKey, withCache } from '../../utils/cache';
 // import { logger } from '../../utils/logger';
 
-export class FlashcardsRepository extends BaseRepository<FlashcardData, FlashcardInsert, FlashcardUpdate> {
+export class FlashcardsRepository extends BaseRepository<Flashcard, FlashcardInsert, FlashcardUpdate> {
   constructor(supabase: SupabaseClient<Database>) {
     super(supabase, 'flashcards');
   }
@@ -25,7 +25,7 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
   /**
    * Busca flashcards por concurso
    */
-  async findByConcurso(concursoId: string, limit?: number): Promise<FlashcardData[]> {
+  async findByConcurso(concursoId: string, limit?: number): Promise<Flashcard[]> {
     const cacheKey = createCacheKey('flashcards:by-concurso', concursoId, limit || 'all');
     return withCache(flashcardsCache, cacheKey, async () => {
       try {
@@ -53,7 +53,7 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
   /**
    * Busca flashcards aleatórios por concurso
    */
-  async findRandomByConcurso(concursoId: string, limit: number = 10): Promise<FlashcardData[]> {
+  async findRandomByConcurso(concursoId: string, limit: number = 10): Promise<Flashcard[]> {
     const cacheKey = createCacheKey('flashcards:random', concursoId, limit);
     return withCache(flashcardsCache, cacheKey, async () => {
       try {
@@ -78,7 +78,7 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
   /**
    * Busca flashcards com filtros avançados
    */
-  async findByFilters(filters: FlashcardFilters, limit?: number): Promise<FlashcardData[]> {
+  async findByFilters(filters: FlashcardFilters, limit?: number): Promise<Flashcard[]> {
     const cacheKey = createCacheKey('flashcards:filters', JSON.stringify(filters), limit || 'all');
     return withCache(flashcardsCache, cacheKey, async () => {
       try {
@@ -88,12 +88,12 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
           query = query.eq('concurso_id', filters.concurso_id);
         }
 
-        if (filters.materia) {
-          query = query.eq('materia', filters.materia);
+        if (filters.discipline) {
+          query = query.eq('discipline', filters.discipline);
         }
 
-        if (filters.assunto) {
-          query = query.eq('assunto', filters.assunto);
+        if (filters.tema) {
+          query = query.eq('tema', filters.tema);
         }
 
         if (filters.nivel_dificuldade) {
@@ -120,7 +120,7 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
   /**
    * Cria um novo flashcard
    */
-  async create(data: FlashcardInsert): Promise<FlashcardData> {
+  async create(data: FlashcardInsert): Promise<Flashcard> {
     try {
       // Validação Zod
       const validatedData = validateData(flashcardInsertSchema, data);
@@ -140,7 +140,7 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
   /**
    * Atualiza um flashcard
    */
-  async update(id: string, data: FlashcardUpdate): Promise<FlashcardData> {
+  async update(id: string, data: FlashcardUpdate): Promise<Flashcard> {
     try {
       // Validação Zod
       const validatedData = validateData(flashcardUpdateSchema, data);
@@ -268,17 +268,17 @@ export class FlashcardsRepository extends BaseRepository<FlashcardData, Flashcar
   /**
    * Busca flashcards que precisam de revisão para um usuário
    */
-  async findForReview(userId: string, limit: number = 20): Promise<FlashcardData[]> {
+  async findForReview(userId: string, limit: number = 20): Promise<Flashcard[]> {
     // Busca progresso do usuário
     const progress = await this.getUserProgress(userId);
     const now = new Date();
     // Filtra os que precisam de revisão
-    const needsReview = progress.filter((p: any) => {
+    const needsReview = progress.filter((p: FlashcardProgressData) => {
       if (!p.proxima_revisao) return true;
       return new Date(p.proxima_revisao) <= now;
     });
     // Busca os flashcards correspondentes
-    const flashcardIds = needsReview.map((p: any) => p.flashcard_id).slice(0, limit);
+    const flashcardIds = needsReview.map((p: FlashcardProgressData) => p.flashcard_id).slice(0, limit);
     if (flashcardIds.length === 0) return [];
     const { data, error } = await this.supabase
       .from(this.tableName)

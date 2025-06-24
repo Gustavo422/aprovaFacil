@@ -92,7 +92,6 @@ CREATE TABLE public.concursos (
 CREATE TABLE public.flashcards (
   front text NOT NULL,
   back text NOT NULL,
-  disciplina character varying NOT NULL,
   tema character varying NOT NULL,
   subtema character varying,
   concurso_id uuid,
@@ -100,12 +99,12 @@ CREATE TABLE public.flashcards (
   peso_disciplina integer,
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  disciplina character varying NOT NULL,
   CONSTRAINT flashcards_pkey PRIMARY KEY (id),
-  CONSTRAINT flashcards_categoria_id_fkey FOREIGN KEY (categoria_id) REFERENCES public.concurso_categorias(id),
-  CONSTRAINT flashcards_concurso_id_fkey FOREIGN KEY (concurso_id) REFERENCES public.concursos(id)
+  CONSTRAINT flashcards_concurso_id_fkey FOREIGN KEY (concurso_id) REFERENCES public.concursos(id),
+  CONSTRAINT flashcards_categoria_id_fkey FOREIGN KEY (categoria_id) REFERENCES public.concurso_categorias(id)
 );
 CREATE TABLE public.mapa_assuntos (
-  disciplina character varying NOT NULL,
   tema character varying NOT NULL,
   subtema character varying,
   concurso_id uuid,
@@ -113,6 +112,7 @@ CREATE TABLE public.mapa_assuntos (
   peso_disciplina integer,
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  disciplina character varying NOT NULL,
   CONSTRAINT mapa_assuntos_pkey PRIMARY KEY (id),
   CONSTRAINT mapa_assuntos_categoria_id_fkey FOREIGN KEY (categoria_id) REFERENCES public.concurso_categorias(id),
   CONSTRAINT mapa_assuntos_concurso_id_fkey FOREIGN KEY (concurso_id) REFERENCES public.concursos(id)
@@ -158,9 +158,9 @@ CREATE TABLE public.simulado_questions (
   disciplina character varying,
   discipline character varying,
   CONSTRAINT simulado_questions_pkey PRIMARY KEY (id),
-  CONSTRAINT simulado_questions_concurso_id_fkey FOREIGN KEY (concurso_id) REFERENCES public.concursos(id),
   CONSTRAINT simulado_questions_simulado_id_fkey FOREIGN KEY (simulado_id) REFERENCES public.simulados(id),
-  CONSTRAINT simulado_questions_categoria_id_fkey FOREIGN KEY (categoria_id) REFERENCES public.concurso_categorias(id)
+  CONSTRAINT simulado_questions_categoria_id_fkey FOREIGN KEY (categoria_id) REFERENCES public.concurso_categorias(id),
+  CONSTRAINT simulado_questions_concurso_id_fkey FOREIGN KEY (concurso_id) REFERENCES public.concursos(id)
 );
 CREATE TABLE public.simulados (
   title character varying NOT NULL,
@@ -206,7 +206,6 @@ CREATE TABLE public.user_concurso_preferences (
 );
 CREATE TABLE public.user_discipline_stats (
   user_id uuid NOT NULL,
-  disciplina character varying NOT NULL,
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   total_questions integer DEFAULT 0,
   correct_answers integer DEFAULT 0,
@@ -215,6 +214,7 @@ CREATE TABLE public.user_discipline_stats (
   last_activity timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  disciplina character varying NOT NULL,
   CONSTRAINT user_discipline_stats_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.user_flashcard_progress (
@@ -225,11 +225,6 @@ CREATE TABLE public.user_flashcard_progress (
   status character varying NOT NULL DEFAULT 'não_iniciado'::character varying,
   review_count integer DEFAULT 0,
   updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  acertou boolean NOT NULL DEFAULT false,
-  tentativas integer NOT NULL DEFAULT 1,
-  tempo_resposta integer,
-  ultima_revisao timestamp with time zone,
-  proxima_revisao timestamp with time zone,
   CONSTRAINT user_flashcard_progress_pkey PRIMARY KEY (id),
   CONSTRAINT user_flashcard_progress_flashcard_id_fkey FOREIGN KEY (flashcard_id) REFERENCES public.flashcards(id)
 );

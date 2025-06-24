@@ -32,7 +32,7 @@ export function ErrorBoundary({
   }, [resetKeys, hasError]);
 
   // Error boundary logic
-  const handleError = async (err: Error, info: { componentStack: string }) => {
+  const _handleError = async (err: Error, info: { componentStack: string }) => {
     setHasError(true);
     setError(err);
     setErrorInfo(info);

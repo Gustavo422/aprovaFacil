@@ -11,6 +11,7 @@ import {
   UserApostilaProgress,
   UserApostilaProgressInsert,
   ApostilaWithContent,
+  ApostilaFilters,
   // ApostilaContentWithProgress,
 } from '../types';
 import {
@@ -35,7 +36,7 @@ export class ApostilasRepository extends BaseRepository<Apostila, ApostilaInsert
   async findAllWithContent(
     page: number = 1,
     limit: number = 10,
-    filters?: Record<string, unknown>
+    filters?: ApostilaFilters
   ) {
     const cacheKey = createCacheKey('apostilas:all', page.toString(), limit.toString(), JSON.stringify(filters || {}));
     return withCache(apostilasCache, cacheKey, async () => {

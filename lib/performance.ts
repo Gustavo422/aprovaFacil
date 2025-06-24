@@ -1,7 +1,6 @@
 import { createServerSupabaseClient } from './supabase';
 import { logger } from '@/lib/logger';
 import { CacheManager } from './cache';
-import { getAuditLogger } from './audit';
 
 export interface PerformanceStats {
   totalSimulados: number;
@@ -30,11 +29,11 @@ export interface DisciplinePerformance {
 
 export class PerformanceCalculator {
   private static instance: PerformanceCalculator;
-  private supabase = createServerSupabaseClient();
   private cache = CacheManager.getInstance();
-  private auditLogger = getAuditLogger();
 
-  private constructor() {}
+  private constructor() {
+    // The constructor is now empty as the supabase and auditLogger are handled locally
+  }
 
   public static getInstance(): PerformanceCalculator {
     if (!PerformanceCalculator.instance) {
@@ -87,7 +86,9 @@ export class PerformanceCalculator {
     averageScore: number;
     totalTime: number;
   }> {
-    const { data, error } = await this.supabase
+    const supabase = await createServerSupabaseClient();
+
+    const { data, error } = await supabase
       .from('user_simulado_progress')
       .select('score, time_taken_minutes')
       .eq('user_id', userId)
@@ -120,7 +121,9 @@ export class PerformanceCalculator {
     accuracyRate: number;
     totalTime: number;
   }> {
-    const { data, error } = await this.supabase
+    const supabase = await createServerSupabaseClient();
+
+    const { data, error } = await supabase
       .from('user_questoes_semanais_progress')
       .select('score, answers')
       .eq('user_id', userId)
@@ -161,7 +164,9 @@ export class PerformanceCalculator {
   async calculateDisciplineStats(
     userId: string
   ): Promise<DisciplinePerformance[]> {
-    const { data, error } = await this.supabase
+    const supabase = await createServerSupabaseClient();
+
+    const { data, error } = await supabase
       .from('user_discipline_stats')
       .select('*')
       .eq('user_id', userId)
@@ -175,7 +180,7 @@ export class PerformanceCalculator {
       return [];
     }
 
-    return data.map(item => ({
+    const disciplineStats = data.map(item => ({
       disciplina: item.disciplina,
       totalQuestions: item.total_questions,
       correctAnswers: item.correct_answers,
@@ -187,6 +192,8 @@ export class PerformanceCalculator {
           ? (item.correct_answers / item.total_questions) * 100
           : 0,
     }));
+
+    return disciplineStats;
   }
 
   /**
@@ -198,19 +205,21 @@ export class PerformanceCalculator {
     studyTime: number;
     scoreImprovement: number;
   }> {
+    const supabase = await createServerSupabaseClient();
+
     const weekAgo = new Date(
       Date.now() - 7 * 24 * 60 * 60 * 1000
     ).toISOString();
 
     // Buscar dados da semana atual
     const [simuladosData, questoesData] = await Promise.all([
-      this.supabase
+      supabase
         .from('user_simulado_progress')
         .select('score, time_taken_minutes')
         .eq('user_id', userId)
         .gte('completed_at', weekAgo)
         .is('deleted_at', null),
-      this.supabase
+      supabase
         .from('user_questoes_semanais_progress')
         .select('score')
         .eq('user_id', userId)
@@ -235,14 +244,14 @@ export class PerformanceCalculator {
     ).toISOString();
 
     const [previousWeekData, currentWeekData] = await Promise.all([
-      this.supabase
+      supabase
         .from('user_simulado_progress')
         .select('score')
         .eq('user_id', userId)
         .gte('completed_at', twoWeeksAgo)
         .lt('completed_at', weekAgo2)
         .is('deleted_at', null),
-      this.supabase
+      supabase
         .from('user_simulado_progress')
         .select('score')
         .eq('user_id', userId)
@@ -279,17 +288,19 @@ export class PerformanceCalculator {
    */
   async updateDisciplineStats(
     userId: string,
-    disciplina: string,
+    discipline: string,
     questionsAnswered: number,
     correctAnswers: number,
     studyTimeMinutes: number
   ): Promise<void> {
+    const supabase = await createServerSupabaseClient();
+
     try {
-      const { data: existingStats } = await this.supabase
+      const { data: existingStats } = await supabase
         .from('user_discipline_stats')
         .select('*')
         .eq('user_id', userId)
-        .eq('disciplina', disciplina)
+        .eq('discipline', discipline)
         .single();
 
       const now = new Date().toISOString();
@@ -307,7 +318,7 @@ export class PerformanceCalculator {
         const newStudyTime =
           existingStats.study_time_minutes + studyTimeMinutes;
 
-        await this.supabase
+        await supabase
           .from('user_discipline_stats')
           .update({
             total_questions: newTotalQuestions,
@@ -320,9 +331,9 @@ export class PerformanceCalculator {
           .eq('id', existingStats.id);
       } else {
         // Criar novas estatísticas
-        await this.supabase.from('user_discipline_stats').insert({
+        await supabase.from('user_discipline_stats').insert({
           user_id: userId,
-          disciplina,
+          discipline,
           total_questions: questionsAnswered,
           correct_answers: correctAnswers,
           average_score:
@@ -337,7 +348,7 @@ export class PerformanceCalculator {
       // Limpar cache relacionado
       await this.cache.delete(
         userId,
-        CacheManager.generateDisciplineStatsKey(userId, disciplina)
+        CacheManager.generateDisciplineStatsKey(userId, discipline)
       );
       await this.cache.delete(
         userId,
@@ -359,8 +370,10 @@ export class PerformanceCalculator {
     correctAnswers: number,
     studyTimeMinutes: number
   ): Promise<void> {
+    const supabase = await createServerSupabaseClient();
+
     try {
-      const { data: user } = await this.supabase
+      const { data: user } = await supabase
         .from('users')
         .select(
           'total_questions_answered, total_correct_answers, study_time_minutes, average_score'
@@ -378,7 +391,7 @@ export class PerformanceCalculator {
             ? (newCorrectAnswers / newTotalQuestions) * 100
             : 0;
 
-        await this.supabase
+        await supabase
           .from('users')
           .update({
             total_questions_answered: newTotalQuestions,
@@ -412,9 +425,11 @@ export class PerformanceCalculator {
     timeTaken: number,
     answers: Record<string, unknown>[]
   ): Promise<void> {
+    const supabase = await createServerSupabaseClient();
+
     try {
       // Registrar no progresso
-      await this.supabase.from('user_simulado_progress').insert({
+      await supabase.from('user_simulado_progress').insert({
         user_id: userId,
         simulado_id: simuladoId,
         score,
@@ -425,14 +440,6 @@ export class PerformanceCalculator {
 
       // Atualizar estatísticas
       await this.updateUserStats(userId, 1, score > 50 ? 1 : 0, timeTaken);
-
-      // Registrar no log de auditoria
-      await this.auditLogger.logSimuladoComplete(
-        userId,
-        simuladoId,
-        score,
-        timeTaken
-      );
 
       // Limpar cache
       await this.cache.delete(
@@ -459,9 +466,11 @@ export class PerformanceCalculator {
     score: number,
     answers: Record<string, unknown>[]
   ): Promise<void> {
+    const supabase = await createServerSupabaseClient();
+
     try {
       // Registrar no progresso
-      await this.supabase.from('user_questoes_semanais_progress').insert({
+      await supabase.from('user_questoes_semanais_progress').insert({
         user_id: userId,
         questoes_semanais_id: questaoId,
         score,
@@ -485,9 +494,6 @@ export class PerformanceCalculator {
 
       // Atualizar estatísticas por disciplina (se disponível)
       // TODO: Extrair disciplina das questões
-
-      // Registrar no log de auditoria
-      await this.auditLogger.logQuestaoComplete(userId, questaoId, score);
 
       // Limpar cache
       await this.cache.delete(

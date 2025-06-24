@@ -10,18 +10,10 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, XCircle, HelpCircle, CheckCircle } from 'lucide-react';
-
-export interface FlashcardData {
-  id: string | number;
-  front: string;
-  back: string;
-  disciplina?: string;
-  tema?: string;
-  subtema?: string;
-}
+import type { Flashcard as FlashcardType } from '@/src/core/database/types';
 
 interface FlashcardProps {
-  flashcard: FlashcardData;
+  flashcard: FlashcardType;
   onNext?: () => void;
   onPrev?: () => void;
   onRate?: (id: string | number, rating: 'easy' | 'medium' | 'hard') => void;
@@ -75,7 +67,7 @@ export function Flashcard({
         <CardHeader className="pb-3">
           <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <span className="text-base md:text-lg">
-              {flashcard.disciplina || 'Flashcard'}
+              {flashcard.discipline || 'Flashcard'}
             </span>
             {flashcard.tema && (
               <span className="text-xs md:text-sm font-normal text-muted-foreground">

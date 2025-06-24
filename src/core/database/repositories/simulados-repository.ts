@@ -69,12 +69,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
         if (error) throw error;
 
         const _duration = Date.now() - start;
-        logger.dbQuery('findAllWithConcurso', this.tableName, _duration, {
-          page,
-          limit,
-          filters,
-          resultCount: data?.length || 0,
-        });
+        logger.error('findAllWithConcurso', { table: this.tableName, duration: _duration, resultCount: data?.length || 0 });
 
         return {
           data: data as SimuladoWithConcurso[] || [],
@@ -85,11 +80,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
         };
       } catch (error) {
         const _duration = Date.now() - start;
-        logger.dbError('findAllWithConcurso', this.tableName, error as Error, {
-          page,
-          limit,
-          filters,
-        });
+        logger.error('findAllWithConcurso', { table: this.tableName, error });
         throw new Error(`Erro ao buscar simulados com concurso: ${error}`);
       }
     });
@@ -137,17 +128,12 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
         }
 
         const _duration = Date.now() - start;
-        logger.dbQuery('findByIdWithQuestions', this.tableName, _duration, {
-          simuladoId: id,
-          hasQuestions: data?.simulado_questions?.length > 0,
-        });
+        logger.error('findByIdWithQuestions', { simuladoId: id, duration: _duration, hasQuestions: data?.simulado_questions?.length > 0 });
 
         return data as SimuladoWithQuestions;
       } catch (error) {
         const _duration = Date.now() - start;
-        logger.dbError('findByIdWithQuestions', this.tableName, error as Error, {
-          simuladoId: id,
-        });
+        logger.error('findByIdWithQuestions', { simuladoId: id, error });
         throw new Error(`Erro ao buscar simulado com questões: ${error}`);
       }
     });
@@ -181,17 +167,12 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
         if (error) throw error;
 
         const _duration = Date.now() - start;
-        logger.dbQuery('findByConcurso', this.tableName, _duration, {
-          concursoId,
-          resultCount: data?.length || 0,
-        });
+        logger.error('findByConcurso', { table: this.tableName, concursoId, duration: _duration, resultCount: data?.length || 0 });
 
         return data as SimuladoWithConcurso[] || [];
       } catch (error) {
         const _duration = Date.now() - start;
-        logger.dbError('findByConcurso', this.tableName, error as Error, {
-          concursoId,
-        });
+        logger.error('findByConcurso', { table: this.tableName, concursoId, error });
         throw new Error(`Erro ao buscar simulados por concurso: ${error}`);
       }
     });
@@ -225,10 +206,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       if (error) throw error;
 
       const _duration = Date.now() - start;
-      logger.dbQuery('create', this.tableName, _duration, {
-        simuladoId: result.id,
-        title: result.title,
-      });
+      logger.error('create', { table: this.tableName, simuladoId: result.id, title: result.title });
 
       // Invalidar cache relacionado
       this.invalidateCache();
@@ -236,9 +214,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       return result;
     } catch (error) {
       const _duration = Date.now() - start;
-      logger.dbError('create', this.tableName, error as Error, {
-        title: data.title,
-      });
+      logger.error('create', { table: this.tableName, error });
       throw new Error(`Erro ao criar simulado: ${error}`);
     }
   }
@@ -262,10 +238,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       if (error) throw error;
 
       const _duration = Date.now() - start;
-      logger.dbQuery('update', this.tableName, _duration, {
-        simuladoId: id,
-        updatedFields: Object.keys(validatedData),
-      });
+      logger.error('update', { table: this.tableName, simuladoId: id, updatedFields: Object.keys(validatedData) });
 
       // Invalidar cache relacionado
       this.invalidateCache(id);
@@ -273,9 +246,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       return result;
     } catch (error) {
       const _duration = Date.now() - start;
-      logger.dbError('update', this.tableName, error as Error, {
-        simuladoId: id,
-      });
+      logger.error('update', { table: this.tableName, simuladoId: id, error });
       throw new Error(`Erro ao atualizar simulado: ${error}`);
     }
   }
@@ -298,11 +269,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       if (error) throw error;
 
       const _duration = Date.now() - start;
-      logger.dbQuery('saveUserProgress', 'user_simulado_progress', _duration, {
-        userId: progress.user_id,
-        simuladoId: progress.simulado_id,
-        score: progress.score,
-      });
+      logger.error('saveUserProgress', { table: 'user_simulado_progress', userId: progress.user_id, simuladoId: progress.simulado_id, score: progress.score });
 
       // Invalidar cache de progresso do usuário
       userProgressCache.delete(createCacheKey('user-progress', progress.user_id));
@@ -310,10 +277,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       return data;
     } catch (error) {
       const _duration = Date.now() - start;
-      logger.dbError('saveUserProgress', 'user_simulado_progress', error as Error, {
-        userId: progress.user_id,
-        simuladoId: progress.simulado_id,
-      });
+      logger.error('saveUserProgress', { table: 'user_simulado_progress', userId: progress.user_id, simuladoId: progress.simulado_id, error });
       throw new Error(`Erro ao salvar progresso do simulado: ${error}`);
     }
   }
@@ -340,19 +304,12 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
         }
 
         const _duration = Date.now() - start;
-        logger.dbQuery('getUserProgress', 'user_simulado_progress', _duration, {
-          userId,
-          simuladoId,
-          hasProgress: !!data,
-        });
+        logger.error('getUserProgress', { table: 'user_simulado_progress', userId, simuladoId, hasProgress: !!data });
 
         return data;
       } catch (error) {
         const _duration = Date.now() - start;
-        logger.dbError('getUserProgress', 'user_simulado_progress', error as Error, {
-          userId,
-          simuladoId,
-        });
+        logger.error('getUserProgress', { table: 'user_simulado_progress', userId, simuladoId, error });
         throw new Error(`Erro ao buscar progresso do simulado: ${error}`);
       }
     });
@@ -383,17 +340,12 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
         if (error) throw error;
 
         const _duration = Date.now() - start;
-        logger.dbQuery('getUserStats', 'user_simulado_progress', _duration, {
-          userId,
-          resultCount: data?.length || 0,
-        });
+        logger.error('getUserStats', { table: 'user_simulado_progress', userId, resultCount: data?.length || 0 });
 
         return data || [];
       } catch (error) {
         const _duration = Date.now() - start;
-        logger.dbError('getUserStats', 'user_simulado_progress', error as Error, {
-          userId,
-        });
+        logger.error('getUserStats', { table: 'user_simulado_progress', userId, error });
         throw new Error(`Erro ao buscar estatísticas do usuário: ${error}`);
       }
     });
@@ -418,17 +370,12 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
         if (error) throw error;
 
         const _duration = Date.now() - start;
-        logger.dbQuery('getSimuladoQuestions', 'simulado_questions', _duration, {
-          simuladoId,
-          questionCount: data?.length || 0,
-        });
+        logger.error('getSimuladoQuestions', { table: 'simulado_questions', simuladoId, questionCount: data?.length || 0 });
 
         return data || [];
       } catch (error) {
         const _duration = Date.now() - start;
-        logger.dbError('getSimuladoQuestions', 'simulado_questions', error as Error, {
-          simuladoId,
-        });
+        logger.error('getSimuladoQuestions', { table: 'simulado_questions', simuladoId, error });
         throw new Error(`Erro ao buscar questões do simulado: ${error}`);
       }
     });
@@ -474,10 +421,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       if (questionsError) throw questionsError;
 
       const _duration = Date.now() - start;
-      logger.dbQuery('createWithQuestions', this.tableName, _duration, {
-        simuladoId: simuladoData.id,
-        questionCount: questionsData?.length || 0,
-      });
+      logger.error('createWithQuestions', { table: this.tableName, simuladoId: simuladoData.id, questionCount: questionsData?.length || 0 });
 
       // Invalidar cache relacionado
       this.invalidateCache();
@@ -489,10 +433,7 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
       };
     } catch (error) {
       const _duration = Date.now() - start;
-      logger.dbError('createWithQuestions', this.tableName, error as Error, {
-        title: simulado.title,
-        questionCount: questions.length,
-      });
+      logger.error('createWithQuestions', { table: this.tableName, title: simulado.title, questionCount: questions.length });
       throw new Error(`Erro ao criar simulado com questões: ${error}`);
     }
   }

@@ -4,10 +4,9 @@ import { getAuditLogger } from './audit';
 
 export class SoftDeleteManager {
   private static instance: SoftDeleteManager;
-  private supabase = createServerSupabaseClient();
-  private auditLogger = getAuditLogger();
 
-  private constructor() {}
+  private constructor() {
+  }
 
   public static getInstance(): SoftDeleteManager {
     if (!SoftDeleteManager.instance) {
@@ -27,7 +26,9 @@ export class SoftDeleteManager {
   ): Promise<boolean> {
     try {
       // Buscar dados atuais antes do soft delete
-      const { data: currentData, error: fetchError } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const auditLogger = getAuditLogger(supabase);
+      const { data: currentData, error: fetchError } = await supabase
         .from(tableName)
         .select('*')
         .eq('id', recordId)
@@ -42,7 +43,7 @@ export class SoftDeleteManager {
       }
 
       // Executar soft delete
-      const { error } = await this.supabase
+      const { error } = await supabase
         .from(tableName)
         .update({
           deleted_at: new Date().toISOString(),
@@ -59,7 +60,7 @@ export class SoftDeleteManager {
       }
 
       // Registrar no log de auditoria
-      await this.auditLogger.log({
+      await auditLogger.log({
         userId,
         action: 'DELETE',
         tableName,
@@ -87,7 +88,9 @@ export class SoftDeleteManager {
   ): Promise<boolean> {
     try {
       // Buscar dados atuais
-      const { data: currentData, error: fetchError } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const auditLogger = getAuditLogger(supabase);
+      const { data: currentData, error: fetchError } = await supabase
         .from(tableName)
         .select('*')
         .eq('id', recordId)
@@ -102,7 +105,7 @@ export class SoftDeleteManager {
       }
 
       // Restaurar registro
-      const { error } = await this.supabase
+      const { error } = await supabase
         .from(tableName)
         .update({
           deleted_at: null,
@@ -119,7 +122,7 @@ export class SoftDeleteManager {
       }
 
       // Registrar no log de auditoria
-      await this.auditLogger.log({
+      await auditLogger.log({
         userId,
         action: 'UPDATE',
         tableName,
@@ -145,12 +148,14 @@ export class SoftDeleteManager {
     daysToKeep: number = 365
   ): Promise<number> {
     try {
+      const supabase = await createServerSupabaseClient();
+      const auditLogger = getAuditLogger(supabase);
       const cutoffDate = new Date(
         Date.now() - daysToKeep * 24 * 60 * 60 * 1000
       ).toISOString();
 
       // Buscar registros soft deleted antigos
-      const { data: oldRecords, error: fetchError } = await this.supabase
+      const { data: oldRecords, error: fetchError } = await supabase
         .from(tableName)
         .select('id')
         .not('deleted_at', 'is', null)
@@ -169,7 +174,7 @@ export class SoftDeleteManager {
       }
 
       // Executar hard delete
-      const { error } = await this.supabase
+      const { error } = await supabase
         .from(tableName)
         .delete()
         .in(
@@ -186,7 +191,7 @@ export class SoftDeleteManager {
       }
 
       // Registrar no log de auditoria
-      await this.auditLogger.log({
+      await auditLogger.log({
         action: 'DELETE',
         tableName,
         newValues: {
@@ -214,7 +219,8 @@ export class SoftDeleteManager {
     limit: number = 50
   ): Promise<unknown[]> {
     try {
-      let query = this.supabase
+      const supabase = await createServerSupabaseClient();
+      let query = supabase
         .from(tableName)
         .select('*')
         .not('deleted_at', 'is', null)
@@ -249,7 +255,8 @@ export class SoftDeleteManager {
    */
   async isSoftDeleted(tableName: string, recordId: string): Promise<boolean> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from(tableName)
         .select('deleted_at')
         .eq('id', recordId)
@@ -272,6 +279,8 @@ export class SoftDeleteManager {
    * Executa limpeza automática de registros antigos
    */
   async performAutomaticCleanup(): Promise<void> {
+    const supabase = await createServerSupabaseClient();
+    const auditLogger = getAuditLogger(supabase);
     const tables = [
       'user_simulado_progress',
       'user_questoes_semanais_progress',
@@ -297,7 +306,7 @@ export class SoftDeleteManager {
 
     // Registrar resultado da limpeza
     if (cleanupResults.length > 0) {
-      await this.auditLogger.log({
+      await auditLogger.log({
         action: 'DELETE',
         tableName: 'system',
         newValues: {
@@ -316,7 +325,8 @@ export class SoftDeleteManager {
     recordIds: string[]
   ): Promise<unknown[]> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from(tableName)
         .select('*')
         .in('id', recordIds);

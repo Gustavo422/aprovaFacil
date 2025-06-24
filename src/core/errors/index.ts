@@ -4,7 +4,7 @@ export * from './types';
 // Classes principais
 export { AppError } from './AppError';
 export { ErrorLogger } from './ErrorLogger';
-export { ErrorHandler, errorHandler } from './ErrorHandler';
+export { ErrorHandler } from './ErrorHandler';
 export { ErrorMiddleware, withErrorHandling } from './ErrorMiddleware';
 
 // Hooks React (excluindo useErrorBoundary que está duplicado)

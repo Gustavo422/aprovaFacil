@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       password,
       options: {
         data: {
-          nome: name,
+          name: name,
         },
       },
     });
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
       {
         id: authData.user.id,
         email,
-        nome: name,
+        name: name,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         total_questions_answered: 0,
@@ -145,7 +145,7 @@ export async function POST(request: Request) {
     logger.info('Usuário registrado com sucesso', {
       userId: authData.user.id,
       email,
-      nome: name
+      name: name
     });
 
     return NextResponse.json({
@@ -154,7 +154,7 @@ export async function POST(request: Request) {
       user: {
         id: authData.user.id,
         email: authData.user.email,
-        nome: name,
+        name: name,
         emailConfirmed: !!authData.user.email_confirmed_at
       }
     });

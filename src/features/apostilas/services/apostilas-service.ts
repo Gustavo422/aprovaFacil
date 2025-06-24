@@ -9,6 +9,7 @@ import {
   ApostilaContentUpdate,
   // UserApostilaProgress,
   UserApostilaProgressInsert,
+  ApostilaFilters,
   // ApostilaWithContent,
 } from '@/src/core/database/types';
 import { withServiceErrorHandling } from '@/src/features/shared/utils/serviceUtils';
@@ -24,7 +25,7 @@ export class ApostilasService {
   /**
    * Busca todas as apostilas com paginação
    */
-  async getApostilas(page: number = 1, limit: number = 10, filters?: Record<string, unknown>) {
+  async getApostilas(page: number = 1, limit: number = 10, filters?: ApostilaFilters) {
     return withServiceErrorHandling(async () => {
       const response = await this.repository.findAllWithContent(page, limit, filters);
       return {

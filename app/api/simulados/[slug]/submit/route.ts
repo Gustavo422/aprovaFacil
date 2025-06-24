@@ -144,7 +144,7 @@ export async function POST(
       );
     }
 
-    // Atualizar estatísticas por disciplina
+    // Atualizar estatísticas por discipline
     await updateDisciplineStats(supabase, user.id, detailedResults);
 
     // Log de auditoria
@@ -203,14 +203,14 @@ interface DetailedResult {
   difficulty?: string;
 }
 
-// Função auxiliar para atualizar estatísticas por disciplina
+// Função auxiliar para atualizar estatísticas por discipline
 async function updateDisciplineStats(
   supabase: SupabaseClient,
   userId: string,
   results: DetailedResult[]
 ) {
   try {
-    // Agrupar resultados por disciplina
+    // Agrupar resultados por discipline
     const disciplineGroups = results.reduce((acc, result) => {
       if (!result.discipline) return acc;
       
@@ -229,14 +229,14 @@ async function updateDisciplineStats(
       return acc;
     }, {} as Record<string, { total: number; correct: number }>);
 
-    // Atualizar estatísticas para cada disciplina
-    for (const [disciplina, stats] of Object.entries(disciplineGroups)) {
+    // Atualizar estatísticas para cada discipline
+    for (const [discipline, stats] of Object.entries(disciplineGroups)) {
       // Buscar estatística existente
       const { data: existingStat } = await supabase
         .from('user_discipline_stats')
         .select('*')
         .eq('user_id', userId)
-        .eq('disciplina', disciplina)
+        .eq('discipline', discipline)
         .single();
 
       if (existingStat) {
@@ -263,7 +263,7 @@ async function updateDisciplineStats(
           .from('user_discipline_stats')
           .insert({
             user_id: userId,
-            disciplina,
+            discipline,
             total_questions: stats.total,
             correct_answers: stats.correct,
             average_score: averageScore,
@@ -273,7 +273,7 @@ async function updateDisciplineStats(
       }
     }
   } catch (error) {
-    logger.error('Erro ao atualizar estatísticas de disciplina:', { 
+    logger.error('Erro ao atualizar estatísticas de discipline:', { 
       error: error instanceof Error ? error.message : String(error) 
     });
   }

@@ -1,3 +1,5 @@
+import { logger } from '@/lib/logger';
+
 export interface LogContext {
   userId?: string;
   action?: string;
@@ -29,18 +31,13 @@ export function logPerformance(target: object, propertyKey: string, descriptor: 
       const result = await originalMethod.apply(this, args);
       const duration = Date.now() - start;
       
-      logger.performance(`${target.constructor.name}.${propertyKey}`, duration, {
-        success: true,
-      });
+      logger.info(`${target.constructor.name}.${propertyKey}`, { duration, ...descriptor.value });
       
       return result;
     } catch (error) {
       const duration = Date.now() - start;
       
-      logger.performance(`${target.constructor.name}.${propertyKey}`, duration, {
-        success: false,
-        error: error instanceof Error ? error : new Error(String(error)),
-      });
+      logger.info(`${target.constructor.name}.${propertyKey}`, { duration, error: error instanceof Error ? error : new Error(String(error)) });
       
       throw error;
     }

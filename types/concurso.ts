@@ -58,7 +58,7 @@ export type SimuladoQuestionUpdate = Tables['simulado_questions']['Update'];
 export type Flashcard = Omit<Tables['flashcards']['Row'], 'pergunta' | 'resposta' | 'materia' | 'assunto'> & {
   front: string;
   back: string;
-  disciplina: string;
+  discipline: string;
   tema: string;
   created_by?: string | null;
   deleted_at?: string | null;
@@ -66,18 +66,19 @@ export type Flashcard = Omit<Tables['flashcards']['Row'], 'pergunta' | 'resposta
 export type FlashcardInsert = Omit<Tables['flashcards']['Insert'], 'pergunta' | 'resposta' | 'materia' | 'assunto'> & {
   front: string;
   back: string;
-  disciplina: string;
+  discipline: string;
   tema: string;
 };
 export type FlashcardUpdate = Omit<Tables['flashcards']['Update'], 'pergunta' | 'resposta' | 'materia' | 'assunto'> & {
   front?: string;
   back?: string;
-  disciplina?: string;
+  discipline?: string;
   tema?: string;
 };
 
 // Apostilas
 export type Apostila = Tables['apostilas']['Row'] & {
+  slug: string;
   created_by?: string | null;
   deleted_at?: string | null;
 };
@@ -185,7 +186,7 @@ export interface ConcursoCompleto extends ConcursoComCategoria {
 export interface ConcursoContext {
   categoria: ConcursoCategoria;
   concurso: Concurso;
-  disciplinas: CategoriaDisciplina[];
+  disciplines: CategoriaDisciplina[];
   userPreference: UserConcursoPreference;
 }
 
@@ -209,7 +210,7 @@ export interface ConcursoFilters {
 
 export interface ConteudoFilters {
   categoria_id?: string;
-  disciplina?: string;
+  discipline?: string;
   dificuldade?: NivelDificuldade;
   is_public?: boolean;
 }
@@ -228,8 +229,8 @@ export interface UserProgress {
 }
 
 export interface DisciplinaProgress {
-  disciplina_id: string;
-  disciplina_nome: string;
+  discipline_id: string;
+  discipline_nome: string;
   simulados_completados: number;
   questoes_respondidas: number;
   questoes_corretas: number;
@@ -251,7 +252,7 @@ export interface ConcursoProgress {
 // ========================================
 
 export interface PlanoEstudoCronograma {
-  [disciplina: string]: {
+  [discipline: string]: {
     horas_semanais: number;
     assuntos: string[];
     simulados_planejados: string[];
@@ -336,7 +337,7 @@ export interface CategoriaConfig {
   descricao: string;
   cor_primaria: string;
   cor_secundaria: string;
-  disciplinas: DisciplinaValidation[];
+  disciplines: DisciplinaValidation[];
 }
 
 export interface SistemaConfig {
@@ -398,7 +399,7 @@ export interface CacheStats {
 // ========================================
 
 export interface UserDisciplineStatsExtended extends UserDisciplineStats {
-  disciplina_nome: string;
+  discipline_nome: string;
   categoria_nome: string;
   progresso_percentual: number;
   ranking_posicao?: number;
@@ -412,8 +413,8 @@ export interface ConcursoStats {
   media_pontuacao: number;
   simulados_completados: number;
   tempo_medio_estudo: number;
-  disciplinas_mais_dificies: string[];
-  disciplinas_mais_faceis: string[];
+  disciplines_mais_dificies: string[];
+  disciplines_mais_faceis: string[];
 }
 
 // ========================================
@@ -455,7 +456,7 @@ export interface StudyReport {
     simulados_completados: number;
     questoes_respondidas: number;
     taxa_acerto_geral: number;
-    disciplinas_estudadas: string[];
+    disciplines_estudadas: string[];
   };
   progresso_disciplinas: DisciplinaProgress[];
   simulados_realizados: {

@@ -9,7 +9,6 @@ export { useFlashcards, useFlashcardStudy } from './hooks/use-flashcards';
 
 // Types (re-export from central types)
 export type {
-  FlashcardData,
   FlashcardProgressData,
   FlashcardFilters,
   FlashcardInsert,

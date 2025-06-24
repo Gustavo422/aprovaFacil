@@ -6,7 +6,6 @@ type CacheKey = string;
 
 export class CacheManager {
   private static instance: CacheManager;
-  private supabase = createServerSupabaseClient();
 
   private constructor() {}
 
@@ -22,7 +21,8 @@ export class CacheManager {
    */
   async get<T = CacheData>(userId: string, key: CacheKey): Promise<T | null> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from('user_performance_cache')
         .select('cache_data, expires_at')
         .eq('user_id', userId)
@@ -61,8 +61,8 @@ export class CacheManager {
       const expiresAt = new Date(
         Date.now() + ttlMinutes * 60 * 1000
       ).toISOString();
-
-      const { error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { error } = await supabase
         .from('user_performance_cache')
         .upsert({
           user_id: userId,
@@ -90,7 +90,8 @@ export class CacheManager {
    */
   async delete(userId: string, key: CacheKey): Promise<void> {
     try {
-      const { error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { error } = await supabase
         .from('user_performance_cache')
         .delete()
         .eq('user_id', userId)
@@ -114,7 +115,8 @@ export class CacheManager {
    */
   async clearUserCache(userId: string): Promise<void> {
     try {
-      const { error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { error } = await supabase
         .from('user_performance_cache')
         .delete()
         .eq('user_id', userId);
@@ -137,7 +139,8 @@ export class CacheManager {
    */
   async clearExpiredCache(): Promise<void> {
     try {
-      const { error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { error } = await supabase
         .from('user_performance_cache')
         .delete()
         .lt('expires_at', new Date().toISOString());
@@ -171,9 +174,9 @@ export class CacheManager {
    */
   static generateDisciplineStatsKey(
     userId: string,
-    disciplina?: string
+    discipline?: string
   ): string {
-    return `discipline_stats_${userId}${disciplina ? `_${disciplina}` : ''}`;
+    return `discipline_stats_${userId}${discipline ? `_${discipline}` : ''}`;
   }
 
   /**
@@ -210,7 +213,7 @@ export const cacheUtils = {
    * Busca dados de desempenho do banco
    */
   async fetchPerformanceData(userId: string, type: string, period?: string) {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
 
     // Implementar lógica específica para cada tipo de dados
     switch (type) {
@@ -226,7 +229,7 @@ export const cacheUtils = {
   },
 
   async fetchSimuladosData(
-    supabase: ReturnType<typeof createServerSupabaseClient>,
+    supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
     userId: string,
     period?: string
   ) {
@@ -282,7 +285,7 @@ export const cacheUtils = {
   },
 
   async fetchQuestoesData(
-    supabase: ReturnType<typeof createServerSupabaseClient>,
+    supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
     userId: string,
     period?: string
   ) {
@@ -333,7 +336,7 @@ export const cacheUtils = {
   },
 
   async fetchDisciplinasData(
-    supabase: ReturnType<typeof createServerSupabaseClient>,
+    supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
     userId: string,
     _period?: string
   ) {
