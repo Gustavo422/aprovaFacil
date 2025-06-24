@@ -4,7 +4,6 @@ import { SimuladosService } from '../../simulados/services/simulados-service';
 import { FlashcardsService } from '../../flashcards/services/flashcards-service';
 import { ApostilasService } from '../../apostilas/services/apostilas-service';
 import {
-  PerformanceStats,
   RecentActivity,
 } from '../../../core/database/types';
 import { withServiceErrorHandling } from '@/src/features/shared/utils/serviceUtils';

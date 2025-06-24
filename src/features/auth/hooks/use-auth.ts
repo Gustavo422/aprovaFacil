@@ -56,10 +56,9 @@ export function useAuth() {
 
       // Refresh da página em mudanças críticas de autenticação
       if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        // Pequeno delay para garantir que o estado seja atualizado
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        // O reload pode causar uma experiência de usuário ruim.
+        // O estado do React deve lidar com as atualizações da UI.
+        // window.location.reload(); 
       }
     });
 

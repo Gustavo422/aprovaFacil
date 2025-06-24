@@ -129,7 +129,7 @@ const ChartTooltipContent = React.forwardRef<
 
       const [item] = payload;
       const key = `${labelKey || item.dataKey || item.name || 'value'}`;
-      const itemConfig = getPayloadConfigFromPayload(config, item, key);
+      const itemConfig = getPayloadConfigFromPayload(config, key);
       const value =
         !labelKey && typeof label === 'string'
           ? config[label as keyof typeof config]?.label || label
@@ -174,9 +174,9 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {payload.map(item => {
+          {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || 'value'}`;
-            const itemConfig = getPayloadConfigFromPayload(config, item, key);
+            const itemConfig = getPayloadConfigFromPayload(config, key);
             const indicatorColor = color || item.payload.fill || item.color;
 
             return (
@@ -206,10 +206,7 @@ const ChartTooltipContent = React.forwardRef<
                       {itemConfig?.icon && <itemConfig.icon />}
                       <span className="font-medium tabular-nums">
                         {formatter
-                          ? formatter(item.value, item.name, {
-                              ...item,
-                              dataKey: item.dataKey,
-                            })
+                          ? formatter(item.value || 0, item.name || '', item, index, payload)
                           : item.value}
                       </span>
                     </div>
@@ -270,9 +267,11 @@ ChartLegend.displayName = 'ChartLegend';
 
 function getPayloadConfigFromPayload(
   config: ChartConfig,
-  payload: unknown,
   key: string
 ) {
+  if (!key || !config[key as keyof typeof config]) {
+    return null;
+  }
   return config[key as keyof typeof config];
 }
 

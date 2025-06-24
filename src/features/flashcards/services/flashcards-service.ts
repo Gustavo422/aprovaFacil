@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase';
 import { FlashcardsRepository } from '@/src/core/database/repositories/flashcards-repository';
 import {
-  FlashcardData,
   FlashcardProgressData,
   FlashcardFilters,
   FlashcardInsert,

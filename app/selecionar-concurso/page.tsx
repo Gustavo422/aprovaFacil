@@ -1,5 +1,10 @@
 import { ConcursoSelector } from '@/components/onboarding/ConcursoSelector';
 import { ConcursoProvider } from '@/contexts/ConcursoContext';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Selecionar Concurso',
+};
 
 export default function SelecionarConcursoPage() {
   return (

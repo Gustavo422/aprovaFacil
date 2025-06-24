@@ -6,6 +6,7 @@ import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { createServerSupabaseClient } from '@/lib/supabase';
 import { getAuditLogger } from '@/lib/audit';
 import { redirect } from 'next/navigation';
+import { signInLogic } from './auth-logic';
 
 export async function signUp(formData: FormData) {
   const email = formData.get('email') as string;
@@ -65,30 +66,12 @@ export async function signIn(formData: FormData) {
   const serverClient = await createServerSupabaseClient();
   const auditLogger = getAuditLogger(serverClient);
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  const result = await signInLogic(email, password, { supabase, serverClient, auditLogger });
 
-  if (error) {
-    return { error: error.message };
+  if (result.success) {
+    redirect('/dashboard');
   }
-
-  if (data.user) {
-    // Atualizar último login
-    await serverClient
-      .from('users')
-      .update({
-        last_login_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', data.user.id);
-
-    // Registrar login no log de auditoria
-    await auditLogger.logLogin(data.user.id);
-  }
-
-  redirect('/dashboard');
+  return result;
 }
 
 export async function signOut() {
@@ -148,7 +131,7 @@ export async function updateUserProfile(
 
     return { success: true };
   } catch (error) {
-    logger.error('Erro ao atualizar perfil:', error);
+    logger.error('Erro ao atualizar perfil:', { error });
     return { error: 'Erro interno do servidor' };
   }
 }
@@ -191,7 +174,7 @@ export async function deleteUserAccount(userId: string) {
 
     return { success: true };
   } catch (error) {
-    logger.error('Erro ao excluir conta:', error);
+    logger.error('Erro ao excluir conta:', { error });
     return { error: 'Erro interno do servidor' };
   }
 }

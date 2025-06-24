@@ -4,10 +4,10 @@ import { getAuditLogger } from './audit';
 
 export class OwnershipValidator {
   private static instance: OwnershipValidator;
-  private supabase = createServerSupabaseClient();
-  private auditLogger = getAuditLogger();
 
-  private constructor() {}
+  private constructor() {
+    // Constructor remains empty as the instance is managed by the getInstance method
+  }
 
   public static getInstance(): OwnershipValidator {
     if (!OwnershipValidator.instance) {
@@ -26,7 +26,10 @@ export class OwnershipValidator {
     resourceUserIdField: string = 'user_id'
   ): Promise<boolean> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const auditLogger = getAuditLogger(supabase);
+
+      const { data, error } = await supabase
         .from(tableName)
         .select(resourceUserIdField)
         .eq('id', recordId)
@@ -41,7 +44,7 @@ export class OwnershipValidator {
 
       // Registrar tentativa de acesso
       if (!isOwner) {
-        await this.auditLogger.log({
+        await auditLogger.log({
           userId,
           action: 'ACCESS',
           tableName,
@@ -67,7 +70,8 @@ export class OwnershipValidator {
     recordId: string
   ): Promise<boolean> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from(tableName)
         .select('is_public')
         .eq('id', recordId)
@@ -120,7 +124,8 @@ export class OwnershipValidator {
     resourceUserIdField: string = 'user_id'
   ): Promise<unknown[]> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from(tableName)
         .select('*')
         .eq(resourceUserIdField, userId)
@@ -153,7 +158,8 @@ export class OwnershipValidator {
     resourceUserIdField: string = 'user_id'
   ): Promise<unknown[]> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from(tableName)
         .select('*')
         .or(`${resourceUserIdField}.eq.${userId},is_public.eq.true`)
@@ -182,7 +188,8 @@ export class OwnershipValidator {
    */
   async validateAdminAccess(userId: string): Promise<boolean> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from('users')
         .select('role')
         .eq('id', userId)
@@ -245,7 +252,8 @@ export class OwnershipValidator {
     tableName: string
   ): Promise<unknown[]> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = await createServerSupabaseClient();
+      const { data, error } = await supabase
         .from(tableName)
         .select('*')
         .eq('is_public', true)

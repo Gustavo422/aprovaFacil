@@ -1,264 +1,147 @@
-# Arquitetura do Sistema - Study App
+# Arquitetura do Sistema - AprovaJá
 
-## Visão Geral
+## 1. Visão Geral
 
-Este documento descreve a arquitetura refatorada do sistema de estudo, baseada em **Domain-Driven Design (DDD)** com separação clara de responsabilidades e aplicação de princípios SOLID.
+Este documento descreve a arquitetura do sistema AprovaJá, projetada para ser modular, escalável e de fácil manutenção. A arquitetura é baseada em princípios de **Domain-Driven Design (DDD)** e **Clean Architecture**, adaptados para o ecossistema Next.js com o App Router.
 
-## Princípios Arquiteturais
+## 2. Princípios Arquiteturais
 
-### 1. **Domain-Driven Design (DDD)**
-- Organização por domínios de negócio
-- Linguagem ubíqua entre código e negócio
-- Separação clara entre domínios
+- **Domain-Driven Design (DDD):** A estrutura do código é organizada em torno dos domínios de negócio (ex: `simulados`, `flashcards`). Isso promove uma linguagem comum (Ubiquitous Language) e facilita a localização de funcionalidades.
+- **Clean Architecture:** O sistema é dividido em camadas com responsabilidades distintas. A regra principal é que as dependências sempre apontam para dentro, da camada de Apresentação para a de Domínio, garantindo que a lógica de negócio seja independente de frameworks e UI.
+- **SOLID:** Os princípios SOLID são seguidos para criar um código mais limpo e sustentável.
 
-### 2. **Clean Architecture**
-- Separação em camadas bem definidas
-- Dependências apontam para dentro
-- Inversão de dependência
+## 3. Estrutura de Diretórios Principal
 
-### 3. **SOLID Principles**
-- **S**ingle Responsibility: Cada classe tem uma responsabilidade
-- **O**pen/Closed: Aberto para extensão, fechado para modificação
-- **L**iskov Substitution: Substituição de implementações
-- **I**nterface Segregation: Interfaces específicas
-- **D**ependency Inversion: Depender de abstrações
-
-## Estrutura de Diretórios
+A estrutura do projeto foi pensada para separar as responsabilidades de forma clara, utilizando as convenções do Next.js App Router.
 
 ```
-src/
-├── core/                          # Camada de domínio
-│   ├── database/                  # Acesso a dados
-│   │   ├── repositories/          # Repositórios específicos
-│   │   ├── types/                 # Tipos TypeScript
-│   │   ├── validation/            # Schemas Zod
-│ │   └── base-repository.ts     # Repositório base
-│   ├── services/                  # Lógica de negócio
-│   │   ├── simulados/             # Serviços de simulados
-│   │   ├── flashcards/            # Serviços de flashcards
-│   │   ├── apostilas/             # Serviços de apostilas
-│   │   └── dashboard/             # Serviços de dashboard
-│   └── utils/                     # Utilitários
-│       ├── logger.ts              # Sistema de logging
-│       └── cache.ts               # Sistema de cache
-├── features/                      # Funcionalidades da aplicação
-│   ├── simulados/                 # Domínio simulados
-│   │   ├── components/            # Componentes React
-│   │   ├── hooks/                 # Hooks customizados
-│   │   └── pages/                 # Páginas
-│   ├── flashcards/                # Domínio flashcards
-│   ├── apostilas/                 # Domínio apostilas
-│   └── dashboard/                 # Domínio dashboard
-└── shared/                        # Código compartilhado
-    ├── components/                # Componentes genéricos
-    ├── hooks/                     # Hooks genéricos
-    └── types/                     # Tipos compartilhados
+.
+├── app/                  # Camada de Apresentação e API (Next.js App Router)
+│   ├── (dashboard)/      # Agrupamento de rotas que compartilham um layout
+│   │   ├── simulados/
+│   │   │   ├── [id]/
+│   │   │   │   └── page.tsx  # Página de um simulado específico
+│   │   │   └── page.tsx      # Página de listagem de simulados
+│   │   └── layout.tsx    # Layout compartilhado pelo dashboard
+│   ├── api/              # API Routes (Application Layer)
+│   │   ├── simulados/
+│   │   │   └── route.ts    # Endpoint para lidar com simulados
+│   └── layout.tsx        # Layout raiz da aplicação
+│
+├── components/           # Componentes React compartilhados e UI (ShadCN)
+│   ├── ui/               # Componentes de UI primitivos (botões, cards, etc.)
+│   └── flashcard.tsx     # Exemplo de componente de domínio complexo
+│
+├── lib/                  # Utilitários e Lógica Core da Aplicação
+│   ├── supabase.ts       # Configuração dos clientes Supabase (Server, Client)
+│   ├── cache.ts          # Lógica de cache (CacheManager)
+│   ├── logger.ts         # Configuração do logger
+│   └── repositories/     # (Legado) Repositórios - DEPRECETADO
+│
+├── src/                  # Lógica de Negócio e Domínio (Clean Architecture)
+│   ├── core/             # Lógica central e abstrações
+│   │   └── database/
+│   │       ├── repositories/ # Repositórios específicos (ex: apostilas-repository.ts)
+│   │       ├── types.ts      # Tipos de dados (ex: PaginatedResponse)
+│   │       └── base-repository.ts # Abstração do repositório base
+│   └── features/         # Lógica de negócio por domínio (Services)
+│       └── simulados/
+│           └── services/
+│               └── simulados-service.ts
+│
+└── supabase/             # Configurações e Migrations do Supabase
 ```
 
-## Camadas da Arquitetura
+**Observação sobre `lib` vs `src`:**
+Atualmente, existe uma sobreposição. A direção recomendada é:
+- **`lib/`**: Deve conter utilitários transversais e a configuração de serviços externos (logger, Supabase, etc.).
+- **`src/`**: Deve conter a implementação da arquitetura de domínio (`core` e `features`), isolando a lógica de negócio. A pasta `lib/repositories` é um legado e deve ser removida em favor de `src/core/database/repositories`.
 
-### 1. **Camada de Apresentação (View)**
-- **Responsabilidade**: Interface do usuário
-- **Localização**: `src/features/*/components/` e `src/features/*/pages/`
-- **Características**:
-  - Componentes React funcionais
-  - Hooks customizados para lógica de UI
-  - Separação por domínios
+## 4. Camadas da Arquitetura
 
-### 2. **Camada de Lógica (Services/Hooks)**
-- **Responsabilidade**: Lógica de negócio e orquestração
-- **Localização**: `src/core/services/` e `src/features/*/hooks/`
-- **Características**:
-  - Serviços com lógica de negócio
-  - Hooks para integração com UI
-  - Validação de dados
-  - Tratamento de erros
+### Camada 1: Apresentação (View)
+- **Responsabilidade:** Renderizar a UI e capturar as interações do usuário. É a camada mais externa.
+- **Localização:** `app/**/page.tsx`, `app/**/layout.tsx`, `components/**/*.tsx`.
+- **Características:**
+    - Usa Server Components para buscar dados e Client Components (`"use client"`) para interatividade.
+    - Chama as API Routes para executar ações ou os `Services` diretamente em Server Components.
+    - Usa hooks (`use*`) para gerenciar estado e lógica de UI.
 
-### 3. **Camada de Dados (Repositories)**
-- **Responsabilidade**: Acesso e persistência de dados
-- **Localização**: `src/core/database/repositories/`
-- **Características**:
-  - Repositórios específicos por domínio
-  - Herança de BaseRepository
-  - Validação com Zod
-  - Cache inteligente
-  - Logging estruturado
+### Camada 2: Aplicação (API Routes / Server Actions)
+- **Responsabilidade:** Orquestrar o fluxo de dados. Atua como um intermediário entre a apresentação e o domínio.
+- **Localização:** `app/api/**/*.ts`.
+- **Características:**
+    - Recebe requisições HTTP da camada de apresentação.
+    - Valida os dados de entrada (headers, body).
+    - Chama os `Services` da camada de domínio para executar a lógica de negócio.
+    - Formata e retorna a resposta (JSON).
 
-## Padrões Implementados
+### Camada 3: Domínio (Services)
+- **Responsabilidade:** Conter a lógica de negócio pura e as regras de domínio. É o coração do sistema.
+- **Localização:** `src/features/*/services/**/*.ts`.
+- **Características:**
+    - Ex: `SimuladosService` pode ter métodos como `submitSimulado` ou `calculatePerformance`.
+    - Orquestra as chamadas aos `Repositories` para persistir ou buscar dados.
+    - É completamente independente de UI e frameworks.
 
-### 1. **Repository Pattern**
+### Camada 4: Dados (Repositories)
+- **Responsabilidade:** Abstrair o acesso e a persistência dos dados, isolando o resto da aplicação do Supabase.
+- **Localização:** `src/core/database/repositories/`, `src/core/database/base-repository.ts`.
+- **Características:**
+    - Usa o padrão **Repository** para encapsular as queries.
+    - `BaseRepository` fornece métodos CRUD comuns (`findById`, `create`, `update`, `delete` com soft delete).
+    - Repositórios específicos (ex: `ApostilasRepository`) herdam de `BaseRepository` e implementam métodos de busca customizados.
+
 ```typescript
-// Exemplo: SimuladosRepository
-export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert, SimuladoUpdate> {
-  async findAllWithConcurso(page: number, limit: number, filters?: Record<string, any>) {
-    // Implementação específica
+// Exemplo de uso em um Service
+import { ApostilasRepository } from '@/src/core/database/repositories/apostilas-repository';
+
+class ApostilasService {
+  private apostilasRepository: ApostilasRepository;
+
+  constructor(supabaseClient: SupabaseClient) {
+    this.apostilasRepository = new ApostilasRepository(supabaseClient, 'apostilas');
+  }
+
+  async getApostilaById(id: string) {
+    return this.apostilasRepository.findById(id);
   }
 }
 ```
 
-### 2. **Factory Pattern**
-```typescript
-// Exemplo: Criação de repositórios
-export class RepositoryFactory {
-  static createSimuladosRepository(supabase: SupabaseClient): SimuladosRepository {
-    return new SimuladosRepository(supabase);
-  }
-}
-```
+## 5. Padrões e Práticas
 
-### 3. **Adapter Pattern**
-```typescript
-// Exemplo: Adaptação de dados do Supabase
-export class SupabaseAdapter {
-  static adaptSimulado(data: any): Simulado {
-    // Transformação de dados
-  }
-}
-```
+### Validação de Dados com Zod
+A validação de dados de entrada deve ser feita na camada mais externa possível (API Routes, Server Actions) usando Zod para garantir a integridade.
+- **Localização dos Schemas:** `src/core/database/validation/schemas.ts`.
 
-## Validação de Dados
+### Sistema de Cache
+Para otimizar a performance, um `CacheManager` é utilizado para armazenar dados frequentemente acessados.
+- **Implementação:** `lib/cache.ts`.
+- **Estratégia:** Usa o Supabase (tabela `user_performance_cache`) como backend de cache, com TTL (Time To Live) configurável.
 
-### Zod Schemas
-```typescript
-export const simuladoInsertSchema = z.object({
-  title: z.string().min(1, 'Título é obrigatório'),
-  questions_count: z.number().min(1, 'Deve ter pelo menos 1 questão'),
-  difficulty: z.enum(['Fácil', 'Médio', 'Difícil']),
-  // ...
-});
-```
+### Logging Estruturado
+Um logger centralizado é usado para registrar eventos importantes, erros e queries.
+- **Implementação:** `lib/logger.ts`.
+- **Níveis:** `ERROR`, `WARN`, `INFO`, `DEBUG`.
 
-### Validação nos Repositórios
-```typescript
-async create(data: SimuladoInsert): Promise<Simulado> {
-  const validatedData = validateData(simuladoInsertSchema, data);
-  // ...
-}
-```
+### Migrations e Constraints de Banco
+- **Migrations:** A evolução do schema do banco de dados é gerenciada pelo sistema de migrations do Supabase, localizado na pasta `supabase/migrations/`.
+- **Constraints:** Regras de integridade (ex: `CHECK`, `FOREIGN KEY`) devem ser definidas nas migrations para garantir a consistência dos dados.
 
-## Sistema de Cache
-
-### Estratégias de Cache
-- **Simulados**: 10 minutos (dados que mudam pouco)
-- **Flashcards**: 15 minutos (conteúdo estável)
-- **Apostilas**: 30 minutos (conteúdo muito estável)
-- **Progresso do Usuário**: 5 minutos (dados pessoais)
-
-### Invalidação Inteligente
-```typescript
-private invalidateCache(simuladoId?: string): void {
-  simuladosCache.clear();
-  if (simuladoId) {
-    simuladosCache.delete(createCacheKey('simulados:with-questions', simuladoId));
-  }
-}
-```
-
-## Sistema de Logging
-
-### Logs Estruturados
-```typescript
-logger.dbQuery('findAllWithConcurso', this.tableName, duration, {
-  page,
-  limit,
-  filters,
-  resultCount: data?.length || 0,
-});
-```
-
-### Níveis de Log
-- **ERROR**: Erros críticos
-- **WARN**: Avisos importantes
-- **INFO**: Informações gerais
-- **DEBUG**: Detalhes de desenvolvimento
-
-## Testes
-
-### Estrutura de Testes
-```
-src/core/database/repositories/__tests__/
-├── simulados-repository.test.ts
-├── apostilas-repository.test.ts
-└── flashcards-repository.test.ts
-```
-
-### Padrão de Testes
-```typescript
-describe('SimuladosRepository', () => {
-  it('should call findAllWithContent without error', async () => {
-    // Arrange
-    // Act
-    // Assert
-  });
-});
-```
-
-## Migrations e Constraints
-
-### Constraints de Banco
 ```sql
--- Validação de enum
-ALTER TABLE simulados 
-ADD CONSTRAINT check_difficulty 
-CHECK (difficulty IN ('Fácil', 'Médio', 'Difícil'));
-
--- Validação de valores
-ALTER TABLE user_simulado_progress 
-ADD CONSTRAINT check_score 
+-- Exemplo de Constraint em uma migration
+ALTER TABLE "user_simulado_progress"
+ADD CONSTRAINT "check_score"
 CHECK (score >= 0 AND score <= 100);
 ```
 
-### Índices para Performance
-```sql
-CREATE INDEX IF NOT EXISTS idx_simulados_concurso_id ON simulados(concurso_id);
-CREATE INDEX IF NOT EXISTS idx_simulados_created_by ON simulados(created_by);
-```
+## 6. Débitos Técnicos e Próximos Passos
 
-## Benefícios da Nova Arquitetura
+A arquitetura atual é sólida, mas existem pontos a serem melhorados:
+- **Consolidar `lib` e `src`:** Finalizar a migração da lógica de negócio para a pasta `src`, eliminando a duplicação.
+- **Cobertura de Testes:** Aumentar a cobertura de testes unitários para os `Services` e `Repositories`.
+- **Documentação da API:** Documentar os endpoints da API usando um padrão como OpenAPI/Swagger.
+- **Segurança:** Implementar Row Level Security (RLS) de forma mais granular no Supabase para garantir que um usuário só possa acessar seus próprios dados.
 
-### 1. **Manutenibilidade**
-- Código organizado por domínios
-- Responsabilidades bem definidas
-- Fácil localização de funcionalidades
-
-### 2. **Escalabilidade**
-- Adição de novos domínios sem afetar existentes
-- Cache inteligente para performance
-- Repositórios independentes
-
-### 3. **Testabilidade**
-- Separação clara de responsabilidades
-- Mocks simples e eficazes
-- Testes unitários focados
-
-### 4. **Performance**
-- Cache em múltiplas camadas
-- Índices otimizados no banco
-- Logging de performance
-
-### 5. **Robustez**
-- Validação de dados com Zod
-- Constraints no banco de dados
-- Tratamento de erros estruturado
-
-## Próximos Passos
-
-### 1. **Implementações Pendentes**
-- [ ] Aplicar cache nos outros repositórios
-- [ ] Implementar testes para todos os domínios
-- [ ] Adicionar validação Zod em todos os repositórios
-
-### 2. **Melhorias Futuras**
-- [ ] Sistema de eventos para comunicação entre domínios
-- [ ] Implementar CQRS para operações complexas
-- [ ] Adicionar métricas de performance
-- [ ] Implementar rate limiting
-
-### 3. **Monitoramento**
-- [ ] Dashboard de métricas
-- [ ] Alertas de performance
-- [ ] Logs centralizados
-
-## Conclusão
-
-A nova arquitetura implementa os princípios de DDD e Clean Architecture, resultando em um código mais organizado, testável e escalável. A separação por domínios facilita a manutenção e evolução do sistema, enquanto o sistema de cache e logging melhora a performance e observabilidade. 
+Este documento deve ser mantido atualizado conforme o projeto evolui.

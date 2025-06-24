@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { FlashcardsService } from '../services/flashcards-service';
-import { FlashcardData, FlashcardFilters, FlashcardProgressData } from '@/src/core/database/types';
+import { Flashcard, FlashcardFilters, FlashcardProgressData } from '@/src/core/database/types';
 import { useErrorHandler } from '@/src/features/shared/hooks/use-error-handler';
 import { useAuth } from '@/src/features/auth/hooks/use-auth';
 
@@ -22,7 +22,7 @@ interface FlashcardStats {
 }
 
 interface UseFlashcardsReturn {
-  flashcards: FlashcardData[];
+  flashcards: Flashcard[];
   loading: boolean;
   error: Error | null;
   stats: FlashcardStats | null;
@@ -43,7 +43,7 @@ export function useFlashcards(options: UseFlashcardsOptions = {}): UseFlashcards
     limit = 10,
   } = options;
 
-  const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [stats, setStats] = useState<FlashcardStats | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -77,9 +77,11 @@ export function useFlashcards(options: UseFlashcardsOptions = {}): UseFlashcards
     async (filters?: FlashcardFilters) => {
       await handleLoad(
         async () => {
-          const result = await service.getFlashcards(page, limit, filters);
+          const result = await service.getFlashcards(page, limit, filters as Record<string, unknown> | undefined);
           if (!result.success) throw new Error(result.error);
-          return result.data || [];
+          if (Array.isArray(result.data)) return result.data;
+          if (result.data && Array.isArray(result.data.data)) return result.data.data;
+          return [];
         },
         setFlashcards
       );

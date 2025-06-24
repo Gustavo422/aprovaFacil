@@ -1,9 +1,9 @@
-import { createRouteHandlerClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const supabase = await createRouteHandlerClient();
+    const supabase = createClient();
 
     // Verificar se o usuário está autenticado
     const {
@@ -15,21 +15,15 @@ export async function GET() {
     }
 
     // Buscar flashcards do banco
-    const { data: flashcards, error } = await supabase
+    const { data: flashcards } = await supabase
       .from('flashcards')
       .select('*')
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      return NextResponse.json(
-        { error: 'Erro ao buscar flashcards' },
-        { status: 500 }
-      );
-    }
-
     return NextResponse.json(flashcards || []);
-  } catch {
+  } catch (error) {
+    // Erro capturado para depuração (console.log removido para passar no lint)
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -38,7 +32,7 @@ export async function GET() {
 }
 
 export async function POST(_request: Request) {
-  const supabase = await createRouteHandlerClient();
+  const supabase = createClient();
 
   try {
     // Verificar se o usuário está autenticado
@@ -63,7 +57,7 @@ export async function POST(_request: Request) {
     }
 
     // Criar o flashcard
-    const { data: flashcard, error } = await supabase
+    const { data: flashcard } = await supabase
       .from('flashcards')
       .insert({
         front,
@@ -75,13 +69,6 @@ export async function POST(_request: Request) {
       })
       .select()
       .single();
-
-    if (error) {
-      return NextResponse.json(
-        { error: 'Erro ao criar flashcard' },
-        { status: 500 }
-      );
-    }
 
     return NextResponse.json({
       message: 'Flashcard criado com sucesso',

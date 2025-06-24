@@ -7,7 +7,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Create tables in the correct order to avoid foreign key issues
 
 -- 1. Concurso Categories (no dependencies)
-CREATE TABLE public.concurso_categorias (
+CREATE TABLE IF NOT EXISTS public.concurso_categorias (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   nome character varying NOT NULL,
   slug character varying NOT NULL UNIQUE,
@@ -21,7 +21,7 @@ CREATE TABLE public.concurso_categorias (
 );
 
 -- 2. Concursos (depends on concurso_categorias)
-CREATE TABLE public.concursos (
+CREATE TABLE IF NOT EXISTS public.concursos (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   nome character varying NOT NULL,
   descricao text,
@@ -40,7 +40,7 @@ CREATE TABLE public.concursos (
 );
 
 -- 3. Users table (for user management)
-CREATE TABLE public.users (
+CREATE TABLE IF NOT EXISTS public.users (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   email character varying NOT NULL UNIQUE,
   nome character varying,
@@ -50,7 +50,7 @@ CREATE TABLE public.users (
 );
 
 -- 4. User Concurso Preferences (depends on users and concursos)
-CREATE TABLE public.user_concurso_preferences (
+CREATE TABLE IF NOT EXISTS public.user_concurso_preferences (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   concurso_id uuid NOT NULL,
@@ -62,10 +62,10 @@ CREATE TABLE public.user_concurso_preferences (
 );
 
 -- Create indexes for better performance
-CREATE INDEX idx_concurso_categorias_slug ON public.concurso_categorias(slug);
-CREATE INDEX idx_concurso_categorias_active ON public.concurso_categorias(is_active);
-CREATE INDEX idx_concursos_categoria_id ON public.concursos(categoria_id);
-CREATE INDEX idx_concursos_active ON public.concursos(is_active);
-CREATE INDEX idx_users_email ON public.users(email);
-CREATE INDEX idx_user_concurso_preferences_user_id ON public.user_concurso_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_concurso_categorias_slug ON public.concurso_categorias(slug);
+CREATE INDEX IF NOT EXISTS idx_concurso_categorias_active ON public.concurso_categorias(is_active);
+CREATE INDEX IF NOT EXISTS idx_concursos_categoria_id ON public.concursos(categoria_id);
+CREATE INDEX IF NOT EXISTS idx_concursos_active ON public.concursos(is_active);
+CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
+CREATE INDEX IF NOT EXISTS idx_user_concurso_preferences_user_id ON public.user_concurso_preferences(user_id);
 -- Initial schema migration

@@ -53,7 +53,7 @@ export async function GET() {
     }
 
     // Calcular pontos fracos baseado no desempenho
-    const weakPoints = new Map<string, { disciplina: string; tema: string; error_count: number; total_questions: number }>();
+    const weakPoints = new Map<string, { discipline: string; tema: string; error_count: number; total_questions: number }>();
 
     for (const p of progress) {
       const simuladoQuestoes = questoes?.filter(q => q.simulado_id === p.simulado_id) || [];
@@ -72,7 +72,7 @@ export async function GET() {
             existing.total_questions++;
           } else {
             weakPoints.set(key, {
-              disciplina: questao.discipline,
+              discipline: questao.discipline,
               tema: questao.topic,
               error_count: 1,
               total_questions: 1,
@@ -86,7 +86,7 @@ export async function GET() {
             existing.total_questions++;
           } else {
             weakPoints.set(key, {
-              disciplina: questao.discipline,
+              discipline: questao.discipline,
               tema: questao.topic,
               error_count: 0,
               total_questions: 1,

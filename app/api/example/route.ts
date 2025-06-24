@@ -11,21 +11,22 @@ import { createRouteHandlerClient } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 
 // Exemplo de validador
-function validateUserData(data: Record<string, unknown>) {
+function validateUserData(data: unknown) {
+  const obj = data as Record<string, unknown>;
   const errors: string[] = [];
 
   if (
-    !data.name ||
-    typeof data.name !== 'string' ||
-    data.name.trim().length < 2
+    !obj.name ||
+    typeof obj.name !== 'string' ||
+    (obj.name as string).trim().length < 2
   ) {
     errors.push('Nome deve ter pelo menos 2 caracteres');
   }
 
   if (
-    !data.email ||
-    typeof data.email !== 'string' ||
-    !data.email.includes('@')
+    !obj.email ||
+    typeof obj.email !== 'string' ||
+    !(obj.email as string).includes('@')
   ) {
     errors.push('Email deve ser válido');
   }

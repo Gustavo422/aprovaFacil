@@ -158,16 +158,16 @@ export class SimuladosService {
       const correctAnswers = Math.round((stat.score / 100) * questionsCount);
       
       // Assumindo que todos os simulados são da mesma disciplina por enquanto
-      const disciplina = 'Geral';
-      const current = disciplineMap.get(disciplina) || { total: 0, correct: 0 };
-      disciplineMap.set(disciplina, {
+      const discipline = 'Geral';
+      const current = disciplineMap.get(discipline) || { total: 0, correct: 0 };
+      disciplineMap.set(discipline, {
         total: current.total + questionsCount,
         correct: current.correct + correctAnswers,
       });
     });
 
-    const disciplineStats = Array.from(disciplineMap.entries()).map(([disciplina, stats]) => ({
-      disciplina,
+    const disciplineStats = Array.from(disciplineMap.entries()).map(([discipline, stats]) => ({
+      discipline,
       total_questions: stats.total,
       correct_answers: stats.correct,
       accuracy_rate: stats.total > 0 ? (stats.correct / stats.total) * 100 : 0,

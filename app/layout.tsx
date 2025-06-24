@@ -1,17 +1,17 @@
-import type React from 'react';
-import { Toaster } from '@/components/ui/toaster';
-import { ErrorBoundaryWrapper } from '@/components/error-boundary-wrapper';
-import { ConcursoProvider } from '@/contexts/ConcursoContext';
-import { Inter } from 'next/font/google';
+import { Inter as FontSans } from 'next/font/google';
+import { cn } from '@/lib/utils';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
+import ClientLayout from './client-layout';
 
 export const metadata = {
-  title: 'Concursos Study App',
-  description: 'Plataforma de estudos para concursos públicos',
-  generator: 'v0.dev',
+  title: 'AprovaJá',
+  description: 'Sua plataforma de estudos para concursos',
 };
+
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
 
 export default function RootLayout({
   children,
@@ -19,14 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className="dark" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
-        <ErrorBoundaryWrapper>
-          <ConcursoProvider>
-            {children}
-          </ConcursoProvider>
-        </ErrorBoundaryWrapper>
-        <Toaster />
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased',
+          fontSans.variable
+        )}
+        suppressHydrationWarning
+      >
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

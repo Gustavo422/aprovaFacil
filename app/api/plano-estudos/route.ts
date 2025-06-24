@@ -17,20 +17,13 @@ export async function GET(_request: Request) {
 
     // Buscar o plano de estudos ativo do usuário
     const { data: planos, error } = await supabase
-      .from('plano_estudos')
+      .from('planos_estudo')
       .select(
         `
-        *,
-        disciplinas_plano (
-          disciplina_id,
-          disciplinas (
-            nome
-          )
-        )
+        *
       `
       )
       .eq('user_id', user.id)
-      .eq('ativo', true)
       .single();
 
     if (error) {

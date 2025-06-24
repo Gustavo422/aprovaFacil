@@ -9,7 +9,12 @@ export function genId() {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
-export function addToRemoveQueue(toastId: string, dispatch: (action: any) => void, TOAST_REMOVE_DELAY: number) {
+interface ToastAction {
+  type: 'REMOVE_TOAST';
+  toastId: string;
+}
+
+export function addToRemoveQueue(toastId: string, dispatch: (action: ToastAction) => void, TOAST_REMOVE_DELAY: number) {
   if (toastTimeouts.has(toastId)) {
     return;
   }

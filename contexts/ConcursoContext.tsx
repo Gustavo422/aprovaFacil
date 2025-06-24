@@ -231,7 +231,7 @@ export function ConcursoProvider({ children }: ConcursoProviderProps) {
         const context: ConcursoContextType = {
           categoria: categoriaData.data,
           concurso: concursoData.data,
-          disciplinas: disciplinasData.data,
+          disciplines: disciplinasData.data,
           userPreference: data.data
         };
         

@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function GET(_request: Request) {
   const { searchParams } = new URL(_request.url);
   const concursoId = searchParams.get('concurso_id');
-  const disciplina = searchParams.get('disciplina');
+  const discipline = searchParams.get('discipline');
 
   try {
     // Criar cliente Supabase corretamente
@@ -33,8 +33,8 @@ export async function GET(_request: Request) {
       query = query.eq('concurso_id', concursoId);
     }
 
-    if (disciplina) {
-      query = query.eq('disciplina', disciplina);
+    if (discipline) {
+      query = query.eq('discipline', discipline);
     }
 
     // Executar a query
@@ -94,7 +94,7 @@ export async function GET(_request: Request) {
     logger.info('Mapa de assuntos buscado com sucesso:', {
       userId: user.id,
       totalAssuntos: assuntos.length,
-      disciplinas: Object.keys(assuntosPorDisciplina),
+      disciplines: Object.keys(assuntosPorDisciplina),
     });
 
     return NextResponse.json({
@@ -133,12 +133,12 @@ export async function POST(request: Request) {
 
     // Obter os dados do corpo da requisição
     const body = await request.json();
-    const { disciplina, tema, subtema, concurso_id } = body;
+    const { discipline, tema, subtema, concurso_id } = body;
 
     // Validar os dados obrigatórios
-    if (!disciplina || !tema) {
+    if (!discipline || !tema) {
       return NextResponse.json(
-        { error: 'Disciplina e tema são obrigatórios' },
+        { error: 'Discipline e tema são obrigatórios' },
         { status: 400 }
       );
     }
@@ -147,7 +147,7 @@ export async function POST(request: Request) {
     const { data: assunto, error } = await supabase
       .from('mapa_assuntos')
       .insert({
-        disciplina,
+        discipline,
         tema,
         subtema,
         concurso_id,
@@ -160,7 +160,7 @@ export async function POST(request: Request) {
         error: error.message,
         details: error,
         userId: user.id,
-        disciplina,
+        discipline,
         tema,
       });
       return NextResponse.json(
@@ -172,7 +172,7 @@ export async function POST(request: Request) {
     logger.info('Assunto criado com sucesso:', {
       userId: user.id,
       assuntoId: assunto.id,
-      disciplina,
+      discipline,
       tema,
     });
 

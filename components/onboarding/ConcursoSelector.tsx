@@ -30,16 +30,8 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useToast } from '@/src/features/shared/hooks/use-toast';
-import { useConcursoActions } from '@/contexts/ConcursoContext';
-import { 
-  ConcursoCategoria, 
-  ConcursoComCategoria
-} from '@/types/concurso';
+import { useConcurso, useConcursoActions } from '@/contexts/ConcursoContext';
 import { logger } from '@/lib/logger';
-
-// ========================================
-// TIPOS
-// ========================================
 
 // ========================================
 // COMPONENTE
@@ -48,11 +40,16 @@ import { logger } from '@/lib/logger';
 export function ConcursoSelector() {
   const router = useRouter();
   const { toast } = useToast();
-  const { selectConcurso, loadConcursosByCategory } = useConcursoActions();
-  
-  const [categorias, setCategorias] = useState<ConcursoCategoria[]>([]);
-  const [concursos, setConcursos] = useState<ConcursoComCategoria[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    state: {
+      availableConcursos: concursos,
+      availableCategories: categorias,
+      isLoading: loading,
+    },
+  } = useConcurso();
+  const { selectConcurso, loadConcursosByCategory, loadCategories } =
+    useConcursoActions();
+
   const [selecting, setSelecting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategoria, setSelectedCategoria] = useState<string>('todos');
@@ -65,38 +62,22 @@ export function ConcursoSelector() {
 
   const loadAllConcursos = useCallback(async () => {
     try {
-      const response = await fetch('/api/concursos?is_active=true');
-      if (response.ok) {
-        const data = await response.json();
-        setConcursos(data.concursos || []);
-      }
+      // O contexto pode ter uma função para carregar todos, se não, usamos a por categoria com 'todos'
+      await loadConcursosByCategory('todos');
     } catch (error) {
-      logger.error('Erro ao carregar concursos:', { error });
-    } finally {
-      setLoading(false);
+      logger.error('Erro ao carregar todos os concursos:', { error });
     }
-  }, []);
+  }, [loadConcursosByCategory]);
 
   useEffect(() => {
-    const loadCategorias = async () => {
-      try {
-        const response = await fetch('/api/concurso-categorias?is_active=true');
-        if (response.ok) {
-          const data = await response.json();
-          setCategorias(data.categorias || []);
-        }
-      } catch (error) {
-        logger.error('Erro ao carregar categorias:', { error });
-      }
-    };
-    loadCategorias();
-  }, []);
+    loadCategories();
+  }, [loadCategories]);
 
   useEffect(() => {
-    if (selectedCategoria !== 'todos') {
-      loadConcursosByCategory(selectedCategoria);
-    } else {
+    if (selectedCategoria === 'todos') {
       loadAllConcursos();
+    } else {
+      loadConcursosByCategory(selectedCategoria);
     }
   }, [selectedCategoria, loadConcursosByCategory, loadAllConcursos]);
 
@@ -104,51 +85,70 @@ export function ConcursoSelector() {
   // FILTRAR CONCURSOS
   // ========================================
 
-  const filteredConcursos = concursos.filter(concurso => {
-    const matchesSearch = 
-      concurso.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (concurso.concurso_categorias?.nome && 
-       concurso.concurso_categorias.nome.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (concurso.banca && concurso.banca.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredConcursos =
+    concursos?.filter(concurso => {
+      const matchesSearch =
+        concurso.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (concurso.concurso_categorias?.name &&
+          concurso.concurso_categorias.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())) ||
+        (concurso.banca &&
+          concurso.banca.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesCategoria = 
-      selectedCategoria === 'todos' || 
-      concurso.concurso_categorias?.id === selectedCategoria;
+      const matchesCategoria =
+        selectedCategoria === 'todos' ||
+        concurso.concurso_categorias?.id === selectedCategoria;
 
-    const matchesBanca = 
-      selectedBanca === 'todas' || 
-      concurso.banca === selectedBanca;
+      const matchesBanca =
+        selectedBanca === 'todas' || concurso.banca === selectedBanca;
 
-    const matchesAno = 
-      selectedAno === 'todos' || 
-      concurso.ano?.toString() === selectedAno;
+      const matchesAno =
+        selectedAno === 'todos' || concurso.ano?.toString() === selectedAno;
 
-    return matchesSearch && matchesCategoria && matchesBanca && matchesAno;
-  });
+      return matchesSearch && matchesCategoria && matchesBanca && matchesAno;
+    }) || [];
 
   // ========================================
   // SELECIONAR CONCURSO
   // ========================================
 
-  const handleSelectConcurso = async (concursoId: string, categoriaId: string) => {
+  const handleSelectConcurso = async (
+    concursoId: string,
+    categoriaId: string
+  ) => {
+    if (!categoriaId) {
+      toast({
+        title: 'Erro',
+        description:
+          'Este concurso não pode ser selecionado pois não possui uma categoria.',
+        variant: 'destructive',
+        duration: 3000,
+      });
+      return;
+    }
     try {
       setSelecting(true);
       await selectConcurso(concursoId, categoriaId);
-      
+
       toast({
-        title: "Concurso selecionado!",
-        description: "Seu painel foi personalizado para o concurso escolhido.",
+        title: 'Concurso selecionado!',
+        description:
+          'Seu painel foi personalizado para o concurso escolhido.',
         duration: 3000,
       });
-      
+
       // Redirecionar para o dashboard
       router.push('/dashboard');
     } catch (error) {
       logger.error('Erro ao selecionar concurso:', { error });
       toast({
-        title: "Erro",
-        description: error instanceof Error ? error.message : "Não foi possível selecionar o concurso. Tente novamente.",
-        variant: "destructive",
+        title: 'Erro',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Não foi possível selecionar o concurso. Tente novamente.',
+        variant: 'destructive',
         duration: 3000,
       });
     } finally {
@@ -160,7 +160,7 @@ export function ConcursoSelector() {
   // RENDERIZAÇÃO
   // ========================================
 
-  if (loading) {
+  if (loading && filteredConcursos.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
@@ -212,15 +212,18 @@ export function ConcursoSelector() {
           {/* Filtros */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Categoria */}
-            <Select value={selectedCategoria} onValueChange={setSelectedCategoria}>
+            <Select
+              value={selectedCategoria}
+              onValueChange={setSelectedCategoria}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Todas as categorias" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todas as categorias</SelectItem>
-                {categorias.map((categoria) => (
+                {categorias.map(categoria => (
                   <SelectItem key={categoria.id} value={categoria.id}>
-                    {categoria.nome}
+                    {categoria.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -269,9 +272,10 @@ export function ConcursoSelector() {
           <h2 className="text-xl font-semibold">
             Concursos Disponíveis ({filteredConcursos.length})
           </h2>
+          {loading && <Loader2 className="h-5 w-5 animate-spin" />}
         </div>
 
-        {filteredConcursos.length === 0 ? (
+        {filteredConcursos.length === 0 && !loading ? (
           <Card>
             <CardContent className="text-center py-8">
               <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -287,10 +291,10 @@ export function ConcursoSelector() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
-                      <CardTitle className="text-lg">{concurso.nome}</CardTitle>
+                      <CardTitle className="text-lg">{concurso.name}</CardTitle>
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary">
-                          {concurso.concurso_categorias?.nome || 'Sem categoria'}
+                          {concurso.concurso_categorias?.name || 'Sem categoria'}
                         </Badge>
                         {concurso.banca && (
                           <Badge variant="outline">{concurso.banca}</Badge>
@@ -312,7 +316,9 @@ export function ConcursoSelector() {
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <div className="flex items-center space-x-1">
                       <Building2 className="h-4 w-4" />
-                      <span>{concurso.concurso_categorias?.nome || 'Sem categoria'}</span>
+                      <span>
+                        {concurso.concurso_categorias?.name || 'Sem categoria'}
+                      </span>
                     </div>
                     {concurso.data_prova && (
                       <div className="flex items-center space-x-1">

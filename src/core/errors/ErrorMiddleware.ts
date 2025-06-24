@@ -76,7 +76,7 @@ export class ErrorMiddleware {
 
     // Log do erro se habilitado
     if (this.config.logErrors) {
-      await ErrorHandler.getInstance().handle(appError, request);
+      await ErrorHandler.getInstance().handle(appError);
     }
 
     // Criar resposta de erro
