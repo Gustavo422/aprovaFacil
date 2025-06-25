@@ -4,9 +4,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
-  const { id } = params;
+  const { slug } = params;
 
   try {
     const supabase = await createRouteHandlerClient();
@@ -20,11 +20,25 @@ export async function GET(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    // Buscar o simulado pelo slug
+    const { data: simulado, error: simuladoError } = await supabase
+      .from('simulados')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+
+    if (simuladoError || !simulado) {
+      return NextResponse.json(
+        { error: 'Simulado não encontrado', details: simuladoError?.message },
+        { status: 404 }
+      );
+    }
+
     // Buscar as questões do simulado
     const { data: questoes, error } = await supabase
       .from('simulado_questions')
       .select('*')
-      .eq('simulado_id', id)
+      .eq('simulado_id', simulado.id)
       .is('deleted_at', null)
       .order('question_number', { ascending: true });
 
@@ -32,7 +46,6 @@ export async function GET(
       logger.error('Erro ao buscar questões:', {
         error: error.message,
         code: error.code,
-        details: error.details,
       });
       return NextResponse.json(
         { error: 'Erro ao buscar questões' },
@@ -56,9 +69,9 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
-  const { id } = params;
+  const { slug } = params;
 
   try {
     const supabase = await createRouteHandlerClient();
@@ -86,6 +99,20 @@ export async function POST(
       concurso_id,
     } = body;
 
+    // Buscar o simulado pelo slug
+    const { data: simulado, error: simuladoError } = await supabase
+      .from('simulados')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+
+    if (simuladoError || !simulado) {
+      return NextResponse.json(
+        { error: 'Simulado não encontrado', details: simuladoError?.message },
+        { status: 404 }
+      );
+    }
+
     // Validar os dados obrigatórios
     if (
       !question_number ||
@@ -103,7 +130,7 @@ export async function POST(
     const { data: questao, error } = await supabase
       .from('simulado_questions')
       .insert({
-        simulado_id: id,
+        simulado_id: simulado.id,
         question_number,
         question_text,
         alternatives,
@@ -121,7 +148,6 @@ export async function POST(
       logger.error('Erro ao criar questão:', {
         error: error.message,
         code: error.code,
-        details: error.details,
       });
       return NextResponse.json(
         { error: 'Erro ao criar questão' },

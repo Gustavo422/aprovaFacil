@@ -26,6 +26,7 @@ import Link from 'next/link';
 
 interface Simulado {
   id: string;
+  slug: string;
   title: string;
   description: string | null;
   questions_count: number;
@@ -200,7 +201,7 @@ export default function SimuladosClient({ simulados: initialSimulados, categoria
 
               <CardFooter className="pt-0">
                 <Link
-                  href={`/dashboard/simulados/${simulado.id}`}
+                  href={`/dashboard/simulados/${simulado.slug}`}
                   className="w-full"
                 >
                   <Button className="w-full">Iniciar Simulado</Button>

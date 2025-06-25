@@ -43,6 +43,7 @@ export type UserConcursoPreferenceUpdate = Tables['user_concurso_preferences']['
 
 // Simulados
 export type Simulado = Tables['simulados']['Row'] & {
+  slug: string;
   created_by?: string | null;
   deleted_at?: string | null;
 };

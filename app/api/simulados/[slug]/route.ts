@@ -3,11 +3,11 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const supabase = await createRouteHandlerClient();
-    const { id } = await params;
+    const { slug } = await params;
 
     // Verificar se o usuário está autenticado
     const {
@@ -18,17 +18,17 @@ export async function GET(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Buscar detalhes do simulado
+    // Buscar detalhes do simulado pelo slug
     const { data: simulado, error: simuladoError } = await supabase
       .from('simulados')
       .select('*')
-      .eq('id', id)
+      .eq('slug', slug)
       .is('deleted_at', null)
       .single();
 
-    if (simuladoError) {
+    if (simuladoError || !simulado) {
       return NextResponse.json(
-        { error: 'Simulado não encontrado', details: simuladoError.message },
+        { error: 'Simulado não encontrado', details: simuladoError?.message },
         { status: 404 }
       );
     }
@@ -37,7 +37,7 @@ export async function GET(
     const { data: questoes, error: questoesError } = await supabase
       .from('simulado_questions')
       .select('*')
-      .eq('simulado_id', id)
+      .eq('simulado_id', simulado.id)
       .is('deleted_at', null)
       .order('question_number', { ascending: true });
 
@@ -53,7 +53,7 @@ export async function GET(
       .from('user_simulado_progress')
       .select('*')
       .eq('user_id', user.id)
-      .eq('simulado_id', id)
+      .eq('simulado_id', simulado.id)
       .maybeSingle();
 
     if (progressError) {
@@ -76,11 +76,11 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const supabase = await createRouteHandlerClient();
-    const { id } = await params;
+    const { slug } = await params;
 
     // Verificar se o usuário está autenticado
     const {
@@ -94,6 +94,21 @@ export async function POST(
     // Obter os dados do corpo da requisição
     const body = await request.json();
     const { answers, score, timeTaken } = body;
+
+    // Buscar o simulado pelo slug
+    const { data: simulado, error: simuladoError } = await supabase
+      .from('simulados')
+      .select('id')
+      .eq('slug', slug)
+      .is('deleted_at', null)
+      .single();
+
+    if (simuladoError || !simulado) {
+      return NextResponse.json(
+        { error: 'Simulado não encontrado', details: simuladoError?.message },
+        { status: 404 }
+      );
+    }
 
     // Validar os dados
     if (!answers || Object.keys(answers).length === 0) {
@@ -146,7 +161,7 @@ export async function POST(
       .from('user_simulado_progress')
       .select('id')
       .eq('user_id', user.id)
-      .eq('simulado_id', id)
+      .eq('simulado_id', simulado.id)
       .maybeSingle();
 
     if (checkError) {
@@ -175,7 +190,7 @@ export async function POST(
         .from('user_simulado_progress')
         .insert({
           user_id: user.id,
-          simulado_id: id,
+          simulado_id: simulado.id,
           score: score,
           time_taken_minutes: Math.round(timeTaken / 60), // Converter segundos para minutos
           answers: answers,

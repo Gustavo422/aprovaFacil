@@ -12,7 +12,7 @@ export type Concurso = Tables['concursos']['Row'];
 export type ConcursoInsert = Tables['concursos']['Insert'];
 export type ConcursoUpdate = Tables['concursos']['Update'];
 
-export type Simulado = Tables['simulados']['Row'];
+export type Simulado = Tables['simulados']['Row'] & { slug: string };
 export type SimuladoInsert = Tables['simulados']['Insert'];
 export type SimuladoUpdate = Tables['simulados']['Update'];
 

@@ -14,10 +14,10 @@ const submitSimuladoSchema = z.object({
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
-    const { id } = await params;
+    const { slug } = await params;
     const supabase = await createRouteHandlerClient();
 
     // Verificar se o usuário está autenticado
@@ -33,11 +33,11 @@ export async function POST(
     const body = await request.json();
     const validatedData = submitSimuladoSchema.parse(body);
 
-    // Verificar se o simulado existe
+    // Buscar o simulado pelo slug
     const { data: simulado, error: simuladoError } = await supabase
       .from('simulados')
-      .select('*')
-      .eq('id', id)
+      .select('id')
+      .eq('slug', slug)
       .is('deleted_at', null)
       .single();
 
@@ -52,7 +52,7 @@ export async function POST(
     const { data: questoes, error: questoesError } = await supabase
       .from('simulado_questions')
       .select('*')
-      .eq('simulado_id', id)
+      .eq('simulado_id', simulado.id)
       .is('deleted_at', null)
       .order('question_number', { ascending: true });
 
@@ -93,17 +93,17 @@ export async function POST(
     const score = Math.round((correctAnswers / questoes.length) * 100);
     const timeSpentMinutes = Math.round(validatedData.timeSpent / 60);
 
-    // Verificar se já existe um progresso para este usuário e simulado
-    const { data: existingProgress } = await supabase
+    // Buscar progresso existente
+    const { data: simuladoProgress } = await supabase
       .from('user_simulado_progress')
       .select('id')
       .eq('user_id', user.id)
-      .eq('simulado_id', id)
+      .eq('simulado_id', simulado.id)
       .single();
 
     let progressResult;
 
-    if (existingProgress) {
+    if (simuladoProgress) {
       // Atualizar progresso existente
       const { data, error } = await supabase
         .from('user_simulado_progress')
@@ -113,7 +113,7 @@ export async function POST(
           time_taken_minutes: timeSpentMinutes,
           answers: validatedData.answers,
         })
-        .eq('id', existingProgress.id)
+        .eq('id', simuladoProgress.id)
         .select()
         .single();
 
@@ -124,7 +124,7 @@ export async function POST(
         .from('user_simulado_progress')
         .insert({
           user_id: user.id,
-          simulado_id: id,
+          simulado_id: simulado.id,
           score,
           completed_at: validatedData.completedAt,
           time_taken_minutes: timeSpentMinutes,
@@ -154,7 +154,7 @@ export async function POST(
       table_name: 'user_simulado_progress',
       record_id: progressResult.data.id,
       new_values: {
-        simulado_id: id,
+        simulado_id: simulado.id,
         score,
         time_taken_minutes: timeSpentMinutes,
       },

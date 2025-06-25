@@ -5,11 +5,9 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-type Props = {
-  params: { id: string };
-};
 
-async function getSimuladoData(id: string) {
+
+async function getSimuladoData(slug: string) {
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
@@ -21,8 +19,8 @@ async function getSimuladoData(id: string) {
 
   const { data: simulado, error: simuladoError } = await supabase
     .from('simulados')
-    .select('id, title, description')
-    .eq('id', id)
+    .select('id, slug, title, description')
+    .eq('slug', slug)
     .is('deleted_at', null)
     .single();
 
@@ -33,7 +31,7 @@ async function getSimuladoData(id: string) {
   const { data: questoes, error: questoesError } = await supabase
     .from('simulado_questions')
     .select('id, question_text, alternatives, correct_answer, explanation')
-    .eq('simulado_id', id)
+    .eq('simulado_id', simulado.id)
     .is('deleted_at', null)
     .order('question_number', { ascending: true });
 
@@ -45,7 +43,7 @@ async function getSimuladoData(id: string) {
     .from('user_simulado_progress')
     .select('answers, time_taken_minutes')
     .eq('user_id', user.id)
-    .eq('simulado_id', id)
+    .eq('simulado_id', simulado.id)
     .maybeSingle(); 
 
   if (progressError || !progress) {
@@ -55,16 +53,18 @@ async function getSimuladoData(id: string) {
   return { simulado, questoes, progress, error: null };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { simulado } = await getSimuladoData(params.id);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const { slug } = params;
+  const { simulado } = await getSimuladoData(slug);
 
   return {
     title: `Resultado: ${simulado?.title || 'Simulado'}`,
   };
 }
 
-export default async function ResultadoPage({ params }: Props) {
-  const { simulado, questoes, progress } = await getSimuladoData(params.id);
+export default async function ResultadoPage({ params }: { params: { slug: string } }) {
+  const { slug } = params;
+  const { simulado, questoes, progress } = await getSimuladoData(slug);
 
   if (!simulado || !progress || !questoes) {
      return (
@@ -74,7 +74,7 @@ export default async function ResultadoPage({ params }: Props) {
           Não foi possível carregar os dados do resultado. Isso pode acontecer se você ainda não completou este simulado ou se ocorreu um erro.
         </p>
         <div className="flex gap-4">
-          <Link href={`/dashboard/simulados/${params.id}`}>
+          <Link href={`/dashboard/simulados/${slug}`}>
             <Button>Tentar o Simulado</Button>
           </Link>
           <Link href="/dashboard/simulados">
@@ -90,7 +90,7 @@ export default async function ResultadoPage({ params }: Props) {
 
   return (
     <ResultadoSimuladoClient
-      id={params.id}
+      id={simulado.slug}
       simulado={simulado}
       questoes={questoes}
       progress={progress}
