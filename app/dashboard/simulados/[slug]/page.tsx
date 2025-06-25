@@ -3,17 +3,17 @@ import SimuladoClient from './simulado-client';
 import { createServerSupabaseClient } from '@/lib/supabase';
 
 type Props = {
-  params: { id: string }
+  params: { slug: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = params;
   const supabase = await createServerSupabaseClient();
-  const { id } = await params;
 
   const { data: simulado } = await supabase
       .from('simulados')
       .select('title')
-      .eq('id', id)
+      .eq('slug', slug)
       .is('deleted_at', null)
       .single();
 
@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function SimuladoPage({ params }: { params: { id: string } }) {
-  return <SimuladoClient params={params} />;
+export default function SimuladoPage({ params }: { params: { slug: string } }) {
+  const { slug } = params;
+  return <SimuladoClient slug={slug} />;
 }

@@ -23,6 +23,16 @@ const createSimuladoSchema = z.object({
   })).min(1, 'Deve ter pelo menos 1 questão'),
 });
 
+// Função utilitária para gerar slug a partir do título
+function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+    .replace(/[^a-z0-9]+/g, '-')     // Substitui não alfanuméricos por hífen
+    .replace(/(^-|-$)+/g, '');       // Remove hífens do início/fim
+}
+
 export async function POST(request: Request) {
   try {
     const supabase = await createRouteHandlerClient();
@@ -48,11 +58,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // Gerar slug a partir do título
+    const slug = generateSlug(validatedData.title);
+
     // Iniciar transação
     const { data: simulado, error: simuladoError } = await supabase
       .from('simulados')
       .insert({
         title: validatedData.title,
+        slug,
         description: validatedData.description,
         questions_count: validatedData.questions_count,
         time_minutes: validatedData.time_minutes,

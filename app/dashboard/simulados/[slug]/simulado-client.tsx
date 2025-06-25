@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 
 interface Simulado {
   id: string;
+  slug: string;
   title: string;
   description: string | null;
   questions_count: number;
@@ -30,7 +31,7 @@ interface Simulado {
   };
 }
 
-export default function SimuladoClient({ params }: { params: { id: string } }) {
+export default function SimuladoClient({ slug }: { slug: string }) {
   const router = useRouter();
   const { toast } = useToast();
   const [simulado, setSimulado] = useState<Simulado | null>(null);
@@ -38,13 +39,10 @@ export default function SimuladoClient({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Extract the id directly from params
-  const { id } = params;
-
   const fetchSimulado = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/simulados/${id}`);
+      const response = await fetch(`/api/simulados/${slug}`);
 
       if (!response.ok) {
         throw new Error('Erro ao carregar simulado');
@@ -61,7 +59,7 @@ export default function SimuladoClient({ params }: { params: { id: string } }) {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [slug]);
 
   useEffect(() => {
     fetchSimulado();
@@ -80,7 +78,7 @@ export default function SimuladoClient({ params }: { params: { id: string } }) {
       const score = Math.round((correctAnswers / totalQuestions) * 100);
 
       // Salvar progresso
-      const response = await fetch(`/api/simulados/${id}`, {
+      const response = await fetch(`/api/simulados/${slug}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +101,7 @@ export default function SimuladoClient({ params }: { params: { id: string } }) {
       });
 
       // Redirecionar para a página de resultados
-      router.push(`/dashboard/simulados/${id}/resultado`);
+      router.push(`/dashboard/simulados/${slug}/resultado`);
     } catch (error) {
       logger.error('Erro ao finalizar simulado:', {
         error: error instanceof Error ? error.message : String(error),

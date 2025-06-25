@@ -276,4 +276,64 @@ export class SimuladosService {
 
     return report;
   }
+
+  /**
+   * Busca um simulado específico com suas questões pelo slug
+   */
+  async getSimuladoBySlug(slug: string): Promise<SimuladoWithQuestions | null> {
+    return this.repository.findBySlugWithQuestions(slug);
+  }
+
+  /**
+   * Gera relatório detalhado de um simulado usando slug
+   */
+  async generateSimuladoReportBySlug(userId: string, slug: string) {
+    const simulado = await this.getSimuladoBySlug(slug);
+    if (!simulado) {
+      throw new Error('Simulado não encontrado');
+    }
+    const progress = await this.repository.getUserProgress(userId, simulado.id);
+    if (!progress) {
+      throw new Error('Progresso não encontrado');
+    }
+    const answers = progress.answers as Record<number, string>;
+    const questions = simulado.simulado_questions;
+    const report = {
+      simulado: {
+        id: simulado.id,
+        title: simulado.title,
+        description: simulado.description,
+        difficulty: simulado.difficulty,
+        questionsCount: simulado.questions_count,
+        timeMinutes: simulado.time_minutes,
+      },
+      progress: {
+        score: progress.score,
+        timeTaken: progress.time_taken_minutes,
+        completedAt: progress.completed_at,
+      },
+      questions: questions.map((question, index) => {
+        const userAnswer = answers[index];
+        const isCorrect = userAnswer === question.correct_answer;
+        return {
+          number: question.question_number,
+          text: question.question_text,
+          userAnswer,
+          correctAnswer: question.correct_answer,
+          isCorrect,
+          explanation: question.explanation,
+          discipline: question.discipline,
+          topic: question.topic,
+          difficulty: question.difficulty,
+        };
+      }),
+      summary: {
+        totalQuestions: questions.length,
+        correctAnswers: questions.filter((_, index) => answers[index] === questions[index].correct_answer).length,
+        accuracyRate: this.calculateScore(answers, questions),
+        timePerQuestion: progress.time_taken_minutes / questions.length,
+      },
+    };
+    return report;
+  }
 } 

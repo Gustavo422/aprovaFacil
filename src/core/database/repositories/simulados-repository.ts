@@ -439,6 +439,58 @@ export class SimuladosRepository extends BaseRepository<Simulado, SimuladoInsert
   }
 
   /**
+   * Busca um simulado com suas questões pelo slug
+   */
+  async findBySlugWithQuestions(slug: string): Promise<SimuladoWithQuestions | null> {
+    const cacheKey = createCacheKey('simulados:with-questions:slug', slug);
+    return withCache(simuladosCache, cacheKey, async () => {
+      const start = Date.now();
+      try {
+        const { data, error } = await this.supabase
+          .from(this.tableName)
+          .select(`
+            *,
+            simulado_questions (
+              id,
+              question_number,
+              question_text,
+              alternatives,
+              correct_answer,
+              explanation,
+              discipline,
+              topic,
+              difficulty
+            ),
+            concursos (
+              id,
+              nome,
+              categoria,
+              ano,
+              banca
+            )
+          `)
+          .eq('slug', slug)
+          .is('deleted_at', null)
+          .single();
+
+        if (error) {
+          if (error.code === 'PGRST116') return null; // Not found
+          throw error;
+        }
+
+        const _duration = Date.now() - start;
+        logger.error('findBySlugWithQuestions', { simuladoSlug: slug, duration: _duration, hasQuestions: data?.simulado_questions?.length > 0 });
+
+        return data as SimuladoWithQuestions;
+      } catch (error) {
+        const _duration = Date.now() - start;
+        logger.error('findBySlugWithQuestions', { simuladoSlug: slug, error });
+        throw new Error(`Erro ao buscar simulado com questões pelo slug: ${error}`);
+      }
+    });
+  }
+
+  /**
    * Invalida cache relacionado aos simulados
    */
   private invalidateCache(simuladoId?: string): void {
