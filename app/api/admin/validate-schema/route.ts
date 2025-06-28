@@ -19,7 +19,8 @@ interface TableInfo {
 interface ExpectedColumn {
   type: string;
   nullable: boolean;
-  default: string | null;
+  default: string | null | boolean | number;
+  [key: string]: any; // Allow additional properties
 }
 
 interface ExpectedSchema {
@@ -58,18 +59,18 @@ interface SchemaValidationResult {
 
 // Definição das tabelas e colunas esperadas pelo código
 const EXPECTED_SCHEMA: ExpectedSchema = {
-  users: {
+  'users': {
     id: { type: 'uuid', nullable: false, default: 'uuid_generate_v4()' },
     email: { type: 'text', nullable: false, default: null },
     name: { type: 'text', nullable: false, default: null },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'now()' },
-    total_questions_answered: { type: 'integer', nullable: true, default: '0' },
-    total_correct_answers: { type: 'integer', nullable: true, default: '0' },
-    study_time_minutes: { type: 'integer', nullable: true, default: '0' },
-    average_score: { type: 'numeric', nullable: true, default: '0' },
+    total_questions_answered: { type: 'integer', nullable: true, default: 0 },
+    total_correct_answers: { type: 'integer', nullable: true, default: 0 },
+    study_time_minutes: { type: 'integer', nullable: true, default: 0 },
+    average_score: { type: 'numeric', nullable: true, default: 0 },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  concurso_categorias: {
+  } as const,
+  'concurso_categorias': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     nome: { type: 'character varying', nullable: false, default: null },
     slug: { type: 'character varying', nullable: false, default: null },
@@ -79,8 +80,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     is_active: { type: 'boolean', nullable: true, default: 'true' },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  categoria_disciplinas: {
+  } as const,
+  'categoria_disciplinas': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     categoria_id: { type: 'uuid', nullable: false, default: null },
     nome: { type: 'character varying', nullable: false, default: null },
@@ -90,8 +91,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     is_active: { type: 'boolean', nullable: true, default: 'true' },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  concursos: {
+  } as const,
+  'concursos': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     nome: { type: 'character varying', nullable: false, default: null },
     descricao: { type: 'text', nullable: true, default: null },
@@ -105,24 +106,24 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     data_prova: { type: 'date', nullable: true, default: null },
     vagas: { type: 'integer', nullable: true, default: null },
     salario: { type: 'numeric', nullable: true, default: null },
-  },
-  simulados: {
+  } as const,
+  'simulados-personalizados': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     title: { type: 'character varying', nullable: false, default: null },
     description: { type: 'text', nullable: true, default: null },
-    questions_count: { type: 'integer', nullable: false, default: '0' },
-    time_minutes: { type: 'integer', nullable: false, default: '60' },
-    difficulty: { type: 'character varying', nullable: false, default: "'Médio'" },
+    questions_count: { type: 'integer', nullable: false, default: 0 },
+    time_minutes: { type: 'integer', nullable: false, default: 60 },
+    difficulty: { type: 'character varying', nullable: false, default: 'Médio' },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     concurso_id: { type: 'uuid', nullable: true, default: null },
-    is_public: { type: 'boolean', nullable: true, default: 'true' },
+    is_public: { type: 'boolean', nullable: true, default: true },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     deleted_at: { type: 'timestamp with time zone', nullable: true, default: null },
     created_by: { type: 'uuid', nullable: true, default: null },
     categoria_id: { type: 'uuid', nullable: true, default: null },
     disciplinas: { type: 'jsonb', nullable: true, default: null },
-  },
-  simulado_questions: {
+  } as const,
+  'simulado_questions': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     simulado_id: { type: 'uuid', nullable: false, default: null },
     question_number: { type: 'integer', nullable: false, default: null },
@@ -140,8 +141,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     categoria_id: { type: 'uuid', nullable: true, default: null },
     disciplina: { type: 'character varying', nullable: true, default: null },
     peso_disciplina: { type: 'integer', nullable: true, default: null },
-  },
-  user_simulado_progress: {
+  } as const,
+  'user_simulado_progress': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     simulado_id: { type: 'uuid', nullable: false, default: null },
@@ -149,8 +150,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     completed_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     time_taken_minutes: { type: 'integer', nullable: false, default: null },
     answers: { type: 'jsonb', nullable: false, default: null },
-  },
-  flashcards: {
+  } as const,
+  'cartoes-memorizacao': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     front: { type: 'text', nullable: false, default: null },
     back: { type: 'text', nullable: false, default: null },
@@ -161,8 +162,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     concurso_id: { type: 'uuid', nullable: true, default: null },
     categoria_id: { type: 'uuid', nullable: true, default: null },
     peso_disciplina: { type: 'integer', nullable: true, default: null },
-  },
-  user_flashcard_progress: {
+  } as const,
+  'user_flashcard_progress': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     flashcard_id: { type: 'uuid', nullable: false, default: null },
@@ -170,8 +171,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     next_review: { type: 'timestamp with time zone', nullable: true, default: null },
     review_count: { type: 'integer', nullable: true, default: '0' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  apostilas: {
+  } as const,
+  'apostila-inteligente': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     title: { type: 'character varying', nullable: false, default: null },
     description: { type: 'text', nullable: true, default: null },
@@ -179,8 +180,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     categoria_id: { type: 'uuid', nullable: true, default: null },
     disciplinas: { type: 'jsonb', nullable: true, default: null },
-  },
-  apostila_content: {
+  } as const,
+  'apostila_content': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     apostila_id: { type: 'uuid', nullable: false, default: null },
     module_number: { type: 'integer', nullable: false, default: null },
@@ -188,16 +189,16 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     content_json: { type: 'jsonb', nullable: false, default: null },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     concurso_id: { type: 'uuid', nullable: true, default: null },
-  },
-  user_apostila_progress: {
+  } as const,
+  'user_apostila_progress': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     apostila_content_id: { type: 'uuid', nullable: false, default: null },
     completed: { type: 'boolean', nullable: true, default: 'false' },
     progress_percentage: { type: 'numeric', nullable: true, default: '0' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  questoes_semanais: {
+  } as const,
+  'questoes_semanais': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     title: { type: 'character varying', nullable: false, default: null },
     description: { type: 'text', nullable: true, default: null },
@@ -205,16 +206,16 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     year: { type: 'integer', nullable: false, default: null },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     concurso_id: { type: 'uuid', nullable: true, default: null },
-  },
-  user_questoes_semanais_progress: {
+  } as const,
+  'user_questoes_semanais_progress': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     questoes_semanais_id: { type: 'uuid', nullable: false, default: null },
     score: { type: 'numeric', nullable: false, default: null },
     completed_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     answers: { type: 'jsonb', nullable: false, default: null },
-  },
-  mapa_assuntos: {
+  } as const,
+  'mapa_assuntos': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     disciplina: { type: 'character varying', nullable: false, default: null },
     tema: { type: 'character varying', nullable: false, default: null },
@@ -223,15 +224,15 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     categoria_id: { type: 'uuid', nullable: true, default: null },
     peso_disciplina: { type: 'integer', nullable: true, default: null },
-  },
-  user_mapa_assuntos_status: {
+  } as const,
+  'user_mapa_assuntos_status': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     mapa_assunto_id: { type: 'uuid', nullable: false, default: null },
     status: { type: 'character varying', nullable: false, default: "'não_iniciado'" },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  planos_estudo: {
+  } as const,
+  'planos_estudo': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     concurso_id: { type: 'uuid', nullable: true, default: null },
@@ -239,8 +240,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     end_date: { type: 'date', nullable: false, default: null },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     schedule: { type: 'jsonb', nullable: false, default: null },
-  },
-  user_concurso_preferences: {
+  } as const,
+  'user_concurso_preferences': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     concurso_id: { type: 'uuid', nullable: false, default: null },
@@ -249,8 +250,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     is_active: { type: 'boolean', nullable: true, default: 'true' },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  user_discipline_stats: {
+  } as const,
+  'user_discipline_stats': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     disciplina: { type: 'character varying', nullable: false, default: null },
@@ -261,8 +262,8 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     last_activity: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  user_performance_cache: {
+  } as const,
+  'user_performance_cache': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: false, default: null },
     cache_key: { type: 'character varying', nullable: false, default: null },
@@ -270,16 +271,16 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     expires_at: { type: 'timestamp with time zone', nullable: false, default: null },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  cache_config: {
+  } as const,
+  'cache_config': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     cache_key: { type: 'character varying', nullable: false, default: null },
-    ttl_minutes: { type: 'integer', nullable: false, default: '60' },
+    ttl_minutes: { type: 'integer', nullable: false, default: 60 },
     description: { type: 'text', nullable: true, default: null },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
     updated_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
-  audit_logs: {
+  } as const,
+  'audit_logs': {
     id: { type: 'uuid', nullable: false, default: 'gen_random_uuid()' },
     user_id: { type: 'uuid', nullable: true, default: null },
     action: { type: 'character varying', nullable: false, default: null },
@@ -290,15 +291,15 @@ const EXPECTED_SCHEMA: ExpectedSchema = {
     ip_address: { type: 'inet', nullable: true, default: null },
     user_agent: { type: 'text', nullable: true, default: null },
     created_at: { type: 'timestamp with time zone', nullable: true, default: 'CURRENT_TIMESTAMP' },
-  },
+  } as const,
 };
 
 async function getActualSchema(supabase: SupabaseClient): Promise<TableInfo[]> {
-  const { data, error } = await supabase.rpc('get_schema_info') as { data: TableColumn[], error: unknown };
+  const { data, error } = await (supabase.rpc('get_schema_info') as unknown as Promise<{ data: TableColumn[] | null; error: unknown }>);
 
-  if (error) {
-    throw new Error(`Erro ao buscar schema do banco: ${(error as { message?: string }).message ?? ''}`);
-    return [];
+  if (error || !data) {
+    const errorMessage = (error as { message?: string })?.message || 'Dados não retornados';
+    throw new Error(`Erro ao buscar schema do banco: ${errorMessage}`);
   }
 
   const tables: { [key: string]: TableInfo } = {};

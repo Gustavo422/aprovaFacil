@@ -1,6 +1,46 @@
 import { createRouteHandlerClient } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
+interface UserSimuladoProgress {
+  id: string;
+  user_id: string;
+  simulado_id: string;
+  created_at: string;
+  updated_at: string;
+  simulados_personalizados?: {
+    id: string;
+    title: string;
+  };
+}
+
+interface SimuladoQuestion {
+  id: string;
+  simulado_id: string;
+  question_id: string;
+  discipline?: string;
+  topic?: string;
+  correct_answer?: string;
+  created_at: string;
+  updated_at: string | null;
+  deleted_at: string | null;
+}
+
+interface UserAnswer {
+  answers?: string[];
+  question_id: string;
+  is_correct: boolean;
+  // Add other specific fields that might be present in user answers
+  [key: string]: unknown;
+}
+
+interface WeakPoint {
+  discipline: string;
+  tema: string;
+  error_count: number;
+  total_questions: number;
+  error_rate?: number;
+}
+
 export async function GET() {
   try {
     const supabase = await createRouteHandlerClient();
@@ -14,17 +54,17 @@ export async function GET() {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    // Buscar progresso do usuário em simulados
+    // Buscar progresso do usuário em simulados-personalizados
     const { data: progress, error: progressError } = await supabase
       .from('user_simulado_progress')
       .select(`
         *,
-        simulados!inner(
+        simulados_personalizados:simulados_personalizados!inner(
           id,
           title
         )
       `)
-      .eq('user_id', user.id);
+      .eq('user_id', user.id) as { data: UserSimuladoProgress[] | null, error: Error | null };
 
     if (progressError) {
       return NextResponse.json(
@@ -37,13 +77,13 @@ export async function GET() {
       return NextResponse.json([]);
     }
 
-    // Buscar questões dos simulados realizados
-    const simuladoIds = progress.map(p => p.simulado_id);
+    // Buscar questões dos simulados-personalizados realizados
+    const simuladoIds = progress.map((p: UserSimuladoProgress) => p.simulado_id);
     const { data: questoes, error: questoesError } = await supabase
       .from('simulado_questions')
       .select('*')
       .in('simulado_id', simuladoIds)
-      .is('deleted_at', null);
+      .is('deleted_at', null) as { data: SimuladoQuestion[] | null, error: Error | null };
 
     if (questoesError) {
       return NextResponse.json(
@@ -53,14 +93,17 @@ export async function GET() {
     }
 
     // Calcular pontos fracos baseado no desempenho
-    const weakPoints = new Map<string, { discipline: string; tema: string; error_count: number; total_questions: number }>();
+    
+    const weakPoints = new Map<string, WeakPoint>();
 
-    for (const p of progress) {
-      const simuladoQuestoes = questoes?.filter(q => q.simulado_id === p.simulado_id) || [];
+    for (const p of progress as unknown as (UserSimuladoProgress & UserAnswer)[]) {
+      const simuladoQuestoes = (questoes || []).filter((q: SimuladoQuestion) => q.simulado_id === p.simulado_id);
       
       for (let i = 0; i < simuladoQuestoes.length; i++) {
+        // Processar respostas do usuário com tipo explícito
+        const userAnswers = p.answers as string[];
         const questao = simuladoQuestoes[i];
-        const userAnswer = p.answers?.[i];
+        const userAnswer = userAnswers?.[i];
         const isCorrect = userAnswer === questao.correct_answer;
         
         if (!isCorrect && questao.discipline && questao.topic) {
@@ -98,12 +141,15 @@ export async function GET() {
 
     // Converter para array e calcular taxa de erro
     const weakPointsArray = Array.from(weakPoints.values())
-      .map(point => ({
-        ...point,
-        error_rate: (point.error_count / point.total_questions) * 100,
+      .map((point: WeakPoint) => ({
+        discipline: point.discipline,
+        tema: point.tema,
+        error_count: point.error_count,
+        total_questions: point.total_questions,
+        error_rate: point.total_questions > 0 ? (point.error_count / point.total_questions) * 100 : 0,
       }))
-      .filter(point => point.error_rate > 0) // Apenas pontos com erros
-      .sort((a, b) => b.error_rate - a.error_rate) // Ordenar por taxa de erro
+      .filter((point: WeakPoint) => (point.error_rate || 0) > 0) // Apenas pontos com erros
+      .sort((a: WeakPoint, b: WeakPoint) => (b.error_rate || 0) - (a.error_rate || 0)) // Ordenar por taxa de erro
       .slice(0, 10); // Top 10 pontos fracos
 
     return NextResponse.json(weakPointsArray);

@@ -1,0 +1,4508 @@
+{
+  "timestamp": "2025-06-28T11:11:03.123Z",
+  "environment": {
+    "node": "v22.16.0",
+    "os": "win32",
+    "arch": "x64",
+    "ci": false,
+    "cpus": 8,
+    "totalMemory": 17133207552,
+    "freeMemory": 3622506496,
+    "platform": "win32",
+    "release": "10.0.22631",
+    "type": "Windows_NT"
+  },
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "iterations": 3,
+    "testUrls": [
+      {
+        "name": "home",
+        "path": "/",
+        "url": "http://localhost:3000/"
+      },
+      {
+        "name": "login",
+        "path": "/login",
+        "url": "http://localhost:3000/login"
+      },
+      {
+        "name": "dashboard",
+        "path": "/dashboard",
+        "url": "http://localhost:3000/dashboard"
+      }
+    ]
+  },
+  "results": [
+    {
+      "page": "home",
+      "url": "http://localhost:3000/",
+      "iterations": 9,
+      "successfulIterations": 9,
+      "averageLoadTime": 1433.3446777777776,
+      "minLoadTime": 939.6052999999993,
+      "maxLoadTime": 1635.698199999999,
+      "p50": 1553.380799999999,
+      "p90": 1605.9248000000007,
+      "p95": 1605.9248000000007,
+      "successRate": 100,
+      "details": [
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1453.3065000000006,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109016594,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109016594,
+              "domainLookupEnd": 1751109016594,
+              "responseStart": 1751109016720,
+              "connectEnd": 1751109016594,
+              "responseEnd": 1751109016751,
+              "requestStart": 1751109016600,
+              "domLoading": 1751109016757,
+              "redirectStart": 1751109016549,
+              "loadEventEnd": 1751109017916,
+              "domComplete": 1751109017915,
+              "navigationStart": 1751109016549,
+              "loadEventStart": 1751109017916,
+              "domContentLoadedEventEnd": 1751109016939,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109016594,
+              "domInteractive": 1751109016939,
+              "fetchStart": 1751109016594,
+              "domContentLoadedEventStart": 1751109016939
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 1366.6999999997206,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.19999999972060323,
+              "redirectEnd": 45.5,
+              "fetchStart": 45.5,
+              "domainLookupStart": 45.5,
+              "domainLookupEnd": 45.5,
+              "connectStart": 45.5,
+              "secureConnectionStart": 0,
+              "connectEnd": 45.5,
+              "requestStart": 51.39999999990687,
+              "responseStart": 171.39999999990687,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 171.39999999990687,
+              "responseEnd": 202.5,
+              "transferSize": 4670,
+              "encodedBodySize": 4370,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 389.6999999997206,
+              "domContentLoadedEventStart": 389.79999999981374,
+              "domContentLoadedEventEnd": 390,
+              "domComplete": 1366.3999999999069,
+              "loadEventStart": 1366.6999999997206,
+              "loadEventEnd": 1366.6999999997206,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 292,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 444,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1503.1999999997206,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 390,
+                "load": 1367,
+                "domComplete": 1366
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109016655",
+                  "duration": 19.700000000186265,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109016655",
+                  "duration": 16.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109016655",
+                  "duration": 679.2999999998137,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 147.79999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 181.09999999962747,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 427.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 221.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 612.5999999996275,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 140.29999999981374,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 26.100000000093132,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1577.4858999999997,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109018218,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109018218,
+              "domainLookupEnd": 1751109018218,
+              "responseStart": 1751109018287,
+              "connectEnd": 1751109018218,
+              "responseEnd": 1751109018296,
+              "requestStart": 1751109018219,
+              "domLoading": 1751109018290,
+              "redirectStart": 1751109018201,
+              "loadEventEnd": 1751109019005,
+              "domComplete": 1751109019005,
+              "navigationStart": 1751109018201,
+              "loadEventStart": 1751109019005,
+              "domContentLoadedEventEnd": 1751109018335,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109018218,
+              "domInteractive": 1751109018335,
+              "fetchStart": 1751109018218,
+              "domContentLoadedEventStart": 1751109018335
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 803.7000000001863,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.20000000018626451,
+              "redirectEnd": 16.399999999906868,
+              "fetchStart": 16.399999999906868,
+              "domainLookupStart": 16.399999999906868,
+              "domainLookupEnd": 16.399999999906868,
+              "connectStart": 16.399999999906868,
+              "secureConnectionStart": 0,
+              "connectEnd": 16.399999999906868,
+              "requestStart": 17.399999999906868,
+              "responseStart": 85.39999999990687,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 85.39999999990687,
+              "responseEnd": 95.20000000018626,
+              "transferSize": 4672,
+              "encodedBodySize": 4372,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 134.3000000002794,
+              "domContentLoadedEventStart": 134.3000000002794,
+              "domContentLoadedEventEnd": 134.3000000002794,
+              "domComplete": 803.7000000001863,
+              "loadEventStart": 803.7000000001863,
+              "loadEventEnd": 803.7000000001863,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 148,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 148,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1581,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 134,
+                "load": 804,
+                "domComplete": 804
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109018242",
+                  "duration": 9.5,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109018242",
+                  "duration": 8.100000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 32.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109018242",
+                  "duration": 358.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 45.90000000037253,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 177.5,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 58.700000000186265,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 280.5,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 57.5,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.100000000093132,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 4,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1577.4300000000003,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109019922,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109019922,
+              "domainLookupEnd": 1751109019922,
+              "responseStart": 1751109020025,
+              "connectEnd": 1751109019922,
+              "responseEnd": 1751109020035,
+              "requestStart": 1751109019923,
+              "domLoading": 1751109020029,
+              "redirectStart": 1751109019896,
+              "loadEventEnd": 1751109020710,
+              "domComplete": 1751109020710,
+              "navigationStart": 1751109019896,
+              "loadEventStart": 1751109020710,
+              "domContentLoadedEventEnd": 1751109020082,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109019922,
+              "domInteractive": 1751109020082,
+              "fetchStart": 1751109019922,
+              "domContentLoadedEventStart": 1751109020082
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 814.1000000000931,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 26.299999999813735,
+              "fetchStart": 26.299999999813735,
+              "domainLookupStart": 26.299999999813735,
+              "domainLookupEnd": 26.299999999813735,
+              "connectStart": 26.299999999813735,
+              "secureConnectionStart": 0,
+              "connectEnd": 26.299999999813735,
+              "requestStart": 27.299999999813735,
+              "responseStart": 129.60000000009313,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 129.60000000009313,
+              "responseEnd": 139.60000000009313,
+              "transferSize": 4670,
+              "encodedBodySize": 4370,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 186.10000000009313,
+              "domContentLoadedEventStart": 186.1999999997206,
+              "domContentLoadedEventEnd": 186.29999999981374,
+              "domComplete": 814.1000000000931,
+              "loadEventStart": 814.1000000000931,
+              "loadEventEnd": 814.1000000000931,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 196,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 196,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1580.1999999997206,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 186,
+                "load": 814,
+                "domComplete": 814
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109019963",
+                  "duration": 8.100000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109019963",
+                  "duration": 6.399999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109019963",
+                  "duration": 303.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 35.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 60.700000000186265,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 79.5,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 156,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 227.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 63,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.899999999906868,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.7999999998137355,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1553.380799999999,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109022596,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109022596,
+              "domainLookupEnd": 1751109022596,
+              "responseStart": 1751109022674,
+              "connectEnd": 1751109022596,
+              "responseEnd": 1751109022685,
+              "requestStart": 1751109022596,
+              "domLoading": 1751109022678,
+              "redirectStart": 1751109022578,
+              "loadEventEnd": 1751109023383,
+              "domComplete": 1751109023383,
+              "navigationStart": 1751109022578,
+              "loadEventStart": 1751109023383,
+              "domContentLoadedEventEnd": 1751109022738,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109022596,
+              "domInteractive": 1751109022738,
+              "fetchStart": 1751109022596,
+              "domContentLoadedEventStart": 1751109022738
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 804.8999999999069,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.19999999972060323,
+              "redirectEnd": 17.899999999906868,
+              "fetchStart": 17.899999999906868,
+              "domainLookupStart": 17.899999999906868,
+              "domainLookupEnd": 17.899999999906868,
+              "connectStart": 17.899999999906868,
+              "secureConnectionStart": 0,
+              "connectEnd": 17.899999999906868,
+              "requestStart": 18.600000000093132,
+              "responseStart": 96,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 96,
+              "responseEnd": 107.10000000009313,
+              "transferSize": 4674,
+              "encodedBodySize": 4374,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 160.39999999990687,
+              "domContentLoadedEventStart": 160.39999999990687,
+              "domContentLoadedEventEnd": 160.5,
+              "domComplete": 804.8999999999069,
+              "loadEventStart": 804.8999999999069,
+              "loadEventEnd": 804.8999999999069,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 176,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 176,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1556.1999999997206,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 160,
+                "load": 805,
+                "domComplete": 805
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109022618",
+                  "duration": 12.900000000372529,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109022618",
+                  "duration": 11.099999999627471,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109022618",
+                  "duration": 333.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 39.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 56,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 145.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 64.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 227.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 50.40000000037253,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 5.600000000093132,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 5,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1477.4939999999988,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109024271,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109024271,
+              "domainLookupEnd": 1751109024271,
+              "responseStart": 1751109024337,
+              "connectEnd": 1751109024271,
+              "responseEnd": 1751109024350,
+              "requestStart": 1751109024272,
+              "domLoading": 1751109024341,
+              "redirectStart": 1751109024249,
+              "loadEventEnd": 1751109025003,
+              "domComplete": 1751109025003,
+              "navigationStart": 1751109024249,
+              "loadEventStart": 1751109025003,
+              "domContentLoadedEventEnd": 1751109024394,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109024271,
+              "domInteractive": 1751109024394,
+              "fetchStart": 1751109024271,
+              "domContentLoadedEventStart": 1751109024394
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 753.6999999997206,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 22.199999999720603,
+              "fetchStart": 22.199999999720603,
+              "domainLookupStart": 22.199999999720603,
+              "domainLookupEnd": 22.199999999720603,
+              "connectStart": 22.199999999720603,
+              "secureConnectionStart": 0,
+              "connectEnd": 22.199999999720603,
+              "requestStart": 23.199999999720603,
+              "responseStart": 88.10000000009313,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 88.10000000009313,
+              "responseEnd": 101.6999999997206,
+              "transferSize": 4670,
+              "encodedBodySize": 4370,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 144.6999999997206,
+              "domContentLoadedEventStart": 144.6999999997206,
+              "domContentLoadedEventEnd": 144.79999999981374,
+              "domComplete": 753.6999999997206,
+              "loadEventStart": 753.6999999997206,
+              "loadEventEnd": 753.6999999997206,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 164,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 164,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1481,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 145,
+                "load": 754,
+                "domComplete": 754
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109024298",
+                  "duration": 9.299999999813735,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109024298",
+                  "duration": 7.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109024298",
+                  "duration": 291.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 35.8000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 51.299999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 142.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 53.5,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 222.8000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 56,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 7.2999999998137355,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.6000000000931323,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1079.776600000001,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109025864,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109025864,
+              "domainLookupEnd": 1751109025864,
+              "responseStart": 1751109025959,
+              "connectEnd": 1751109025864,
+              "responseEnd": 1751109025997,
+              "requestStart": 1751109025866,
+              "domLoading": 1751109025964,
+              "redirectStart": 1751109025843,
+              "loadEventEnd": 1751109026796,
+              "domComplete": 1751109026796,
+              "navigationStart": 1751109025843,
+              "loadEventStart": 1751109026796,
+              "domContentLoadedEventEnd": 1751109026040,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109025864,
+              "domInteractive": 1751109026040,
+              "fetchStart": 1751109025864,
+              "domContentLoadedEventStart": 1751109026040
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 953,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 21.600000000093132,
+              "fetchStart": 21.600000000093132,
+              "domainLookupStart": 21.600000000093132,
+              "domainLookupEnd": 21.600000000093132,
+              "connectStart": 21.600000000093132,
+              "secureConnectionStart": 0,
+              "connectEnd": 21.600000000093132,
+              "requestStart": 22.699999999720603,
+              "responseStart": 115.79999999981374,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 115.79999999981374,
+              "responseEnd": 154.5,
+              "transferSize": 4672,
+              "encodedBodySize": 4372,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 197,
+              "domContentLoadedEventStart": 197,
+              "domContentLoadedEventEnd": 197,
+              "domComplete": 953,
+              "loadEventStart": 953,
+              "loadEventEnd": 953,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 204,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 204,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1119,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 197,
+                "load": 953,
+                "domComplete": 953
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109025896",
+                  "duration": 21.600000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109025896",
+                  "duration": 19.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109025896",
+                  "duration": 397.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 59.799999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 69.8000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 217.5,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 81.5,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 295,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 50.8000000002794,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.7999999998137355,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1635.698199999999,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109028100,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109028100,
+              "domainLookupEnd": 1751109028100,
+              "responseStart": 1751109028198,
+              "connectEnd": 1751109028100,
+              "responseEnd": 1751109028205,
+              "requestStart": 1751109028101,
+              "domLoading": 1751109028201,
+              "redirectStart": 1751109028083,
+              "loadEventEnd": 1751109028928,
+              "domComplete": 1751109028928,
+              "navigationStart": 1751109028083,
+              "loadEventStart": 1751109028928,
+              "domContentLoadedEventEnd": 1751109028257,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109028100,
+              "domInteractive": 1751109028257,
+              "fetchStart": 1751109028100,
+              "domContentLoadedEventStart": 1751109028257
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 845.2000000001863,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.20000000018626451,
+              "redirectEnd": 16.5,
+              "fetchStart": 16.5,
+              "domainLookupStart": 16.5,
+              "domainLookupEnd": 16.5,
+              "connectStart": 16.5,
+              "secureConnectionStart": 0,
+              "connectEnd": 16.5,
+              "requestStart": 17.700000000186265,
+              "responseStart": 114.5,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 114.5,
+              "responseEnd": 122.5,
+              "transferSize": 4671,
+              "encodedBodySize": 4371,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 174.20000000018626,
+              "domContentLoadedEventStart": 174.20000000018626,
+              "domContentLoadedEventEnd": 174.40000000037253,
+              "domComplete": 845.2000000001863,
+              "loadEventStart": 845.2000000001863,
+              "loadEventEnd": 845.2000000001863,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 180,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 180,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1637.4000000003725,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 174,
+                "load": 845,
+                "domComplete": 845
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109028136",
+                  "duration": 11.700000000186265,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109028136",
+                  "duration": 9.799999999813735,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109028136",
+                  "duration": 326.8000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 42.299999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 58.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 145.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 64.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 244.79999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 52.40000000037253,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 38.5,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 5.199999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 939.6052999999993,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109029850,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109029850,
+              "domainLookupEnd": 1751109029850,
+              "responseStart": 1751109029945,
+              "connectEnd": 1751109029850,
+              "responseEnd": 1751109029955,
+              "requestStart": 1751109029852,
+              "domLoading": 1751109029948,
+              "redirectStart": 1751109029824,
+              "loadEventEnd": 1751109030639,
+              "domComplete": 1751109030639,
+              "navigationStart": 1751109029824,
+              "loadEventStart": 1751109030639,
+              "domContentLoadedEventEnd": 1751109030001,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109029850,
+              "domInteractive": 1751109030001,
+              "fetchStart": 1751109029850,
+              "domContentLoadedEventStart": 1751109030001
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 815.2999999998137,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 25.899999999906868,
+              "fetchStart": 25.899999999906868,
+              "domainLookupStart": 25.899999999906868,
+              "domainLookupEnd": 25.899999999906868,
+              "connectStart": 25.899999999906868,
+              "secureConnectionStart": 0,
+              "connectEnd": 25.899999999906868,
+              "requestStart": 27.899999999906868,
+              "responseStart": 120.79999999981374,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 120.79999999981374,
+              "responseEnd": 131.29999999981374,
+              "transferSize": 4671,
+              "encodedBodySize": 4371,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 176.89999999990687,
+              "domContentLoadedEventStart": 177,
+              "domContentLoadedEventEnd": 177.10000000009313,
+              "domComplete": 815.2999999998137,
+              "loadEventStart": 815.2999999998137,
+              "loadEventEnd": 815.2999999998137,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 184,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 184,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 971.6000000000931,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 177,
+                "load": 815,
+                "domComplete": 815
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109029880",
+                  "duration": 11.199999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109029880",
+                  "duration": 9.600000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109029880",
+                  "duration": 276.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 39.299999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 54.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 142.40000000037253,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 69.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 205,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 53.799999999813735,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 5,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1605.9248000000007,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109030967,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109030967,
+              "domainLookupEnd": 1751109030967,
+              "responseStart": 1751109031051,
+              "connectEnd": 1751109030967,
+              "responseEnd": 1751109031059,
+              "requestStart": 1751109030968,
+              "domLoading": 1751109031054,
+              "redirectStart": 1751109030943,
+              "loadEventEnd": 1751109031800,
+              "domComplete": 1751109031800,
+              "navigationStart": 1751109030943,
+              "loadEventStart": 1751109031800,
+              "domContentLoadedEventEnd": 1751109031111,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109030967,
+              "domInteractive": 1751109031111,
+              "fetchStart": 1751109030967,
+              "domContentLoadedEventStart": 1751109031111
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2F",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 857.1999999997206,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 23.5,
+              "fetchStart": 23.5,
+              "domainLookupStart": 23.5,
+              "domainLookupEnd": 23.5,
+              "connectStart": 23.5,
+              "secureConnectionStart": 0,
+              "connectEnd": 23.5,
+              "requestStart": 24.600000000093132,
+              "responseStart": 107.1999999997206,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 107.1999999997206,
+              "responseEnd": 116.10000000009313,
+              "transferSize": 4672,
+              "encodedBodySize": 4372,
+              "decodedBodySize": 12154,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 167.6999999997206,
+              "domContentLoadedEventStart": 167.6999999997206,
+              "domContentLoadedEventEnd": 167.6999999997206,
+              "domComplete": 857.1999999997206,
+              "loadEventStart": 857.1999999997206,
+              "loadEventEnd": 857.1999999997206,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 172,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 172,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1606.2999999998137,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 168,
+                "load": 857,
+                "domComplete": 857
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109030991",
+                  "duration": 14.399999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109030991",
+                  "duration": 12.399999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109030991",
+                  "duration": 380.20000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 49.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 72.5,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 163.5,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 78.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 249.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 40.1999999997206,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 8.799999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 5.2000000001862645,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page": "login",
+      "url": "http://localhost:3000/login",
+      "iterations": 9,
+      "successfulIterations": 9,
+      "averageLoadTime": 1376.1777666666671,
+      "minLoadTime": 902.5404000000017,
+      "maxLoadTime": 1569.7806999999993,
+      "p50": 1404.9573999999993,
+      "p90": 1498.8787000000011,
+      "p95": 1498.8787000000011,
+      "successRate": 100,
+      "details": [
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1492.3935999999994,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109032656,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109032656,
+              "domainLookupEnd": 1751109032656,
+              "responseStart": 1751109032735,
+              "connectEnd": 1751109032657,
+              "responseEnd": 1751109032747,
+              "requestStart": 1751109032657,
+              "domLoading": 1751109032738,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109033412,
+              "domComplete": 1751109033412,
+              "navigationStart": 1751109032655,
+              "loadEventStart": 1751109033412,
+              "domContentLoadedEventEnd": 1751109032796,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109032796,
+              "fetchStart": 1751109032655,
+              "domContentLoadedEventStart": 1751109032796
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 757,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.19999999972060323,
+              "domainLookupStart": 1.3999999999068677,
+              "domainLookupEnd": 1.3999999999068677,
+              "connectStart": 1.3999999999068677,
+              "secureConnectionStart": 0,
+              "connectEnd": 2.1000000000931323,
+              "requestStart": 2.2999999998137355,
+              "responseStart": 80,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 80,
+              "responseEnd": 92,
+              "transferSize": 4637,
+              "encodedBodySize": 4337,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 141,
+              "domContentLoadedEventStart": 141,
+              "domContentLoadedEventEnd": 141.10000000009313,
+              "domComplete": 757,
+              "loadEventStart": 757,
+              "loadEventEnd": 757,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 148,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 148,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1493.7999999998137,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 141,
+                "load": 757,
+                "domComplete": 757
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109032684",
+                  "duration": 10.5,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109032684",
+                  "duration": 7.600000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109032684",
+                  "duration": 291.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 35.09999999962747,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 50.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 138.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 66,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 217.70000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 45.3000000002794,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 7.400000000372529,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 4,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1569.7806999999993,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109034249,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109034249,
+              "domainLookupEnd": 1751109034249,
+              "responseStart": 1751109034330,
+              "connectEnd": 1751109034250,
+              "responseEnd": 1751109034348,
+              "requestStart": 1751109034250,
+              "domLoading": 1751109034334,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109035068,
+              "domComplete": 1751109035068,
+              "navigationStart": 1751109034247,
+              "loadEventStart": 1751109035068,
+              "domContentLoadedEventEnd": 1751109034396,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109034396,
+              "fetchStart": 1751109034247,
+              "domContentLoadedEventStart": 1751109034396
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 821.5,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.3000000002793968,
+              "domainLookupStart": 1.7000000001862645,
+              "domainLookupEnd": 1.7000000001862645,
+              "connectStart": 1.7000000001862645,
+              "secureConnectionStart": 0,
+              "connectEnd": 2.7000000001862645,
+              "requestStart": 2.8000000002793968,
+              "responseStart": 82.70000000018626,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 82.70000000018626,
+              "responseEnd": 101.3000000002794,
+              "transferSize": 4633,
+              "encodedBodySize": 4333,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 148.70000000018626,
+              "domContentLoadedEventStart": 148.70000000018626,
+              "domContentLoadedEventEnd": 148.8000000002794,
+              "domComplete": 821.4000000003725,
+              "loadEventStart": 821.5,
+              "loadEventEnd": 821.5,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 156,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 156,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1571.3000000002794,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 149,
+                "load": 821,
+                "domComplete": 821
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109034283",
+                  "duration": 13.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109034283",
+                  "duration": 10.199999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109034283",
+                  "duration": 322.70000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 47.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 54.299999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 156.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 63.40000000037253,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 233.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 57.700000000186265,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.300000000279397,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.7999999998137355,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 902.5404000000017,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109035917,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109035917,
+              "domainLookupEnd": 1751109035917,
+              "responseStart": 1751109035981,
+              "connectEnd": 1751109035918,
+              "responseEnd": 1751109035990,
+              "requestStart": 1751109035918,
+              "domLoading": 1751109035985,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109036819,
+              "domComplete": 1751109036819,
+              "navigationStart": 1751109035916,
+              "loadEventStart": 1751109036819,
+              "domContentLoadedEventEnd": 1751109036035,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109036034,
+              "fetchStart": 1751109035916,
+              "domContentLoadedEventStart": 1751109036034
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 902.8999999999069,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.09999999962747097,
+              "domainLookupStart": 1.2999999998137355,
+              "domainLookupEnd": 1.2999999998137355,
+              "connectStart": 1.2999999998137355,
+              "secureConnectionStart": 0,
+              "connectEnd": 1.8999999999068677,
+              "requestStart": 2,
+              "responseStart": 65.1999999997206,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 65.1999999997206,
+              "responseEnd": 74.59999999962747,
+              "transferSize": 4635,
+              "encodedBodySize": 4335,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 118.39999999990687,
+              "domContentLoadedEventStart": 118.39999999990687,
+              "domContentLoadedEventEnd": 118.59999999962747,
+              "domComplete": 902.8999999999069,
+              "loadEventStart": 902.8999999999069,
+              "loadEventEnd": 902.8999999999069,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 128,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 128,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 990.1999999997206,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 119,
+                "load": 903,
+                "domComplete": 903
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109035938",
+                  "duration": 11,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109035938",
+                  "duration": 9.5,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109035938",
+                  "duration": 284.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 43.59999999962747,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 53.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 155.70000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 60.5,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 210.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 42.799999999813735,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1446.0337,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109037993,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109037993,
+              "domainLookupEnd": 1751109037993,
+              "responseStart": 1751109038086,
+              "connectEnd": 1751109037994,
+              "responseEnd": 1751109038105,
+              "requestStart": 1751109037994,
+              "domLoading": 1751109038090,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109038734,
+              "domComplete": 1751109038734,
+              "navigationStart": 1751109037992,
+              "loadEventStart": 1751109038734,
+              "domContentLoadedEventEnd": 1751109038158,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109038151,
+              "fetchStart": 1751109037992,
+              "domContentLoadedEventStart": 1751109038151
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 742.3000000002794,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.10000000009313226,
+              "domainLookupStart": 1.3000000002793968,
+              "domainLookupEnd": 1.3000000002793968,
+              "connectStart": 1.3000000002793968,
+              "secureConnectionStart": 0,
+              "connectEnd": 1.8999999999068677,
+              "requestStart": 1.8999999999068677,
+              "responseStart": 93.60000000009313,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 93.60000000009313,
+              "responseEnd": 112.8000000002794,
+              "transferSize": 4636,
+              "encodedBodySize": 4336,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 159.3000000002794,
+              "domContentLoadedEventStart": 159.3000000002794,
+              "domContentLoadedEventEnd": 166.20000000018626,
+              "domComplete": 742.3000000002794,
+              "loadEventStart": 742.3000000002794,
+              "loadEventEnd": 742.3000000002794,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 204,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 204,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1447.8000000002794,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 166,
+                "load": 742,
+                "domComplete": 742
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109038014",
+                  "duration": 15.600000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109038014",
+                  "duration": 13,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109038014",
+                  "duration": 329.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 68.79999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 80.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 165.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 87.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 272.70000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 53.200000000186265,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.5,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.3999999999068677,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1498.8787000000011,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109039516,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109039516,
+              "domainLookupEnd": 1751109039516,
+              "responseStart": 1751109039603,
+              "connectEnd": 1751109039517,
+              "responseEnd": 1751109039611,
+              "requestStart": 1751109039517,
+              "domLoading": 1751109039606,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109040320,
+              "domComplete": 1751109040320,
+              "navigationStart": 1751109039515,
+              "loadEventStart": 1751109040320,
+              "domContentLoadedEventEnd": 1751109039658,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109039658,
+              "fetchStart": 1751109039515,
+              "domContentLoadedEventStart": 1751109039658
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 804.9000000003725,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.10000000009313226,
+              "domainLookupStart": 1.2000000001862645,
+              "domainLookupEnd": 1.2000000001862645,
+              "connectStart": 1.2000000001862645,
+              "secureConnectionStart": 0,
+              "connectEnd": 1.8000000002793968,
+              "requestStart": 1.900000000372529,
+              "responseStart": 87.5,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 87.5,
+              "responseEnd": 95.60000000009313,
+              "transferSize": 4637,
+              "encodedBodySize": 4337,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 142.5,
+              "domContentLoadedEventStart": 142.60000000009313,
+              "domContentLoadedEventEnd": 142.60000000009313,
+              "domComplete": 804.9000000003725,
+              "loadEventStart": 804.9000000003725,
+              "loadEventEnd": 804.9000000003725,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 148,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 148,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1500.7000000001863,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 143,
+                "load": 805,
+                "domComplete": 805
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109039563",
+                  "duration": 6.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109039563",
+                  "duration": 5.5,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109039563",
+                  "duration": 317.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 35.5,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 47.59999999962747,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 67.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 133.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 232.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 60.6999999997206,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 5.2999999998137355,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.6999999997206032,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1387.7160000000003,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109041118,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109041118,
+              "domainLookupEnd": 1751109041118,
+              "responseStart": 1751109041192,
+              "connectEnd": 1751109041119,
+              "responseEnd": 1751109041204,
+              "requestStart": 1751109041119,
+              "domLoading": 1751109041196,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109041808,
+              "domComplete": 1751109041808,
+              "navigationStart": 1751109041117,
+              "loadEventStart": 1751109041808,
+              "domContentLoadedEventEnd": 1751109041250,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109041250,
+              "fetchStart": 1751109041117,
+              "domContentLoadedEventStart": 1751109041250
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 691.3999999999069,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.09999999962747097,
+              "domainLookupStart": 1.5,
+              "domainLookupEnd": 1.5,
+              "connectStart": 1.5,
+              "secureConnectionStart": 0,
+              "connectEnd": 1.8999999999068677,
+              "requestStart": 2,
+              "responseStart": 75.29999999981374,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 75.29999999981374,
+              "responseEnd": 86.79999999981374,
+              "transferSize": 4633,
+              "encodedBodySize": 4333,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 132.59999999962747,
+              "domContentLoadedEventStart": 132.59999999962747,
+              "domContentLoadedEventEnd": 132.79999999981374,
+              "domComplete": 691.2999999998137,
+              "loadEventStart": 691.3999999999069,
+              "loadEventEnd": 691.3999999999069,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 140,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 140,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1389.7999999998137,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 133,
+                "load": 691,
+                "domComplete": 691
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109041138",
+                  "duration": 11,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109041138",
+                  "duration": 8.5,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109041138",
+                  "duration": 271.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 31.300000000279397,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 51.8000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 157.20000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 58.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 217.09999999962747,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 42.60000000009313,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.100000000093132,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.6999999997206032,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1353.4368000000031,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109043604,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109043604,
+              "domainLookupEnd": 1751109043604,
+              "responseStart": 1751109043671,
+              "connectEnd": 1751109043607,
+              "responseEnd": 1751109043688,
+              "requestStart": 1751109043607,
+              "domLoading": 1751109043675,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109044234,
+              "domComplete": 1751109044234,
+              "navigationStart": 1751109043603,
+              "loadEventStart": 1751109044234,
+              "domContentLoadedEventEnd": 1751109043729,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109043728,
+              "fetchStart": 1751109043603,
+              "domContentLoadedEventStart": 1751109043728
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 631.7000000001863,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.20000000018626451,
+              "domainLookupStart": 1.8000000002793968,
+              "domainLookupEnd": 1.8000000002793968,
+              "connectStart": 1.8000000002793968,
+              "secureConnectionStart": 0,
+              "connectEnd": 4.7000000001862645,
+              "requestStart": 4.900000000372529,
+              "responseStart": 68.8000000002794,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 68.8000000002794,
+              "responseEnd": 85.90000000037253,
+              "transferSize": 4636,
+              "encodedBodySize": 4336,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 125.70000000018626,
+              "domContentLoadedEventStart": 125.8000000002794,
+              "domContentLoadedEventEnd": 126.60000000009313,
+              "domComplete": 631.7000000001863,
+              "loadEventStart": 631.7000000001863,
+              "loadEventEnd": 631.7000000001863,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1355.8000000002794,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 126,
+                "load": 631,
+                "domComplete": 631
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109043634",
+                  "duration": 10.700000000186265,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109043634",
+                  "duration": 9.199999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109043634",
+                  "duration": 241.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 32.700000000186265,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 38.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 108.5,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 45.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 184.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 44.700000000186265,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.199999999720603,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.8999999999068677,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1329.8626000000004,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109045035,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109045035,
+              "domainLookupEnd": 1751109045035,
+              "responseStart": 1751109045092,
+              "connectEnd": 1751109045036,
+              "responseEnd": 1751109045100,
+              "requestStart": 1751109045036,
+              "domLoading": 1751109045096,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109045653,
+              "domComplete": 1751109045653,
+              "navigationStart": 1751109045034,
+              "loadEventStart": 1751109045653,
+              "domContentLoadedEventEnd": 1751109045141,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109045141,
+              "fetchStart": 1751109045034,
+              "domContentLoadedEventStart": 1751109045141
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 619.5999999996275,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0,
+              "domainLookupStart": 1.2999999998137355,
+              "domainLookupEnd": 1.2999999998137355,
+              "connectStart": 1.2999999998137355,
+              "secureConnectionStart": 0,
+              "connectEnd": 2,
+              "requestStart": 2.099999999627471,
+              "responseStart": 58.5,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 58.5,
+              "responseEnd": 66.29999999981374,
+              "transferSize": 4634,
+              "encodedBodySize": 4334,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 107.39999999990687,
+              "domContentLoadedEventStart": 107.39999999990687,
+              "domContentLoadedEventEnd": 107.5,
+              "domComplete": 619.5,
+              "loadEventStart": 619.5999999996275,
+              "loadEventEnd": 619.5999999996275,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1331.7999999998137,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 107,
+                "load": 619,
+                "domComplete": 619
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109045055",
+                  "duration": 7.600000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109045055",
+                  "duration": 6.100000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109045055",
+                  "duration": 246.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 31.799999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 48.59999999962747,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 140.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 64.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 192.20000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 75.1999999997206,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.3999999999068677,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/login",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1404.9573999999993,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109046449,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109046449,
+              "domainLookupEnd": 1751109046449,
+              "responseStart": 1751109046520,
+              "connectEnd": 1751109046450,
+              "responseEnd": 1751109046526,
+              "requestStart": 1751109046451,
+              "domLoading": 1751109046523,
+              "redirectStart": 0,
+              "loadEventEnd": 1751109047088,
+              "domComplete": 1751109047088,
+              "navigationStart": 1751109046447,
+              "loadEventStart": 1751109047088,
+              "domContentLoadedEventEnd": 1751109046572,
+              "unloadEventStart": 0,
+              "redirectEnd": 0,
+              "domInteractive": 1751109046572,
+              "fetchStart": 1751109046448,
+              "domContentLoadedEventStart": 1751109046572
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 640.8000000002794,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 0,
+              "fetchStart": 0.10000000009313226,
+              "domainLookupStart": 1.7000000001862645,
+              "domainLookupEnd": 1.7000000001862645,
+              "connectStart": 1.7000000001862645,
+              "secureConnectionStart": 0,
+              "connectEnd": 2.8000000002793968,
+              "requestStart": 3,
+              "responseStart": 71.90000000037253,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 71.90000000037253,
+              "responseEnd": 78.60000000009313,
+              "transferSize": 4633,
+              "encodedBodySize": 4333,
+              "decodedBodySize": 12100,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 124.10000000009313,
+              "domContentLoadedEventStart": 124.20000000018626,
+              "domContentLoadedEventEnd": 124.3000000002794,
+              "domComplete": 640.8000000002794,
+              "loadEventStart": 640.8000000002794,
+              "loadEventEnd": 640.8000000002794,
+              "type": "navigate",
+              "redirectCount": 0,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1406.6000000000931,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 125,
+                "load": 641,
+                "domComplete": 641
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109046484",
+                  "duration": 7.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109046484",
+                  "duration": 6.5,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109046484",
+                  "duration": 247.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 29.399999999906868,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 39.8000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 112.5,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 45.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 189.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 41.1999999997206,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 7.2000000001862645,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 4.199999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "page": "dashboard",
+      "url": "http://localhost:3000/dashboard",
+      "iterations": 9,
+      "successfulIterations": 9,
+      "averageLoadTime": 1374.198477777777,
+      "minLoadTime": 1281.0993000000017,
+      "maxLoadTime": 1496.4133999999976,
+      "p50": 1354.3664999999964,
+      "p90": 1460.4365000000034,
+      "p95": 1460.4365000000034,
+      "successRate": 100,
+      "details": [
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1305.988900000004,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109047952,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109047952,
+              "domainLookupEnd": 1751109047952,
+              "responseStart": 1751109048014,
+              "connectEnd": 1751109047952,
+              "responseEnd": 1751109048022,
+              "requestStart": 1751109047952,
+              "domLoading": 1751109048018,
+              "redirectStart": 1751109047935,
+              "loadEventEnd": 1751109048543,
+              "domComplete": 1751109048543,
+              "navigationStart": 1751109047935,
+              "loadEventStart": 1751109048543,
+              "domContentLoadedEventEnd": 1751109048063,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109047952,
+              "domInteractive": 1751109048063,
+              "fetchStart": 1751109047952,
+              "domContentLoadedEventStart": 1751109048063
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 608.5,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 16.799999999813735,
+              "fetchStart": 16.799999999813735,
+              "domainLookupStart": 16.799999999813735,
+              "domainLookupEnd": 16.799999999813735,
+              "connectStart": 16.799999999813735,
+              "secureConnectionStart": 0,
+              "connectEnd": 16.799999999813735,
+              "requestStart": 17.600000000093132,
+              "responseStart": 79.10000000009313,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 79.10000000009313,
+              "responseEnd": 87.29999999981374,
+              "transferSize": 4687,
+              "encodedBodySize": 4387,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 128.5,
+              "domContentLoadedEventStart": 128.60000000009313,
+              "domContentLoadedEventEnd": 128.60000000009313,
+              "domComplete": 608.5,
+              "loadEventStart": 608.5,
+              "loadEventEnd": 608.5,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 136,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 136,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1307.8999999999069,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 128,
+                "load": 608,
+                "domComplete": 608
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109047970",
+                  "duration": 8.099999999627471,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109047970",
+                  "duration": 6.699999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109047970",
+                  "duration": 224,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 28.299999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 38.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 52.5,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 111,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 162.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 40.60000000009313,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.2999999998137355,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.5,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1304.7323999999935,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109049328,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109049328,
+              "domainLookupEnd": 1751109049328,
+              "responseStart": 1751109049382,
+              "connectEnd": 1751109049328,
+              "responseEnd": 1751109049391,
+              "requestStart": 1751109049328,
+              "domLoading": 1751109049385,
+              "redirectStart": 1751109049315,
+              "loadEventEnd": 1751109049923,
+              "domComplete": 1751109049923,
+              "navigationStart": 1751109049315,
+              "loadEventStart": 1751109049923,
+              "domContentLoadedEventEnd": 1751109049428,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109049328,
+              "domInteractive": 1751109049428,
+              "fetchStart": 1751109049328,
+              "domContentLoadedEventStart": 1751109049428
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 607.7000000001863,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 12.600000000093132,
+              "fetchStart": 12.600000000093132,
+              "domainLookupStart": 12.600000000093132,
+              "domainLookupEnd": 12.600000000093132,
+              "connectStart": 12.600000000093132,
+              "secureConnectionStart": 0,
+              "connectEnd": 12.600000000093132,
+              "requestStart": 13.300000000279397,
+              "responseStart": 66.70000000018626,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 66.70000000018626,
+              "responseEnd": 75.5,
+              "transferSize": 4687,
+              "encodedBodySize": 4387,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 112.89999999990687,
+              "domContentLoadedEventStart": 113,
+              "domContentLoadedEventEnd": 113.10000000009313,
+              "domComplete": 607.7000000001863,
+              "loadEventStart": 607.7000000001863,
+              "loadEventEnd": 607.7000000001863,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 120,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 120,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1306.8000000002794,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 113,
+                "load": 608,
+                "domComplete": 608
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109049344",
+                  "duration": 7.2999999998137355,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109049344",
+                  "duration": 6.2000000001862645,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109049344",
+                  "duration": 224.5,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 25.299999999813735,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 38.09999999962747,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 51.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 106.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 164.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 39.700000000186265,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 3.8999999999068677,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 4.2000000001862645,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1299.8626999999979,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109050709,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109050709,
+              "domainLookupEnd": 1751109050709,
+              "responseStart": 1751109050771,
+              "connectEnd": 1751109050709,
+              "responseEnd": 1751109050780,
+              "requestStart": 1751109050710,
+              "domLoading": 1751109050775,
+              "redirectStart": 1751109050694,
+              "loadEventEnd": 1751109051296,
+              "domComplete": 1751109051296,
+              "navigationStart": 1751109050694,
+              "loadEventStart": 1751109051296,
+              "domContentLoadedEventEnd": 1751109050819,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109050709,
+              "domInteractive": 1751109050819,
+              "fetchStart": 1751109050709,
+              "domContentLoadedEventStart": 1751109050819
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 602.2999999998137,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 15.299999999813735,
+              "fetchStart": 15.299999999813735,
+              "domainLookupStart": 15.299999999813735,
+              "domainLookupEnd": 15.299999999813735,
+              "connectStart": 15.299999999813735,
+              "secureConnectionStart": 0,
+              "connectEnd": 15.299999999813735,
+              "requestStart": 16.100000000093132,
+              "responseStart": 77.70000000018626,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 77.70000000018626,
+              "responseEnd": 86.70000000018626,
+              "transferSize": 4684,
+              "encodedBodySize": 4384,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 125.60000000009313,
+              "domContentLoadedEventStart": 125.60000000009313,
+              "domContentLoadedEventEnd": 125.60000000009313,
+              "domComplete": 602.2999999998137,
+              "loadEventStart": 602.2999999998137,
+              "loadEventEnd": 602.2999999998137,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1301.5,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 125,
+                "load": 602,
+                "domComplete": 602
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109050728",
+                  "duration": 7.7000000001862645,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109050728",
+                  "duration": 6.300000000279397,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109050728",
+                  "duration": 218.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 25.5,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 40.5,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 44.700000000186265,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 107.20000000018626,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 161.5,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 45.5,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 4.099999999627471,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 4.100000000093132,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1281.0993000000017,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109053094,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109053094,
+              "domainLookupEnd": 1751109053094,
+              "responseStart": 1751109053152,
+              "connectEnd": 1751109053094,
+              "responseEnd": 1751109053160,
+              "requestStart": 1751109053094,
+              "domLoading": 1751109053156,
+              "redirectStart": 1751109053080,
+              "loadEventEnd": 1751109053669,
+              "domComplete": 1751109053669,
+              "navigationStart": 1751109053079,
+              "loadEventStart": 1751109053669,
+              "domContentLoadedEventEnd": 1751109053205,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109053094,
+              "domInteractive": 1751109053205,
+              "fetchStart": 1751109053094,
+              "domContentLoadedEventStart": 1751109053205
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 589.8999999999069,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.19999999972060323,
+              "redirectEnd": 14.199999999720603,
+              "fetchStart": 14.199999999720603,
+              "domainLookupStart": 14.199999999720603,
+              "domainLookupEnd": 14.199999999720603,
+              "connectStart": 14.199999999720603,
+              "secureConnectionStart": 0,
+              "connectEnd": 14.199999999720603,
+              "requestStart": 15,
+              "responseStart": 72.89999999990687,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 72.89999999990687,
+              "responseEnd": 80.89999999990687,
+              "transferSize": 4688,
+              "encodedBodySize": 4388,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 125.6999999997206,
+              "domContentLoadedEventStart": 125.79999999981374,
+              "domContentLoadedEventEnd": 125.79999999981374,
+              "domComplete": 589.8999999999069,
+              "loadEventStart": 589.8999999999069,
+              "loadEventEnd": 589.8999999999069,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1283.3999999999069,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 126,
+                "load": 590,
+                "domComplete": 590
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109053109",
+                  "duration": 7.5,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109053109",
+                  "duration": 5.7000000001862645,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109053109",
+                  "duration": 214.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 40.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 27.899999999906868,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 108.90000000037253,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 50.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 157,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 37.1999999997206,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 3.8000000002793968,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.5,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1438.189999999995,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109054447,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109054447,
+              "domainLookupEnd": 1751109054447,
+              "responseStart": 1751109054517,
+              "connectEnd": 1751109054447,
+              "responseEnd": 1751109054525,
+              "requestStart": 1751109054448,
+              "domLoading": 1751109054521,
+              "redirectStart": 1751109054433,
+              "loadEventEnd": 1751109055176,
+              "domComplete": 1751109055176,
+              "navigationStart": 1751109054433,
+              "loadEventStart": 1751109055176,
+              "domContentLoadedEventEnd": 1751109054598,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109054447,
+              "domInteractive": 1751109054598,
+              "fetchStart": 1751109054447,
+              "domContentLoadedEventStart": 1751109054598
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 742.3999999999069,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 13.700000000186265,
+              "fetchStart": 13.700000000186265,
+              "domainLookupStart": 13.700000000186265,
+              "domainLookupEnd": 13.700000000186265,
+              "connectStart": 13.700000000186265,
+              "secureConnectionStart": 0,
+              "connectEnd": 13.700000000186265,
+              "requestStart": 14.5,
+              "responseStart": 83.79999999981374,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 83.79999999981374,
+              "responseEnd": 91.79999999981374,
+              "transferSize": 4690,
+              "encodedBodySize": 4390,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 164.89999999990687,
+              "domContentLoadedEventStart": 164.89999999990687,
+              "domContentLoadedEventEnd": 165,
+              "domComplete": 742.3999999999069,
+              "loadEventStart": 742.3999999999069,
+              "loadEventEnd": 742.3999999999069,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 168,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 168,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1438.7999999998137,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 165,
+                "load": 743,
+                "domComplete": 743
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109054466",
+                  "duration": 10.5,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109054466",
+                  "duration": 7.7999999998137355,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 36,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109054466",
+                  "duration": 347.8000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 60.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 99.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 185.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 261,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 77.6999999997206,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 5.600000000093132,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.5,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1354.3664999999964,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109055959,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109055959,
+              "domainLookupEnd": 1751109055959,
+              "responseStart": 1751109056021,
+              "connectEnd": 1751109055959,
+              "responseEnd": 1751109056028,
+              "requestStart": 1751109055960,
+              "domLoading": 1751109056024,
+              "redirectStart": 1751109055941,
+              "loadEventEnd": 1751109056585,
+              "domComplete": 1751109056585,
+              "navigationStart": 1751109055941,
+              "loadEventStart": 1751109056585,
+              "domContentLoadedEventEnd": 1751109056068,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109055959,
+              "domInteractive": 1751109056068,
+              "fetchStart": 1751109055959,
+              "domContentLoadedEventStart": 1751109056068
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 644.3999999999069,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0,
+              "redirectEnd": 18.5,
+              "fetchStart": 18.5,
+              "domainLookupStart": 18.5,
+              "domainLookupEnd": 18.5,
+              "connectStart": 18.5,
+              "secureConnectionStart": 0,
+              "connectEnd": 18.5,
+              "requestStart": 19.299999999813735,
+              "responseStart": 79.6999999997206,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 79.6999999997206,
+              "responseEnd": 87.5,
+              "transferSize": 4687,
+              "encodedBodySize": 4387,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 126.89999999990687,
+              "domContentLoadedEventStart": 126.89999999990687,
+              "domContentLoadedEventEnd": 127,
+              "domComplete": 644.3999999999069,
+              "loadEventStart": 644.3999999999069,
+              "loadEventEnd": 644.3999999999069,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 132,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1356.1999999997206,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 127,
+                "load": 644,
+                "domComplete": 644
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109055977",
+                  "duration": 7.2999999998137355,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109055977",
+                  "duration": 5.900000000372529,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109055977",
+                  "duration": 220.79999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 29.5,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 42.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 112.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 48.700000000186265,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 164.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 44.39999999990687,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 3.2999999998137355,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 4.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1496.4133999999976,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109058580,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109058580,
+              "domainLookupEnd": 1751109058580,
+              "responseStart": 1751109058683,
+              "connectEnd": 1751109058580,
+              "responseEnd": 1751109058696,
+              "requestStart": 1751109058580,
+              "domLoading": 1751109058687,
+              "redirectStart": 1751109058556,
+              "loadEventEnd": 1751109059337,
+              "domComplete": 1751109059337,
+              "navigationStart": 1751109058556,
+              "loadEventStart": 1751109059337,
+              "domContentLoadedEventEnd": 1751109058741,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109058580,
+              "domInteractive": 1751109058741,
+              "fetchStart": 1751109058580,
+              "domContentLoadedEventStart": 1751109058741
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 781,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 24,
+              "fetchStart": 24,
+              "domainLookupStart": 24,
+              "domainLookupEnd": 24,
+              "connectStart": 24,
+              "secureConnectionStart": 0,
+              "connectEnd": 24,
+              "requestStart": 24.700000000186265,
+              "responseStart": 127.70000000018626,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 127.70000000018626,
+              "responseEnd": 140.5,
+              "transferSize": 4685,
+              "encodedBodySize": 4385,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 185,
+              "domContentLoadedEventStart": 185,
+              "domContentLoadedEventEnd": 185,
+              "domComplete": 780.8999999999069,
+              "loadEventStart": 781,
+              "loadEventEnd": 781,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 200,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 200,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1499.2000000001863,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 185,
+                "load": 781,
+                "domComplete": 781
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109058633",
+                  "duration": 8.699999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109058633",
+                  "duration": 7.199999999720603,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109058633",
+                  "duration": 294.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 41.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 58.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 152.10000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 62.5,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 216.1999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 54.60000000009313,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 3.6999999997206032,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.2999999998137355,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1426.696600000003,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109060153,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109060153,
+              "domainLookupEnd": 1751109060153,
+              "responseStart": 1751109060221,
+              "connectEnd": 1751109060153,
+              "responseEnd": 1751109060234,
+              "requestStart": 1751109060154,
+              "domLoading": 1751109060224,
+              "redirectStart": 1751109060139,
+              "loadEventEnd": 1751109060855,
+              "domComplete": 1751109060855,
+              "navigationStart": 1751109060139,
+              "loadEventStart": 1751109060855,
+              "domContentLoadedEventEnd": 1751109060288,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109060153,
+              "domInteractive": 1751109060288,
+              "fetchStart": 1751109060153,
+              "domContentLoadedEventStart": 1751109060288
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 715.6000000000931,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 14,
+              "fetchStart": 14,
+              "domainLookupStart": 14,
+              "domainLookupEnd": 14,
+              "connectStart": 14,
+              "secureConnectionStart": 0,
+              "connectEnd": 14,
+              "requestStart": 14.799999999813735,
+              "responseStart": 81.29999999981374,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 81.29999999981374,
+              "responseEnd": 95,
+              "transferSize": 4684,
+              "encodedBodySize": 4384,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 148.6999999997206,
+              "domContentLoadedEventStart": 148.6999999997206,
+              "domContentLoadedEventEnd": 148.79999999981374,
+              "domComplete": 715.6000000000931,
+              "loadEventStart": 715.6000000000931,
+              "loadEventEnd": 715.6000000000931,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 164,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 164,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1428.7999999998137,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 149,
+                "load": 716,
+                "domComplete": 716
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109060173",
+                  "duration": 14.899999999906868,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109060173",
+                  "duration": 14,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109060173",
+                  "duration": 284.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 36.5,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 57.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 137.6999999997206,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 73,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 202.5,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 54.8000000002794,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 5.399999999906868,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 4,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        },
+        {
+          "iteration": 3,
+          "url": "http://localhost:3000/dashboard",
+          "status": 200,
+          "statusText": "OK",
+          "loadTime": 1460.4365000000034,
+          "metrics": {
+            "timing": {
+              "connectStart": 1751109061665,
+              "secureConnectionStart": 0,
+              "unloadEventEnd": 0,
+              "domainLookupStart": 1751109061665,
+              "domainLookupEnd": 1751109061665,
+              "responseStart": 1751109061742,
+              "connectEnd": 1751109061665,
+              "responseEnd": 1751109061755,
+              "requestStart": 1751109061666,
+              "domLoading": 1751109061746,
+              "redirectStart": 1751109061650,
+              "loadEventEnd": 1751109062389,
+              "domComplete": 1751109062389,
+              "navigationStart": 1751109061650,
+              "loadEventStart": 1751109062389,
+              "domContentLoadedEventEnd": 1751109061806,
+              "unloadEventStart": 0,
+              "redirectEnd": 1751109061665,
+              "domInteractive": 1751109061806,
+              "fetchStart": 1751109061665,
+              "domContentLoadedEventStart": 1751109061806
+            },
+            "navigation": {
+              "name": "http://localhost:3000/login?redirectedFrom=%2Fdashboard",
+              "entryType": "navigation",
+              "startTime": 0,
+              "duration": 738.6000000000931,
+              "initiatorType": "navigation",
+              "deliveryType": "",
+              "nextHopProtocol": "http/1.1",
+              "renderBlockingStatus": "non-blocking",
+              "workerStart": 0,
+              "redirectStart": 0.10000000009313226,
+              "redirectEnd": 14.800000000279397,
+              "fetchStart": 14.800000000279397,
+              "domainLookupStart": 14.800000000279397,
+              "domainLookupEnd": 14.800000000279397,
+              "connectStart": 14.800000000279397,
+              "secureConnectionStart": 0,
+              "connectEnd": 14.800000000279397,
+              "requestStart": 15.600000000093132,
+              "responseStart": 91.90000000037253,
+              "firstInterimResponseStart": 0,
+              "finalResponseHeadersStart": 91.90000000037253,
+              "responseEnd": 105.3000000002794,
+              "transferSize": 4687,
+              "encodedBodySize": 4387,
+              "decodedBodySize": 12172,
+              "responseStatus": 200,
+              "serverTiming": [],
+              "unloadEventStart": 0,
+              "unloadEventEnd": 0,
+              "domInteractive": 156,
+              "domContentLoadedEventStart": 156,
+              "domContentLoadedEventEnd": 156,
+              "domComplete": 738.6000000000931,
+              "loadEventStart": 738.6000000000931,
+              "loadEventEnd": 738.6000000000931,
+              "type": "navigate",
+              "redirectCount": 1,
+              "activationStart": 0,
+              "criticalCHRestart": 0,
+              "notRestoredReasons": null
+            },
+            "paint": [
+              {
+                "name": "first-paint",
+                "entryType": "paint",
+                "startTime": 168,
+                "duration": 0
+              },
+              {
+                "name": "first-contentful-paint",
+                "entryType": "paint",
+                "startTime": 168,
+                "duration": 0
+              }
+            ],
+            "memory": {},
+            "now": 1462.6000000000931,
+            "performance": {
+              "timing": {
+                "domContentLoaded": 156,
+                "load": 739,
+                "domComplete": 739
+              },
+              "resources": [
+                {
+                  "name": "http://localhost:3000/_next/static/css/app/layout.css?v=1751109061687",
+                  "duration": 11,
+                  "initiatorType": "link",
+                  "transferSize": 16843
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/webpack.js?v=1751109061687",
+                  "duration": 8,
+                  "initiatorType": "link",
+                  "transferSize": 10983
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/main-app.js?v=1751109061687",
+                  "duration": 283.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 1400049
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app-pages-internals.js",
+                  "duration": 36.60000000009313,
+                  "initiatorType": "script",
+                  "transferSize": 54009
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/error.js",
+                  "duration": 65.39999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 85917
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/layout.js",
+                  "duration": 163.29999999981374,
+                  "initiatorType": "script",
+                  "transferSize": 519287
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/not-found.js",
+                  "duration": 67.3000000002794,
+                  "initiatorType": "script",
+                  "transferSize": 117753
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/app/login/page.js",
+                  "duration": 215.89999999990687,
+                  "initiatorType": "script",
+                  "transferSize": 864799
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/media/e4af272ccee01ff0-s.p.woff2",
+                  "duration": 56.39999999990687,
+                  "initiatorType": "css",
+                  "transferSize": 48732
+                },
+                {
+                  "name": "http://localhost:3000/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js",
+                  "duration": 8.199999999720603,
+                  "initiatorType": "script",
+                  "transferSize": 2934
+                },
+                {
+                  "name": "http://localhost:3000/aprova_facil_logo.png",
+                  "duration": 3.7999999998137355,
+                  "initiatorType": "link",
+                  "transferSize": 114449
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -13,6 +13,10 @@ import {
   Layers,
   BookOpen,
   Settings,
+  GraduationCap,
+  ClipboardList,
+  CalendarDays,
+  BookMarked,
 } from 'lucide-react';
 import { useMemo } from 'react';
 
@@ -36,6 +40,10 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
     Layers,
     BookOpen,
     Settings,
+    GraduationCap,
+    ClipboardList,
+    CalendarDays,
+    BookMarked,
   }), []);
 
   return (

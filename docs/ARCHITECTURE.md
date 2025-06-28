@@ -19,7 +19,7 @@ A estrutura do projeto foi pensada para separar as responsabilidades de forma cl
 ├── app/                  # Camada de Apresentação e API (Next.js App Router)
 │   ├── (dashboard)/      # Agrupamento de rotas que compartilham um layout
 │   │   ├── simulados/
-│   │   │   ├── [id]/
+│   │   │   ├── [slug]/
 │   │   │   │   └── page.tsx  # Página de um simulado específico
 │   │   │   └── page.tsx      # Página de listagem de simulados
 │   │   └── layout.tsx    # Layout compartilhado pelo dashboard

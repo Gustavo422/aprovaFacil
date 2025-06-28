@@ -14,44 +14,39 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 const sidebarNavItems = [
   {
-    title: 'Dashboard',
+    title: 'Guru da Aprovação',
     href: '/dashboard',
-    icon: 'LayoutDashboard',
+    icon: 'GraduationCap',
   },
   {
-    title: 'Simulados',
-    href: '/dashboard/simulados',
-    icon: 'FileText',
+    title: 'Simulados Personalizados',
+    href: '/dashboard/simulados-personalizados',
+    icon: 'ClipboardList',
   },
   {
-    title: 'Questões Semanais',
-    href: '/dashboard/questoes-semanais',
+    title: '100 Questões Semanais',
+    href: '/dashboard/100-questoes',
     icon: 'ListChecks',
   },
   {
     title: 'Plano de Estudos',
-    href: '/dashboard/plano-estudos',
-    icon: 'Calendar',
+    href: '/dashboard/plano-estudos-inteligente',
+    icon: 'CalendarDays',
   },
   {
-    title: 'Mapa de Assuntos',
-    href: '/dashboard/mapa-assuntos',
+    title: 'Mapa de Matérias',
+    href: '/dashboard/mapa-materias',
     icon: 'Map',
   },
   {
-    title: 'Flashcards',
-    href: '/dashboard/flashcards',
-    icon: 'Layers',
+    title: 'Cartões de Estudo',
+    href: '/dashboard/cartoes-memorizacao',
+    icon: 'BookMarked',
   },
   {
     title: 'Apostilas',
-    href: '/dashboard/apostilas',
+    href: '/dashboard/apostila-inteligente',
     icon: 'BookOpen',
-  },
-  {
-    title: 'Configurações',
-    href: '/dashboard/configuracoes',
-    icon: 'Settings',
   },
 ];
 

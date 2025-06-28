@@ -1,0 +1,155 @@
+{
+  "timestamp": "2025-06-28T10:29:48.924Z",
+  "environment": {
+    "node": "v22.16.0",
+    "os": "win32",
+    "arch": "x64",
+    "ci": false,
+    "cpus": 8,
+    "totalMemory": 17133207552,
+    "freeMemory": 4391145472,
+    "platform": "win32",
+    "release": "10.0.22631",
+    "type": "Windows_NT"
+  },
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "iterations": 2,
+    "testUrls": [
+      {
+        "name": "home",
+        "path": "/",
+        "url": "http://localhost:3000/"
+      },
+      {
+        "name": "login",
+        "path": "/login",
+        "url": "http://localhost:3000/login"
+      },
+      {
+        "name": "dashboard",
+        "path": "/dashboard",
+        "url": "http://localhost:3000/dashboard"
+      }
+    ]
+  },
+  "results": [
+    {
+      "page": "home",
+      "url": "http://localhost:3000/",
+      "iterations": 4,
+      "successfulIterations": 0,
+      "averageLoadTime": -1,
+      "minLoadTime": -1,
+      "maxLoadTime": -1,
+      "p50": -1,
+      "p90": -1,
+      "p95": -1,
+      "successRate": 0,
+      "details": [
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        }
+      ]
+    },
+    {
+      "page": "login",
+      "url": "http://localhost:3000/login",
+      "iterations": 4,
+      "successfulIterations": 0,
+      "averageLoadTime": -1,
+      "minLoadTime": -1,
+      "maxLoadTime": -1,
+      "p50": -1,
+      "p90": -1,
+      "p95": -1,
+      "successRate": 0,
+      "details": [
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/login",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/login\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/login",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/login\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/login",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/login\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/login",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/login\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        }
+      ]
+    },
+    {
+      "page": "dashboard",
+      "url": "http://localhost:3000/dashboard",
+      "iterations": 4,
+      "successfulIterations": 0,
+      "averageLoadTime": -1,
+      "minLoadTime": -1,
+      "maxLoadTime": -1,
+      "p50": -1,
+      "p90": -1,
+      "p95": -1,
+      "successRate": 0,
+      "details": [
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/dashboard",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/dashboard",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 1,
+          "url": "http://localhost:3000/dashboard",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        },
+        {
+          "iteration": 2,
+          "url": "http://localhost:3000/dashboard",
+          "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/dashboard\", waiting until \"networkidle\"\u001b[22m\n",
+          "loadTime": -1
+        }
+      ]
+    }
+  ]
+}

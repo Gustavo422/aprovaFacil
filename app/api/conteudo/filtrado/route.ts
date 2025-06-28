@@ -49,7 +49,7 @@ export async function GET(request: Request) {
     // ========================================
 
     let simuladosQuery = supabase
-      .from('simulados')
+      .from('simulados_personalizados')
       .select(`
         *,
         concursos (
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
       .order('created_at', { ascending: false });
 
     if (simuladosError) {
-      logger.error('Erro ao buscar simulados:', {
+      console.error('Erro ao buscar simulados:', {
         error: simuladosError.message,
         userId: user.id,
         categoriaId,
@@ -82,8 +82,8 @@ export async function GET(request: Request) {
     // BUSCAR FLASHCARDS
     // ========================================
 
-    let flashcardsQuery = supabase
-      .from('flashcards')
+    let cartoesQuery = supabase
+      .from('cartoes_memorizacao')
       .select(`
         *,
         concursos (
@@ -95,16 +95,16 @@ export async function GET(request: Request) {
       .eq('concurso_id', concursoId);
 
     if (disciplina) {
-      flashcardsQuery = flashcardsQuery.eq('disciplina', disciplina);
+      cartoesQuery = cartoesQuery.eq('disciplina', disciplina);
     }
 
-    const { data: flashcards, error: flashcardsError } = await flashcardsQuery
+    const { data: cartoes, error: cartoesError } = await cartoesQuery
       .range(offset, offset + limit - 1)
       .order('created_at', { ascending: false });
 
-    if (flashcardsError) {
-      logger.error('Erro ao buscar flashcards:', {
-        error: flashcardsError.message,
+    if (cartoesError) {
+      console.error('Erro ao buscar cartões de memorização:', {
+        error: cartoesError.message,
         userId: user.id,
         categoriaId,
         concursoId,
@@ -132,7 +132,7 @@ export async function GET(request: Request) {
       .order('created_at', { ascending: false });
 
     if (apostilasError) {
-      logger.error('Erro ao buscar apostilas:', {
+      console.error('Erro ao buscar apostilas:', {
         error: apostilasError.message,
         userId: user.id,
         categoriaId,
@@ -184,13 +184,13 @@ export async function GET(request: Request) {
       { count: totalMapaAssuntos }
     ] = await Promise.all([
       supabase
-        .from('simulados')
+        .from('simulados_personalizados')
         .select('*', { count: 'exact', head: true })
         .eq('categoria_id', categoriaId)
         .eq('concurso_id', concursoId)
         .is('deleted_at', null),
       supabase
-        .from('flashcards')
+        .from('cartoes_memorizacao')
         .select('*', { count: 'exact', head: true })
         .eq('categoria_id', categoriaId)
         .eq('concurso_id', concursoId),
@@ -215,7 +215,7 @@ export async function GET(request: Request) {
     const response: ConteudoFiltradoResponse = {
       data: {
         simulados: simulados || [],
-        flashcards: flashcards || [],
+        flashcards: cartoes || [],
         apostilas: apostilas || [],
         mapaAssuntos: mapaAssuntos || [],
       },
@@ -225,22 +225,21 @@ export async function GET(request: Request) {
     };
 
     // Log da consulta
-    logger.info('Conteúdo filtrado consultado:', {
+    console.log('Conteúdo filtrado consultado:', {
       userId: user.id,
       categoriaId,
       concursoId,
       disciplina,
       dificuldade,
       totalSimulados: simulados?.length || 0,
-      totalFlashcards: flashcards?.length || 0,
+      totalFlashcards: cartoes?.length || 0,
       totalApostilas: apostilas?.length || 0,
       totalMapaAssuntos: mapaAssuntos?.length || 0,
     });
 
     return NextResponse.json(response);
-
   } catch (error) {
-    logger.error('Erro interno ao buscar conteúdo filtrado:', {
+    console.error('Erro interno ao buscar conteúdo filtrado:', {
       error: error instanceof Error ? error.message : String(error),
       categoriaId,
       concursoId,
@@ -250,4 +249,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-} 
+}

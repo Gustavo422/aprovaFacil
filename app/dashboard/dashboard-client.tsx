@@ -51,16 +51,16 @@ interface PerformanceStats {
   approvalProbability: number;
   studyStreak: number;
   weeklyProgress: {
-    simulados: number;
+    simuladosPersonalizados: number;
     questoes: number;
     studyTime: number;
     scoreImprovement: number;
   };
   disciplineStats: Array<{
     disciplina: string;
-    total_questions: number;
-    correct_answers: number;
-    accuracy_rate: number;
+    totalQuestions: number;
+    correctAnswers: number;
+    accuracyRate: number;
     trend: 'up' | 'down' | 'stable';
     color: string;
   }>;
@@ -107,7 +107,7 @@ export default function DashboardClient() {
     approvalProbability: 0,
     studyStreak: 0,
     weeklyProgress: {
-      simulados: 0,
+      simuladosPersonalizados: 0,
       questoes: 0,
       studyTime: 0,
       scoreImprovement: 0,
@@ -308,7 +308,7 @@ export default function DashboardClient() {
             </CardTitle>
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-blue-500" />
-              {performanceStats.weeklyProgress.simulados > 0 && (
+              {performanceStats.weeklyProgress.simuladosPersonalizados > 0 && (
                 <TrendingUp className="h-3 w-3 text-green-500" />
               )}
             </div>
@@ -318,7 +318,7 @@ export default function DashboardClient() {
               {performanceStats.totalSimulados}
             </div>
             <p className="text-xs text-muted-foreground">
-              {formatScoreImprovement(performanceStats.weeklyProgress.simulados)} esta semana
+              {formatScoreImprovement(performanceStats.weeklyProgress.simuladosPersonalizados)} esta semana
             </p>
             <div className="mt-2">
               <div className="flex items-center gap-1 text-xs">
@@ -445,7 +445,7 @@ export default function DashboardClient() {
               <div className="text-center py-12">
                 <BarChart3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">
-                  Complete mais simulados para ver sua evolução
+                  Complete mais simulados-personalizados para ver sua evolução
                 </p>
               </div>
             )}
@@ -472,19 +472,19 @@ export default function DashboardClient() {
                         {stat.trend === 'down' && <TrendingDown className="h-3 w-3 text-red-500" />}
                       </div>
                       <span className="text-sm font-bold" style={{ color: stat.color }}>
-                        {formatAccuracy(stat.accuracy_rate)}
+                        {formatAccuracy(stat.accuracyRate)}
                       </span>
                     </div>
                     <Progress 
-                      value={stat.accuracy_rate} 
+                      value={stat.accuracyRate} 
                       className="h-2"
                       style={{ 
                         '--progress-background': stat.color 
                       } as React.CSSProperties}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{stat.correct_answers} acertos</span>
-                      <span>{stat.total_questions} questões</span>
+                      <span>{stat.correctAnswers} acertos</span>
+                      <span>{stat.totalQuestions} questões</span>
                     </div>
                   </div>
                 ))}
@@ -493,7 +493,7 @@ export default function DashboardClient() {
               <div className="text-center py-8">
                 <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">
-                  Complete simulados para ver estatísticas por disciplina
+                  Complete simulados-personalizados para ver estatísticas por disciplina
                 </p>
               </div>
             )}
@@ -594,7 +594,7 @@ export default function DashboardClient() {
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Link href="/dashboard/simulados">
+        <Link href="/dashboard/simulados-personalizados">
           <Card className="card-hover cursor-pointer group transition-all duration-200 hover:shadow-lg hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Simulados</CardTitle>
@@ -602,13 +602,13 @@ export default function DashboardClient() {
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground">
-                Pratique com simulados completos
+                Pratique com simulados-personalizados completos
               </p>
             </CardContent>
           </Card>
         </Link>
 
-        <Link href="/dashboard/questoes-semanais">
+        <Link href="/dashboard/100-questoes">
           <Card className="card-hover cursor-pointer group transition-all duration-200 hover:shadow-lg hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -624,7 +624,7 @@ export default function DashboardClient() {
           </Card>
         </Link>
 
-        <Link href="/dashboard/flashcards">
+        <Link href="/dashboard/cartoes-memorizacao">
           <Card className="card-hover cursor-pointer group transition-all duration-200 hover:shadow-lg hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Flashcards</CardTitle>
@@ -632,13 +632,13 @@ export default function DashboardClient() {
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground">
-                Revisão com flashcards dinâmicos
+                Revisão com cartoes-memorizacao dinâmicos
               </p>
             </CardContent>
           </Card>
         </Link>
 
-        <Link href="/dashboard/apostilas">
+        <Link href="/dashboard/apostila-inteligente">
           <Card className="card-hover cursor-pointer group transition-all duration-200 hover:shadow-lg hover:scale-105">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Apostilas</CardTitle>

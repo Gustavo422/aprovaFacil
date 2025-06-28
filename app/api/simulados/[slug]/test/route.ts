@@ -16,7 +16,7 @@ export async function GET(
 
     // Buscar detalhes do simulado pelo slug
     const { data: simulado, error: simuladoError } = await supabase
-      .from('simulados')
+      .from('simulados-personalizados')
       .select('*')
       .eq('slug', slug)
       .is('deleted_at', null)
