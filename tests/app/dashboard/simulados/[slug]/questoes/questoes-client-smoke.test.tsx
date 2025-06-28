@@ -1,1 +1,0 @@
-// Teste removido pois 'QuestoesClient' não existe mais. 
