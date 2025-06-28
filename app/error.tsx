@@ -58,9 +58,7 @@ export default function GlobalError({
   };
 
   return (
-    <html>
-      <body>
-        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
           <Card className="max-w-md w-full">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
@@ -114,8 +112,6 @@ export default function GlobalError({
               </div>
             </CardContent>
           </Card>
-        </div>
-      </body>
-    </html>
+    </div>
   );
 }
