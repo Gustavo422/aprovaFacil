@@ -77,7 +77,7 @@ export default function FlashcardsClient({ cartoesMemorizacao: initialFlashcards
   }, [cartoesMemorizacao]);
 
   // Filtrar cartoesMemorizacao com base na disciplina e tema selecionados
-  const filteredFlashcards = cartoesMemorizacao.filter((flashcard: FlashcardType) => {
+  const filteredFlashcards = (cartoesMemorizacao || []).filter((flashcard: FlashcardType) => {
     if (selectedDiscipline && flashcard.discipline !== selectedDiscipline) {
       return false;
     }
@@ -92,7 +92,7 @@ export default function FlashcardsClient({ cartoesMemorizacao: initialFlashcards
   // Obter disciplinas únicas
   const disciplinas = Array.from(
     new Set(
-      cartoesMemorizacao
+      (cartoesMemorizacao || [])
         .map((f: FlashcardType) => f.discipline)
         .filter((d): d is string => Boolean(d))
     )
@@ -101,7 +101,7 @@ export default function FlashcardsClient({ cartoesMemorizacao: initialFlashcards
   // Obter temas únicos para a disciplina selecionada
   const temas = Array.from(
     new Set(
-      cartoesMemorizacao
+      (cartoesMemorizacao || [])
         .filter((f: FlashcardType) => !selectedDiscipline || f.discipline === selectedDiscipline)
         .map((f: FlashcardType) => f.tema)
         .filter((t): t is string => Boolean(t))
@@ -220,7 +220,7 @@ export default function FlashcardsClient({ cartoesMemorizacao: initialFlashcards
                     Nenhum flashcard encontrado
                   </h3>
                   <p className="mb-4 text-sm text-muted-foreground">
-                    {cartoesMemorizacao.length === 0 
+                    {!cartoesMemorizacao || cartoesMemorizacao.length === 0 
                       ? 'Não há cartões de memorização disponíveis no sistema.'
                       : 'Não há cartões de memorização disponíveis para os filtros selecionados.'
                     }

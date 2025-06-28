@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import FlashcardsClient from './flashcards-client';
 import { createServerSupabaseClient } from '@/lib/supabase';
-import type { Flashcard } from '@/src/core/database/types';
 
 export const metadata: Metadata = {
   title: 'Flashcards',
@@ -9,9 +8,11 @@ export const metadata: Metadata = {
 
 export default async function FlashcardsPage() {
   const supabase = await createServerSupabaseClient();
-  const { data: cartoesMemorizacao = [] } = await supabase
+  const { data } = await supabase
     .from('cartoes-memorizacao')
     .select('*');
-
-  return <FlashcardsClient cartoesMemorizacao={cartoesMemorizacao as Flashcard[]} />;
+    
+  const cartoesMemorizacao = data || [];
+  
+  return <FlashcardsClient cartoesMemorizacao={cartoesMemorizacao} />;
 }
