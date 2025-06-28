@@ -1,0 +1,1 @@
+// Teste removido pois 'RefactoredSimuladoPage' não existe mais. 

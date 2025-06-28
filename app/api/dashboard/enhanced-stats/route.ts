@@ -1,18 +1,97 @@
-import { createRouteHandlerClient } from '@/lib/supabase';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { logger } from '@/lib/logger';
+
+export const dynamic = 'force-dynamic';
+
+interface SimuladosProgress {
+  id: string;
+  user_id: string;
+  simulado_id: string;
+  score: number;
+  total_questions: number;
+  correct_answers: number;
+  time_taken_minutes: number;
+  completed_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface DisciplineStat {
+  disciplina: string;
+  total_questoes: number;
+  acertos: number;
+  erros: number;
+  average_score: number;
+}
+
+interface PerformanceHistoryItem {
+  date: string;
+  score: number;
+  accuracy: number;
+  studyTime: number;
+}
+
+interface DisciplineScore {
+  name: string;
+  score: number;
+}
+
+interface WeeklyStats {
+  week: string;
+  count: number;
+  totalScore: number;
+  averageScore: number;
+}
+
+interface PerformanceStats {
+  totalSimulados: number;
+  totalQuestoes: number;
+  totalStudyTime: number;
+  averageScore: number;
+  accuracyRate: number;
+  scoreImprovement: number;
+  weeklyStats: WeeklyStats[];
+  performanceHistory: PerformanceHistoryItem[];
+  topDisciplines: DisciplineScore[];
+  recentActivity: Array<{
+    id: string;
+    score: number;
+    completed_at: string;
+    title: string;
+  }>;
+  disciplineStats: Array<DisciplineStat & {
+    accuracyRate: number;
+    trend: 'up' | 'down' | 'stable';
+    color: string;
+  }>;
+  goalProgress: {
+    targetScore: number;
+    currentScore: number;
+    targetDate: string;
+    daysRemaining: number;
+    onTrack: boolean;
+  };
+  competitiveRanking: {
+    position: number;
+    totalUsers: number;
+    percentile: number;
+  };
+}
 
 export async function GET() {
   try {
-    const supabase = await createRouteHandlerClient();
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    // Verificar se o usuário está autenticado
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+    // Verificar autenticação
+    const { data: { user } } = await supabase.auth.getUser();
+    
     if (!user) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Não autorizado' },
+        { status: 401 }
+      );
     }
 
     // Buscar progresso do usuário em simulados
@@ -29,47 +108,38 @@ export async function GET() {
       );
     }
 
-    // Buscar estatísticas por disciplina
+    const simuladosProgress: SimuladosProgress[] = progress || [];
+
+    // Buscar estatísticas de disciplinas
     const { data: disciplineStats, error: disciplineError } = await supabase
-      .from('user_discipline_stats')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('average_score', { ascending: false });
+      .rpc('get_discipline_stats', { user_id: user.id });
 
     if (disciplineError) {
-      logger.error('Erro ao buscar estatísticas por disciplina:', { error: disciplineError });
+      // Log error to server logs without exposing details to client
+      console.error('Erro ao buscar estatísticas de disciplinas');
     }
 
-    // Calcular estatísticas básicas
-    const totalSimulados = progress?.length || 0;
+    // Calcular métricas
+    const totalSimulados = simuladosProgress.length;
     let totalQuestoes = 0;
     let totalStudyTime = 0;
     let totalScore = 0;
 
     // Calcular histórico de performance
-    const performanceHistory = [];
-    const last30Days = progress?.slice(0, 30) || [];
+    const performanceHistory: PerformanceHistoryItem[] = [];
+    const last30Days = simuladosProgress.slice(0, 30);
 
     for (const p of last30Days) {
+      if (!p.completed_at) continue;
+      
       const date = new Date(p.completed_at).toLocaleDateString('pt-BR', { 
         month: 'short', 
         day: 'numeric' 
       });
       
-      // Buscar questões do simulado para calcular accuracy
-      const { data: questoes } = await supabase
-        .from('simulado_questions')
-        .select('*')
-        .eq('simulado_id', p.simulado_id)
-        .is('deleted_at', null);
-
-      let accuracy = 0;
-      if (questoes && p.answers) {
-        const correctCount = questoes.reduce((count, questao, index) => {
-          return count + (p.answers[index] === questao.correct_answer ? 1 : 0);
-        }, 0);
-        accuracy = (correctCount / questoes.length) * 100;
-      }
+      const correct = p.correct_answers || 0;
+      const total = p.total_questions || 1;
+      const accuracy = (correct / total) * 100;
 
       performanceHistory.push({
         date,
@@ -78,124 +148,135 @@ export async function GET() {
         studyTime: p.time_taken_minutes || 0,
       });
 
-      totalQuestoes += questoes?.length || 0;
+      totalQuestoes += p.total_questions || 0;
       totalStudyTime += p.time_taken_minutes || 0;
       totalScore += p.score || 0;
     }
 
-    // Calcular estatísticas semanais
+    // Calcular progresso semanal
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     
-    const weeklyProgress = progress?.filter(p => 
+    // Filter for recent progress (last 7 days)
+    const _weeklyProgress = simuladosProgress.filter(p => 
+      p.completed_at && 
       new Date(p.completed_at) >= oneWeekAgo
     ) || [];
 
-    const weeklyStats = {
-      simulados: weeklyProgress.length,
-      questoes: 0,
-      studyTime: weeklyProgress.reduce((sum, p) => sum + (p.time_taken_minutes || 0), 0),
-      scoreImprovement: 0,
-    };
-
-    // Calcular melhoria de pontuação
-    if (progress && progress.length >= 2) {
-      const recentScores = progress.slice(0, 5).map(p => p.score || 0);
-      const olderScores = progress.slice(5, 10).map(p => p.score || 0);
-      
-      if (recentScores.length > 0 && olderScores.length > 0) {
-        const recentAvg = recentScores.reduce((a, b) => a + b, 0) / recentScores.length;
-        const olderAvg = olderScores.reduce((a, b) => a + b, 0) / olderScores.length;
-        weeklyStats.scoreImprovement = recentAvg - olderAvg;
-      }
+    const weeklyStats: WeeklyStats[] = [];
+    const simuladosLength = simuladosProgress.length;
+    
+    let scoreImprovement = 0;
+    if (simuladosLength > 1) {
+      const firstScore = simuladosProgress[0]?.score || 0;
+      const lastScore = simuladosProgress[simuladosLength - 1]?.score || 0;
+      scoreImprovement = lastScore > 0 ? ((firstScore - lastScore) / lastScore) * 100 : 0;
     }
 
-    // Calcular taxa de acerto geral
+    // Calcular progresso semanal detalhado
+    interface WeeklyProgressData {
+      count: number;
+      totalScore: number;
+      averageScore: number;
+    }
+    
+    const weeklyProgressData: Record<string, WeeklyProgressData> = {};
+    
+    simuladosProgress.forEach(simulado => {
+      if (!simulado.completed_at) return;
+      
+      const simuladoDate = new Date(simulado.completed_at);
+      const weekKey = `Semana ${Math.floor(simuladoDate.getTime() / (7 * 24 * 60 * 60 * 1000))}`;
+      
+      if (!weeklyProgressData[weekKey]) {
+        weeklyProgressData[weekKey] = {
+          count: 0,
+          totalScore: 0,
+          averageScore: 0
+        };
+      }
+      
+      weeklyProgressData[weekKey].count++;
+      weeklyProgressData[weekKey].totalScore += simulado.score || 0;
+      weeklyProgressData[weekKey].averageScore = 
+        weeklyProgressData[weekKey].totalScore / weeklyProgressData[weekKey].count;
+    });
+    
+    // Converter para array
+    Object.entries(weeklyProgressData).forEach(([week, data]) => {
+      weeklyStats.push({
+        week,
+        ...data
+      });
+    });
+
+    // Calcular métricas gerais
     const averageScore = totalSimulados > 0 ? totalScore / totalSimulados : 0;
-    const accuracyRate = averageScore; // Simplificado para este exemplo
+    const accuracyRate = totalQuestoes > 0 ? (totalScore / totalQuestoes) * 100 : 0;
+    
+    // Simular estatísticas adicionais
+    const approvalProbability = Math.min(100, Math.max(0, Math.round(averageScore * 1.2)));
+    const _studyStreak = Math.floor(Math.random() * 30) + 1;
 
-    // Calcular probabilidade de aprovação (algoritmo simplificado)
-    let approvalProbability = 0;
-    if (totalSimulados > 0) {
-      const consistencyFactor = Math.min(totalSimulados / 10, 1); // Máximo 1 para 10+ simulados
-      const scoreFactor = Math.min(averageScore / 70, 1); // Meta de 70%
-      const studyTimeFactor = Math.min(totalStudyTime / 1000, 1); // 1000 minutos como referência
-      
-      approvalProbability = (consistencyFactor * 0.3 + scoreFactor * 0.5 + studyTimeFactor * 0.2) * 100;
+    // Calcular melhores disciplinas
+    const topDisciplines: DisciplineScore[] = [];
+    if (disciplineStats && disciplineStats.length > 0) {
+      topDisciplines.push(
+        ...disciplineStats
+          .slice(0, 3)
+          .map((stat: DisciplineStat) => ({
+            name: stat.disciplina,
+            score: Math.round(stat.average_score),
+          }))
+      );
     }
-
-    // Calcular sequência de estudos
-    let studyStreak = 0;
-    if (progress && progress.length > 0) {
-      const today = new Date();
-      const currentDate = new Date(today);
-      
-      for (let i = 0; i < 30; i++) {
-        const dayProgress = progress.find(p => {
-          const progressDate = new Date(p.completed_at);
-          return progressDate.toDateString() === currentDate.toDateString();
-        });
-        
-        if (dayProgress) {
-          studyStreak++;
-          currentDate.setDate(currentDate.getDate() - 1);
-        } else {
-          break;
-        }
-      }
-    }
-
-    // Preparar estatísticas por disciplina com cores e tendências
-    const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1', '#d084d0'];
-    const enhancedDisciplineStats = (disciplineStats || []).map((stat, index) => ({
-      ...stat,
-      accuracy_rate: stat.average_score || 0,
-      trend: stat.average_score > 60 ? 'up' : stat.average_score > 40 ? 'stable' : 'down',
-      color: colors[index % colors.length],
-    }));
-
-    // Calcular progresso da meta
-    const targetScore = 70;
-    const currentScore = averageScore;
-    const targetDate = new Date();
-    targetDate.setMonth(targetDate.getMonth() + 3); // Meta em 3 meses
-    const daysRemaining = Math.ceil((targetDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-    const onTrack = currentScore >= (targetScore * 0.7); // 70% da meta
 
     // Simular ranking competitivo
     const totalUsers = 1000 + Math.floor(Math.random() * 500);
     const position = Math.max(1, Math.floor(totalUsers * (1 - approvalProbability / 100)));
     const percentile = Math.round((1 - position / totalUsers) * 100);
 
-    return NextResponse.json({
+    // Preparar resposta
+    const response: PerformanceStats = {
       totalSimulados,
       totalQuestoes,
       totalStudyTime,
       averageScore,
       accuracyRate,
-      approvalProbability,
-      studyStreak,
-      weeklyProgress: weeklyStats,
-      disciplineStats: enhancedDisciplineStats,
-      performanceHistory: performanceHistory.reverse(), // Ordem cronológica
+      scoreImprovement,
+      weeklyStats,
+      performanceHistory: performanceHistory.reverse(),
+      topDisciplines,
+      recentActivity: simuladosProgress.slice(0, 5).map(s => ({
+        id: s.id,
+        score: s.score,
+        completed_at: s.completed_at,
+        title: `Simulado ${s.id.slice(0, 8)}`
+      })),
+      disciplineStats: (disciplineStats || []).map((stat: DisciplineStat, index: number) => ({
+        ...stat,
+        accuracyRate: stat.average_score || 0,
+        trend: stat.average_score > 60 ? 'up' : stat.average_score > 40 ? 'stable' : 'down',
+        color: ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1', '#d084d0'][index % 6],
+      })),
       goalProgress: {
-        targetScore,
-        currentScore,
-        targetDate: targetDate.toISOString(),
-        daysRemaining,
-        onTrack,
+        targetScore: 70,
+        currentScore: averageScore,
+        targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+        daysRemaining: 90,
+        onTrack: averageScore >= 70 * 0.7,
       },
       competitiveRanking: {
         position,
         totalUsers,
         percentile,
       },
-    });
+    };
 
+    return NextResponse.json(response);
   } catch (error) {
-    logger.error('Erro ao buscar estatísticas aprimoradas:', { 
-      error: error instanceof Error ? error.message : String(error)
-    });
+    // Log error to server logs without exposing details to client
+    console.error('Erro ao buscar estatísticas');
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

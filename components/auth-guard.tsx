@@ -48,11 +48,7 @@ export function AuthGuard({
     };
   }, []);
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (requireAuth && !user) {
+  if (loading || (requireAuth && !user)) {
     return fallback || <LoadingSpinner />;
   }
 

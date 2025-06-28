@@ -1,18 +1,22 @@
-# 📚 Concursos Study App
+# 📚 AprovaJá - Plataforma de Estudos para Concursos
 
-Uma plataforma completa e moderna para preparação de concursos públicos, desenvolvida com Next.js 15, TypeScript, Tailwind CSS e Supabase.
+Uma plataforma completa, moderna e open source para preparação de concursos públicos, desenvolvida com Next.js 15, TypeScript, Tailwind CSS e Supabase.
 
 ## 🚀 Funcionalidades
 
 ### ✨ Recursos Principais
 
-- **📝 Simulados Personalizados**: Simulados completos com timer e correção automática
-- **🎯 Questões Semanais**: 100 questões selecionadas para prática semanal
-- **📋 Plano de Estudos**: Plano inteligente baseado no seu tempo disponível
-- **🗂️ Flashcards**: Sistema de memorização baseado nos seus pontos fracos
-- **🗺️ Mapa de Assuntos**: Visualização organizada dos conteúdos
-- **📖 Apostilas**: Material de estudo organizado por matéria
-- **⚙️ Configurações**: Personalização da experiência de estudo
+- **Dashboard Unificado**: Visão geral do seu progresso, atividades recentes e estatísticas consolidadas.
+- **Simulados Personalizados**: Crie simulados por matéria, com timer, correção automática e relatórios detalhados.
+- **Questões Semanais**: Pratique com questões selecionadas semanalmente, com feedback imediato e estatísticas de acerto.
+- **Plano de Estudos Inteligente**: Geração automática e dinâmica de planos, baseado no seu tempo disponível e progresso.
+- **Flashcards com Repetição Espaçada**: Memorize conteúdos com algoritmo inteligente, categorização e progresso individual.
+- **Mapa de Assuntos**: Visualize e acompanhe o domínio dos tópicos mais importantes.
+- **Apostilas Modulares**: Materiais de estudo completos, organizados por disciplina e concurso.
+- **Configurações Avançadas**: Personalize sua experiência, preferências e notificações.
+- **Monitoramento e Validação do Banco**: Ferramentas administrativas para análise de uso, integridade e performance do banco de dados.
+- **Cache Inteligente**: Sistema de cache em memória e persistente para performance otimizada.
+- **Logs e Auditoria**: Registro centralizado de eventos, erros e ações administrativas.
 
 ### 🎨 Interface Moderna
 
@@ -46,6 +50,8 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
 - **ESLint** - Linting de código
 - **PostCSS** - Processamento CSS
 - **Autoprefixer** - Prefixos CSS automáticos
+- **CacheManager** - Cache em memória e persistente
+- **Logger** - Logging estruturado
 
 ## 📦 Instalação
 
@@ -59,7 +65,7 @@ Uma plataforma completa e moderna para preparação de concursos públicos, dese
 
 ```bash
 git clone <url-do-repositorio>
-cd study-app
+cd aprovaJa-main
 ```
 
 ### 2. Instale as dependências
@@ -122,84 +128,129 @@ Acesse [http://localhost:3000](http://localhost:3000) para ver o projeto.
 ## 🏗️ Estrutura do Projeto
 
 ```
-study-app/
-├── app/                    # App Router (Next.js 15)
-│   ├── actions/           # Server Actions
-│   ├── api/              # API Routes
-│   ├── dashboard/        # Páginas do dashboard
-│   │   ├── flashcards/   # Sistema de flashcards
-│   │   ├── simulados/    # Simulados
-│   │   ├── questoes-semanais/ # Questões semanais
-│   │   ├── plano-estudos/     # Plano de estudos
-│   │   ├── mapa-assuntos/     # Mapa de assuntos
-│   │   └── configuracoes/     # Configurações
-│   ├── login/            # Página de login
-│   ├── register/         # Página de registro
-│   └── layout.tsx        # Layout principal
-├── components/           # Componentes React
-│   ├── ui/              # Componentes base (Radix UI)
-│   └── ...              # Componentes customizados
-├── lib/                 # Utilitários e configurações
-│   ├── supabase.ts      # Cliente Supabase
-│   ├── utils.ts         # Funções utilitárias
-│   └── database.types.ts # Tipos do banco de dados
-├── hooks/               # Custom hooks
-├── styles/              # Estilos globais
-├── public/              # Arquivos estáticos
-├── scripts/             # Scripts de automação
-├── docs/                # Documentação
-│   ├── database/        # Scripts e documentação do banco
-│   ├── development/     # Guias de desenvolvimento
-│   └── deployment/      # Guias de deploy
-└── src/                 # Código fonte organizado
-    ├── core/            # Lógica central
-    └── features/        # Funcionalidades específicas
+aprovaJa-main/
+├── app/                       # App Router (Next.js 15)
+│   ├── actions/               # Server Actions
+│   ├── admin/                 # Páginas administrativas (monitoramento, validação, etc)
+│   ├── api/                   # Rotas de API (REST)
+│   ├── dashboard/             # Dashboard do usuário (apostilas, simulados, flashcards, etc)
+│   ├── forgot-password/       # Recuperação de senha
+│   ├── login/                 # Login
+│   ├── register/              # Registro
+│   ├── reset-password/        # Redefinição de senha
+│   ├── selecionar-concurso/   # Seleção de concurso
+│   ├── client-layout.tsx      # Layout de cliente
+│   ├── globals.css            # Estilos globais
+│   ├── layout.tsx             # Layout principal
+│   ├── loading.tsx            # Tela de loading
+│   ├── not-found.tsx          # Página 404
+│   └── page.tsx               # Landing page
+├── components/                # Componentes React reutilizáveis
+│   ├── ui/                    # Componentes base (Radix UI customizados)
+│   ├── onboarding/            # Componentes de onboarding
+│   ├── auth-guard.tsx         # Proteção de rotas
+│   ├── auth-status.tsx        # Status de autenticação
+│   ├── error-boundary.tsx     # Boundary de erro
+│   ├── flashcard.tsx          # Flashcard
+│   ├── question-player.tsx    # Player de questões
+│   ├── rate-limit-info.tsx    # Info de rate limit
+│   ├── session-monitor.tsx    # Monitor de sessão
+│   ├── sidebar-nav.tsx        # Navegação lateral
+│   └── user-nav.tsx           # Navegação do usuário
+├── contexts/                  # Contextos React (ex: ConcursoContext)
+├── docs/                      # Documentação
+│   ├── database/              # Scripts SQL e docs do banco
+│   └── development/           # Guias de desenvolvimento e arquitetura
+├── lib/                       # Utilitários, tipos e configuração
+│   ├── repositories/          # Repositórios de acesso a dados (legado)
+│   ├── supabase.ts            # Cliente Supabase
+│   ├── database.types.ts      # Tipos do banco
+│   ├── utils.ts               # Funções utilitárias
+│   ├── cache.ts               # CacheManager
+│   ├── logger.ts              # Logger centralizado
+│   └── ...                    # Outros helpers
+├── middleware/                # Middlewares customizados
+├── public/                    # Arquivos estáticos (imagens, etc)
+├── scripts/                   # Scripts de automação e manutenção
+│   └── maintenance/           # Scripts de limpeza/manutenção de cache
+├── src/                       # Código fonte organizado por domínio
+│   ├── core/                  # Lógica central (erros, database, utils)
+│   └── features/              # Funcionalidades de domínio (apostilas, auth, dashboard, flashcards, simulados, etc)
+├── styles/                    # Estilos globais
+├── tests/                     # Testes automatizados (unitários, smoke, e2e)
+│   ├── app/                   # Testes de páginas e rotas do app
+│   ├── components/            # Testes de componentes
+│   ├── lib/                   # Testes de utilitários
+│   ├── src/                   # Testes do core/features
+│   └── setup.ts               # Setup global de testes
+├── package.json               # Dependências e scripts
+├── tsconfig.json              # Configuração TypeScript
+└── README.md                  # Este arquivo
 ```
+
+- **Observação:**
+  - O projeto está modularizado por domínio e responsabilidade (DDD).
+  - Os testes cobrem páginas, componentes, hooks, utilitários e integrações principais.
+  - Ferramentas administrativas e de monitoramento estão disponíveis na área /admin.
+  - A estrutura pode crescer conforme novas features forem adicionadas.
 
 ## 🎯 Funcionalidades Detalhadas
 
-### Sistema de Autenticação
-
+### Autenticação e Segurança
 - Registro e login com email/senha
 - Autenticação via Supabase Auth
-- Proteção de rotas
-- Middleware de autenticação
+- Proteção de rotas e middleware de autenticação
+- Políticas de acesso por tipo de conteúdo
 
 ### Dashboard Principal
-
-- Visão geral do progresso
-- Estatísticas de estudo
-- Acesso rápido às funcionalidades
-- Gráficos de desempenho
+- Visão geral do progresso consolidado
+- Estatísticas de estudo por domínio (simulados, flashcards, apostilas)
+- Atividades recentes e progresso diário
+- Gráficos de desempenho e evolução
 
 ### Simulados
-
-- Simulados personalizados por matéria
-- Timer configurável
-- Correção automática
-- Relatórios detalhados
-- Histórico de tentativas
+- Criação e resolução de simulados personalizados
+- Timer configurável e correção automática
+- Relatórios detalhados e histórico de tentativas
+- Estatísticas por disciplina e desempenho
 
 ### Questões Semanais
-
-- 100 questões selecionadas
-- Dificuldade progressiva
-- Feedback imediato
-- Estatísticas de acerto
+- 100 questões selecionadas semanalmente
+- Dificuldade progressiva e feedback imediato
+- Estatísticas de acerto e progresso
 
 ### Plano de Estudos
-
-- Geração automática de planos
-- Baseado no tempo disponível
+- Geração automática de planos de estudo
 - Ajuste dinâmico conforme progresso
 - Lembretes e notificações
 
 ### Flashcards
+- Algoritmo de repetição espaçada
+- Categorização por matéria e tema
+- Progresso individual e modo de revisão
+- Estatísticas de acerto e revisão
 
-- Sistema de repetição espaçada
-- Categorização por matéria
-- Progresso individual
-- Modo de revisão
+### Apostilas
+- Materiais completos por disciplina e concurso
+- Progresso de leitura e acompanhamento
+- Conteúdo modular e atualizado
+
+### Mapa de Assuntos
+- Visualização dos tópicos cobrados
+- Acompanhamento do domínio por tema
+- Integração com plano de estudos
+
+### Configurações
+- Preferências de usuário
+- Notificações e personalização
+
+### Ferramentas Administrativas
+- Monitoramento e validação do banco de dados
+- Limpeza e manutenção de cache
+- Logs de auditoria e erros
+- Estatísticas do sistema (em breve)
+- Gerenciamento de usuários (em breve)
+- Configurações globais (em breve)
 
 ## 🔧 Scripts Disponíveis
 
@@ -247,6 +298,11 @@ npm run test:watch   # Executa testes em modo watch
 - **`flashcards`** - Flashcards de estudo
 - **`apostilas`** - Apostilas de estudo
 - **`user_simulado_progress`** - Progresso em simulados
+- **`user_flashcard_progress`** - Progresso em flashcards
+- **`user_apostila_progress`** - Progresso em apostilas
+- **`mapa_assuntos`** - Tópicos e temas
+- **`user_performance_cache`** - Cache de performance
+- **`audit_logs`** - Logs de auditoria
 
 ### Scripts SQL Disponíveis
 
@@ -293,19 +349,20 @@ npm run test:watch   # Executa testes em modo watch
 - Use `npm run dev` para ver logs detalhados
 - Verifique o console do navegador
 - Use as páginas de teste para diagnóstico
+- Consulte logs de auditoria na área administrativa
 
 ## 📚 Documentação Adicional
 
-- **`docs/development/`** - Guias de desenvolvimento
+- **`docs/development/`** - Guias de desenvolvimento e arquitetura
 - **`docs/database/`** - Documentação do banco de dados
 - **`docs/deployment/`** - Guias de deploy
 
 ## 🤝 Contribuição
 
 1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
+2. Crie uma branch para sua feature (`git checkout -b feature/SuaFeature`)
+3. Commit suas mudanças (`git commit -m 'feat: SuaFeature'`)
+4. Push para a branch (`git push origin feature/SuaFeature`)
 5. Abra um Pull Request
 
 ## 📝 Licença
@@ -329,156 +386,3 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ---
 
 **Desenvolvido com ❤️ para ajudar na preparação de concursos públicos**
-
-# Study App - Sistema de Administração
-
-Interface web para inserir dados no banco Supabase via JSON.
-
-## 🚀 Como Usar
-
-1. **Abra o arquivo `admin-interface.html`** em um servidor local
-2. **Cole seu JSON** no campo de texto
-3. **Clique em "Inserir Dados"** para salvar no banco
-
-## 📋 Tipos de Conteúdo Suportados
-
-### 1. Simulados (Metadados Apenas)
-
-```json
-{
-  "title": "Simulado de Matemática",
-  "description": "Questões de álgebra e geometria",
-  "questions_count": 20,
-  "time_minutes": 60,
-  "difficulty": "Médio",
-  "is_public": true
-}
-```
-
-### 2. Simulados com Questões (NOVO!)
-
-```json
-{
-  "title": "Simulado de Direito Constitucional",
-  "description": "Questões de concursos recentes",
-  "time_minutes": 60,
-  "difficulty": "Médio",
-  "is_public": true,
-  "questions": [
-    {
-      "question_number": 1,
-      "question_text": "Qual é o princípio fundamental que garante a inviolabilidade do direito à vida?",
-      "alternatives": {
-        "A": "Princípio da dignidade da pessoa humana",
-        "B": "Princípio da igualdade",
-        "C": "Princípio da legalidade",
-        "D": "Princípio da separação dos poderes",
-        "E": "Princípio da soberania"
-      },
-      "correct_answer": "A",
-      "explanation": "O princípio da dignidade da pessoa humana é o fundamento da República.",
-      "discipline": "Direito Constitucional",
-      "topic": "Princípios Fundamentais",
-      "difficulty": "Fácil"
-    }
-  ]
-}
-```
-
-### 3. Questões Semanais
-
-```json
-{
-  "title": "Questões da Semana 1",
-  "description": "Questões de revisão semanal",
-  "week_number": 1,
-  "year": 2024,
-  "is_public": true
-}
-```
-
-### 4. Flashcards
-
-```json
-{
-  "front": "O que é Direito Constitucional?",
-  "back": "Ramo do direito que estuda a Constituição e suas normas",
-  "disciplina": "Direito Constitucional",
-  "tema": "Conceitos Básicos",
-  "subtema": "Definição",
-  "is_public": true
-}
-```
-
-### 5. Apostilas
-
-```json
-{
-  "title": "Apostila de Direito Administrativo",
-  "description": "Material completo para concursos",
-  "concurso_id": "uuid-do-concurso",
-  "is_public": true
-}
-```
-
-### 6. Mapa de Assuntos
-
-```json
-{
-  "disciplina": "Direito Constitucional",
-  "tema": "Princípios Fundamentais",
-  "subtema": "Dignidade da Pessoa Humana",
-  "concurso_id": "uuid-do-concurso",
-  "is_public": true
-}
-```
-
-## 🔧 Configuração
-
-### 1. Credenciais do Supabase
-
-Edite as variáveis no arquivo `admin-interface.html`:
-
-```javascript
-const SUPABASE_URL = 'sua-url-do-supabase';
-const SUPABASE_KEY = 'sua-chave-anon-do-supabase';
-```
-
-### 2. Tabela de Questões (NOVO!)
-
-Para usar simulados com questões, execute o script SQL:
-
-```sql
--- Execute o arquivo scripts/create-questions-table.sql no seu Supabase
-```
-
-## ✅ Validações
-
-O sistema valida automaticamente:
-
-- ✅ Campos obrigatórios
-- ✅ Tipos de dados corretos
-- ✅ Valores permitidos (ex: dificuldades)
-- ✅ Estrutura das questões (alternativas, respostas corretas)
-- ✅ Números de questões sequenciais
-
-## 🎯 Exemplos Prontos
-
-Veja os arquivos na pasta `exemplos/`:
-
-- `simulado-com-questoes.json` - Exemplo completo de simulado com questões
-- Outros exemplos para cada tipo de conteúdo
-
-## 🔒 Segurança
-
-- ✅ Validação rigorosa antes da inserção
-- ✅ Políticas de segurança do Supabase ativas
-- ✅ Apenas dados válidos são aceitos
-- ✅ Logs de auditoria automáticos
-
-## 📝 Notas
-
-- **Simulados com questões**: Cria automaticamente o simulado e todas as questões relacionadas
-- **Validação em tempo real**: O botão só fica ativo quando o JSON é válido
-- **Detecção automática**: O sistema identifica o tipo de conteúdo automaticamente
-- **Feedback visual**: Status claro sobre sucesso ou erros

@@ -8,8 +8,8 @@ const filesToFix = [
   'app/api/flashcards/progress/route.ts',
   'app/api/example/route.ts',
   'app/api/estatisticas/route.ts',
-  'app/api/apostilas/[id]/modulos/route.ts',
-  'app/api/apostilas/[id]/progress/route.ts'
+  'app/api/apostilas/[slug]/modulos/route.ts',
+  'app/api/apostilas/[slug]/progress/route.ts'
 ];
 
 async function fixSupabaseClient(filePath) {

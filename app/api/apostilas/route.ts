@@ -23,21 +23,21 @@ export async function GET(_request: Request) {
     if (id) {
       // Se um ID for fornecido, busca uma única apostila com seu conteúdo
       query = supabase
-        .from('apostilas')
+        .from('apostila-inteligente')
         .select('*, apostila_content(*)')
         .eq('id', id);
     } else {
-      // Caso contrário, busca uma lista de apostilas
-      query = supabase.from('apostilas').select('*');
+      // Caso contrário, busca uma lista de apostila-inteligente
+      query = supabase.from('apostila-inteligente').select('*');
       if (concursoId) {
         query = query.eq('concurso_id', concursoId);
       }
     }
 
-    const { data: apostilas, error } = await query;
+    const { data: apostilaInteligente, error } = await query;
 
     if (error) {
-      logger.error('Erro ao buscar apostilas:', {
+      logger.error('Erro ao buscar apostila-inteligente:', {
         error: error instanceof Error ? error.message : String(error),
       });
       return NextResponse.json(
@@ -48,8 +48,8 @@ export async function GET(_request: Request) {
 
     // A lógica para enriquecer com dados do concurso é principalmente para listas,
     // mas pode ser mantida para consistência.
-    if (apostilas && apostilas.length > 0) {
-      const concursoIds = apostilas
+    if (apostilaInteligente && apostilaInteligente.length > 0) {
+      const concursoIds = apostilaInteligente
         .map(a => a.concurso_id)
         .filter(id => id !== null) as string[];
 
@@ -61,7 +61,7 @@ export async function GET(_request: Request) {
 
         if (!concursosError && concursos) {
           const concursosMap = new Map(concursos.map(c => [c.id, c]));
-          const apostilasComConcurso = apostilas.map(apostila => ({
+          const apostilaInteligenteComConcurso = apostilaInteligente.map(apostila => ({
             ...apostila,
             concursos: apostila.concurso_id
               ? concursosMap.get(apostila.concurso_id)
@@ -69,14 +69,14 @@ export async function GET(_request: Request) {
           }));
 
           return NextResponse.json({
-            apostilas: apostilasComConcurso,
+            apostilaInteligente: apostilaInteligenteComConcurso,
           });
         }
       }
     }
 
     return NextResponse.json({
-      apostilas,
+      apostilaInteligente,
     });
   } catch (error) {
     logger.error('Erro ao processar requisição:', {
@@ -116,7 +116,7 @@ export async function POST(_request: Request) {
 
     // Criar a apostila
     const { data: apostila, error } = await supabase
-      .from('apostilas')
+      .from('apostila-inteligente')
       .insert({
         title,
         description,

@@ -22,7 +22,7 @@ export async function GET(_request: Request) {
       .eq('user_id', user.id);
 
     if (simuladosError) {
-      logger.error('Erro ao buscar estatísticas de simulados:', {
+      console.error('Erro ao buscar estatísticas de simulados:', {
         error: simuladosError,
       });
       return NextResponse.json(
@@ -36,12 +36,12 @@ export async function GET(_request: Request) {
     const totalQuestoes =
       simuladosStats?.reduce((acc, curr) => {
         const answers = curr.answers as Record<string, string>;
-        return acc + Object.keys(answers).length;
+        return acc + Object.keys(answers || {}).length;
       }, 0) || 0;
 
     const totalAcertos =
       simuladosStats?.reduce((acc, curr) => {
-        return acc + curr.score;
+        return acc + (curr.score || 0);
       }, 0) || 0;
 
     const taxaAcerto =
@@ -49,7 +49,7 @@ export async function GET(_request: Request) {
 
     const tempoEstudo =
       simuladosStats?.reduce((acc, curr) => {
-        return acc + curr.time_taken_minutes;
+        return acc + (curr.time_taken_minutes || 0);
       }, 0) || 0;
 
     // Buscar plano de estudos ativo
@@ -85,7 +85,7 @@ export async function GET(_request: Request) {
     // Buscar atividades recentes
     const { data: atividadesRecentes, error: atividadesError } = await supabase
       .from('user_simulado_progress')
-      .select('*, simulados(id, title, description, difficulty)')
+      .select('*, simulados_personalizados!inner(id, title, description, difficulty, concurso_id)')
       .eq('user_id', user.id)
       .order('completed_at', { ascending: false })
       .limit(5);
@@ -103,8 +103,8 @@ export async function GET(_request: Request) {
     // Buscar informações dos concursos das atividades recentes
     if (atividadesRecentes && atividadesRecentes.length > 0) {
       const concursoIds = atividadesRecentes
-        .map(a => a.simulados?.concurso_id)
-        .filter(id => id !== null && id !== undefined) as string[];
+        .map(a => a.simulados_personalizados?.concurso_id)
+        .filter((id: string | null | undefined): id is string => id !== null && id !== undefined);
 
       if (concursoIds.length > 0) {
         const { data: concursos, error: concursosError } = await supabase
@@ -115,9 +115,10 @@ export async function GET(_request: Request) {
         if (!concursosError && concursos) {
           const concursosMap = new Map(concursos.map(c => [c.id, c]));
           atividadesRecentes.forEach(atividade => {
-            if (atividade.simulados && atividade.simulados.concurso_id) {
-              atividade.simulados.concursos = concursosMap.get(
-                atividade.simulados.concurso_id
+            if (atividade.simulados_personalizados && atividade.simulados_personalizados.concurso_id) {
+              // @ts-ignore - Adding concursos property dynamically
+              atividade.simulados_personalizados.concursos = concursosMap.get(
+                atividade.simulados_personalizados.concurso_id
               );
             }
           });
@@ -152,8 +153,8 @@ export async function GET(_request: Request) {
     // Calcular pontos fracos baseados nas estatísticas de disciplina
     const pontosFracos =
       disciplinaStats
-        ?.filter(stat => stat.average_score < 70)
-        .map(stat => ({
+        ?.filter((stat: any) => stat.average_score < 70)
+        .map((stat: any) => ({
           disciplina: stat.disciplina,
           acertos: Math.round(stat.average_score),
         }))
@@ -174,7 +175,7 @@ export async function GET(_request: Request) {
       concursos: concursos || [],
     });
   } catch (error) {
-    logger.error('Erro ao processar requisição:', { error });
+    console.error('Erro ao processar requisição:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

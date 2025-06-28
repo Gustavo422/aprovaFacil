@@ -1,7 +1,6 @@
 'use client';
 
 import { useAuth } from '@/src/features/auth/hooks/use-auth';
-import type { AuthSession } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,27 +18,11 @@ interface SessionInfo {
 }
 
 export function SessionMonitor() {
-  const { user, loading } = useAuth();
+  const { user, session, loading } = useAuth();
   const { toast } = useToast();
-  const [session, setSession] = useState<AuthSession | null>(null);
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const supabase = createClient();
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-    };
-    fetchSession();
-
-    // Escutar mudanças na sessão
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [supabase]);
 
   useEffect(() => {
     if (!session?.expires_at) {
@@ -58,7 +41,7 @@ export function SessionMonitor() {
         expiresAt,
         timeRemaining,
         isExpiringSoon,
-        isExpired
+        isExpired,
       });
     };
 
@@ -70,9 +53,8 @@ export function SessionMonitor() {
   const handleRefreshSession = async () => {
     setIsRefreshing(true);
     try {
-      const { data, error } = await supabase.auth.refreshSession();
-      if (!error && data.session) {
-        setSession(data.session);
+      const { error } = await supabase.auth.refreshSession();
+      if (!error) {
         toast({
           title: 'Sessão renovada',
           description: 'Sua sessão foi renovada com sucesso.',
@@ -97,10 +79,10 @@ export function SessionMonitor() {
 
   const formatTimeRemaining = (ms: number): string => {
     if (ms <= 0) return 'Expirada';
-    
+
     const minutes = Math.floor(ms / (1000 * 60));
     const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-    
+
     if (minutes > 0) {
       return `${minutes}m ${seconds}s`;
     }
@@ -135,9 +117,7 @@ export function SessionMonitor() {
         <CardContent>
           <Alert>
             <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              Nenhuma sessão ativa
-            </AlertDescription>
+            <AlertDescription>Nenhuma sessão ativa</AlertDescription>
           </Alert>
         </CardContent>
       </Card>
@@ -155,7 +135,9 @@ export function SessionMonitor() {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Status:</span>
-          <Badge variant={sessionInfo?.isExpired ? 'destructive' : sessionInfo?.isExpiringSoon ? 'secondary' : 'default'}>
+          <Badge
+            variant={sessionInfo?.isExpired ? 'destructive' : sessionInfo?.isExpiringSoon ? 'secondary' : 'default'}
+          >
             {sessionInfo?.isExpired ? 'Expirada' : sessionInfo?.isExpiringSoon ? 'Expirando' : 'Ativa'}
           </Badge>
         </div>
@@ -166,9 +148,7 @@ export function SessionMonitor() {
               <span className="text-sm font-medium">Expira em:</span>
               <div className="flex items-center space-x-2">
                 <Clock className="h-4 w-4" />
-                <span className="text-sm font-mono">
-                  {formatTimeRemaining(sessionInfo.timeRemaining)}
-                </span>
+                <span className="text-sm font-mono">{formatTimeRemaining(sessionInfo.timeRemaining)}</span>
               </div>
             </div>
 
@@ -180,18 +160,14 @@ export function SessionMonitor() {
             {sessionInfo.isExpiringSoon && !sessionInfo.isExpired && (
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  Sua sessão expira em breve. Renove para continuar.
-                </AlertDescription>
+                <AlertDescription>Sua sessão expira em breve. Renove para continuar.</AlertDescription>
               </Alert>
             )}
 
             {sessionInfo.isExpired && (
               <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  Sua sessão expirou. Renove para continuar.
-                </AlertDescription>
+                <AlertDescription>Sua sessão expirou. Renove para continuar.</AlertDescription>
               </Alert>
             )}
 
@@ -216,10 +192,8 @@ export function SessionMonitor() {
           </>
         )}
 
-        <div className="text-xs text-muted-foreground">
-          Última atualização: {new Date().toLocaleTimeString()}
-        </div>
+        <div className="text-xs text-muted-foreground">Última atualização: {new Date().toLocaleTimeString()}</div>
       </CardContent>
     </Card>
   );
-} 
+}

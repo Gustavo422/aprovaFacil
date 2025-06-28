@@ -38,8 +38,8 @@ const TABLE_USAGE_MAP = {
   concurso_categorias: {
     locations: [
       'lib/database.types.ts',
-      'src/core/database/repositories/simulados-repository.ts',
-      'src/features/simulados/services/simulados-service.ts',
+      'src/core/database/repositories/simulados-personalizados-repository.ts',
+      'src/features/simulados-personalizados/services/simulados-personalizados-service.ts',
     ],
     operations: ['SELECT'],
     riskLevel: 'MEDIUM' as const,
@@ -54,120 +54,120 @@ const TABLE_USAGE_MAP = {
   concursos: {
     locations: [
       'lib/database.types.ts',
-      'src/core/database/repositories/simulados-repository.ts',
-      'src/features/simulados/services/simulados-service.ts',
+      'src/core/database/repositories/simulados-personalizados-repository.ts',
+      'src/features/simulados-personalizados/services/simulados-personalizados-service.ts',
     ],
     operations: ['SELECT'],
     riskLevel: 'MEDIUM' as const,
   },
-  simulados: {
+  "simulados-personalizados": {
     locations: [
       'lib/database.types.ts',
-      'src/core/database/repositories/simulados-repository.ts',
-      'src/features/simulados/services/simulados-service.ts',
-      'app/api/simulados/route.ts',
+      'src/core/database/repositories/simulados-personalizados-repository.ts',
+      'src/features/simulados-personalizados/services/simulados-personalizados-service.ts',
+      'app/api/simulados-personalizados/route.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
     riskLevel: 'HIGH' as const,
   },
-  simulado_questions: {
+  "simulado-questions": {
     locations: [
       'lib/database.types.ts',
-      'src/core/database/repositories/simulados-repository.ts',
-      'src/features/simulados/services/simulados-service.ts',
+      'src/core/database/repositories/simulados-personalizados-repository.ts',
+      'src/features/simulados-personalizados/services/simulados-personalizados-service.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
     riskLevel: 'HIGH' as const,
   },
-  user_simulado_progress: {
+  "user-simulado-progress": {
     locations: [
       'lib/database.types.ts',
-      'src/core/database/repositories/simulados-repository.ts',
-      'src/features/simulados/services/simulados-service.ts',
+      'src/core/database/repositories/simulados-personalizados-repository.ts',
+      'src/features/simulados-personalizados/services/simulados-personalizados-service.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE'],
     riskLevel: 'HIGH' as const,
   },
-  flashcards: {
+  "cartoes-memorizacao": {
     locations: [
       'lib/database.types.ts',
-      'src/features/flashcards/services/flashcards-service.ts',
-      'app/api/flashcards/route.ts',
+      'src/features/cartoes-memorizacao/services/cartoes-memorizacao-service.ts',
+      'app/api/cartoes-memorizacao/route.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
     riskLevel: 'MEDIUM' as const,
   },
-  user_flashcard_progress: {
+  "user-flashcard-progress": {
     locations: [
       'lib/database.types.ts',
-      'src/features/flashcards/services/flashcards-service.ts',
+      'src/features/cartoes-memorizacao/services/cartoes-memorizacao-service.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE'],
     riskLevel: 'MEDIUM' as const,
   },
-  apostilas: {
+  "apostila-inteligente": {
     locations: [
       'lib/database.types.ts',
-      'src/features/apostilas/services/apostilas-service.ts',
-      'app/api/apostilas/route.ts',
+      'src/features/apostila-inteligente/services/apostila-inteligente-service.ts',
+      'app/api/apostila-inteligente/route.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
     riskLevel: 'MEDIUM' as const,
   },
-  apostila_content: {
+  "apostila-content": {
     locations: [
       'lib/database.types.ts',
-      'src/features/apostilas/services/apostilas-service.ts',
+      'src/features/apostila-inteligente/services/apostila-inteligente-service.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
     riskLevel: 'MEDIUM' as const,
   },
-  user_apostila_progress: {
+  "user-apostila-progress": {
     locations: [
       'lib/database.types.ts',
-      'src/features/apostilas/services/apostilas-service.ts',
+      'src/features/apostila-inteligente/services/apostila-inteligente-service.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE'],
     riskLevel: 'MEDIUM' as const,
   },
-  questoes_semanais: {
+  "questoes-semanais": {
     locations: [
       'lib/database.types.ts',
-      'app/api/questoes-semanais/route.ts',
+      'app/api/100-questoes/route.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
     riskLevel: 'MEDIUM' as const,
   },
-  user_questoes_semanais_progress: {
+  "user-questoes-semanais-progress": {
     locations: [
       'lib/database.types.ts',
-      'app/api/questoes-semanais/route.ts',
+      'app/api/100-questoes/route.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE'],
     riskLevel: 'MEDIUM' as const,
   },
-  mapa_assuntos: {
+  "mapa-assuntos": {
     locations: [
       'lib/database.types.ts',
     ],
     operations: ['SELECT'],
     riskLevel: 'LOW' as const,
   },
-  user_mapa_assuntos_status: {
+  "user-mapa-assuntos-status": {
     locations: [
       'lib/database.types.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE'],
     riskLevel: 'LOW' as const,
   },
-  planos_estudo: {
+  "planos-estudo": {
     locations: [
       'lib/database.types.ts',
     ],
     operations: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
     riskLevel: 'LOW' as const,
   },
-  user_concurso_preferences: {
+  "user-concurso-preferences": {
     locations: [
       'lib/database.types.ts',
     ],

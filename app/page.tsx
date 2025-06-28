@@ -5,14 +5,13 @@ import Image from 'next/image';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  LayoutDashboard,
-  FileText,
+  ClipboardList,
   ListChecks,
-  Calendar,
+  CalendarDays,
   Map,
-  Layers,
+  BookMarked,
   BookOpen,
-  Settings,
+  GraduationCap,
 } from 'lucide-react';
 import { useState, useCallback, useMemo } from 'react';
 import { SidebarNav } from '@/components/sidebar-nav';
@@ -22,96 +21,86 @@ import { Menu } from 'lucide-react';
 
 const sidebarNavItems = [
   {
-    title: 'Dashboard',
+    title: 'Guru da Aprovação',
     href: '/dashboard',
-    icon: 'LayoutDashboard',
+    icon: 'GraduationCap',
   },
   {
-    title: 'Simulados',
-    href: '/dashboard/simulados',
-    icon: 'FileText',
+    title: 'Simulados Personalizados',
+    href: '/dashboard/simulados-personalizados',
+    icon: 'ClipboardList',
   },
   {
     title: 'Questões Semanais',
-    href: '/dashboard/questoes-semanais',
+    href: '/dashboard/100-questoes',
     icon: 'ListChecks',
   },
   {
     title: 'Plano de Estudos',
-    href: '/dashboard/plano-estudos',
-    icon: 'Calendar',
+    href: '/dashboard/plano-estudos-inteligente',
+    icon: 'CalendarDays',
   },
   {
     title: 'Mapa de Assuntos',
-    href: '/dashboard/mapa-assuntos',
+    href: '/dashboard/mapa-materias',
     icon: 'Map',
   },
   {
-    title: 'Flashcards',
-    href: '/dashboard/flashcards',
-    icon: 'Layers',
+    title: 'Cartões de Estudo',
+    href: '/dashboard/cartoes-memorizacao',
+    icon: 'BookMarked',
   },
   {
     title: 'Apostilas',
-    href: '/dashboard/apostilas',
+    href: '/dashboard/apostila-inteligente',
     icon: 'BookOpen',
-  },
-  {
-    title: 'Configurações',
-    href: '/dashboard/configuracoes',
-    icon: 'Settings',
   },
 ];
 
 const featureItems = [
   {
-    title: 'Dashboard',
+    title: 'Guru da Aprovação',
     href: '/dashboard',
-    icon: LayoutDashboard,
+    icon: GraduationCap,
     description: 'Visão geral do seu progresso e atividades.',
   },
   {
-    title: 'Simulados',
-    href: '/dashboard/simulados',
-    icon: FileText,
-    description: 'Teste seus conhecimentos com simulados personalizados.',
+    title: 'Simulados Personalizados',
+    href: '/dashboard/simulados-personalizados',
+    icon: ClipboardList,
+    description: 'Teste seus conhecimentos com simulados personalizados e acompanhe seu desempenho.',
   },
   {
     title: 'Questões Semanais',
-    href: '/dashboard/questoes-semanais',
+    href: '/dashboard/100-questoes',
     icon: ListChecks,
-    description: 'Pratique com questões selecionadas semanalmente.',
+    description: 'Pratique com 100 questões selecionadas semanalmente para fixação do conteúdo.',
   },
   {
     title: 'Plano de Estudos',
-    href: '/dashboard/plano-estudos',
-    icon: Calendar,
-    description: 'Organize sua rotina de estudos de forma eficiente.',
+    href: '/dashboard/plano-estudos-inteligente',
+    icon: CalendarDays,
+    description: 'Plano de estudos inteligente personalizado para otimizar seu aprendizado.',
   },
   {
-    title: 'Mapa de Assuntos',
-    href: '/dashboard/mapa-assuntos',
+    title: 'Mapa de Matérias',
+    href: '/dashboard/mapa-materias',
     icon: Map,
-    description: 'Visualize e domine os tópicos importantes.',
+    description: 'Visualize e domine as matérias e tópicos importantes para sua aprovação.',
   },
   {
-    title: 'Flashcards',
-    href: '/dashboard/flashcards',
-    icon: Layers,
-    description: 'Memorize conteúdo de forma rápida e eficaz.',
+    title: 'Cartões de Estudo',
+    href: '/dashboard/cartoes-memorizacao',
+    icon: BookMarked,
+    description: 'Cartões de memorização para fixação de conceitos-chave de forma eficiente.',
   },
   {
     title: 'Apostilas',
-    href: '/dashboard/apostilas',
+    href: '/dashboard/apostila-inteligente',
     icon: BookOpen,
-    description: 'Acesse materiais de estudo completos e atualizados.',
+    description: 'Apostila inteligente com conteúdo completo e atualizado para seus estudos.',
   },
-  {
-    title: 'Configurações',
-    href: '/dashboard/configuracoes',
-    icon: Settings,
-    description: 'Ajuste as preferências do seu aplicativo.',
-  },
+
 ];
 
 export default function HomePage() {

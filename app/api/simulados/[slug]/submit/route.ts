@@ -35,7 +35,7 @@ export async function POST(
 
     // Buscar o simulado pelo slug
     const { data: simulado, error: simuladoError } = await supabase
-      .from('simulados')
+      .from('simulados-personalizados')
       .select('id')
       .eq('slug', slug)
       .is('deleted_at', null)

@@ -100,7 +100,7 @@ export class DashboardService {
         .limit(limit);
 
       if (simuladosProgress) {
-        simuladosProgress.forEach(progress => {
+        simuladosProgress.forEach((progress: any) => {
           activities.push({
             id: progress.id,
             type: 'simulado',
@@ -128,7 +128,7 @@ export class DashboardService {
         .limit(limit);
 
       if (flashcardsProgress) {
-        flashcardsProgress.forEach(progress => {
+        flashcardsProgress.forEach((progress: any) => {
           activities.push({
             id: progress.id,
             type: 'flashcard',
@@ -156,7 +156,7 @@ export class DashboardService {
         .limit(limit);
 
       if (apostilasProgress) {
-        apostilasProgress.forEach(progress => {
+        apostilasProgress.forEach((progress: any) => {
           activities.push({
             id: progress.id,
             type: 'apostila',

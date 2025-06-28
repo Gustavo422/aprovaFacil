@@ -77,7 +77,7 @@ export function UserNav() {
   // Se ainda está carregando, mostrar um placeholder
   if (loading) {
     return (
-      <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+      <Button data-testid="user-nav-loading" variant="ghost" className="relative h-9 w-9 rounded-full">
         <Avatar className="h-9 w-9">
           <AvatarFallback className="bg-primary/10 text-primary font-medium">
             ...

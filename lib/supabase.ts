@@ -1,13 +1,5 @@
-import { createBrowserClient } from '@supabase/ssr'
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createBrowserClient, createServerClient, type CookieOptions } from '@supabase/ssr'
 import type { Database } from './database.types'
-
-// Cliente para uso no lado do cliente (componentes)
-export const createClient = () =>
-  createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
 // Cliente para uso no lado do servidor (API routes, Server Actions)
 export const createServerSupabaseClient = async () => {
@@ -43,7 +35,6 @@ export const createServerSupabaseClient = async () => {
       },
     }
   )
-
 }
 
 // Cliente para uso em route handlers
@@ -70,6 +61,11 @@ export const createRouteHandlerClient = async () => {
   )
 }
 
-// Manter compatibilidade com código existente
-export const supabase = createClient()
+// Cliente para uso no lado do cliente (navegador)
+export const createClient = () =>
+  createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
 

@@ -29,9 +29,8 @@
     "incremental": true,
     "types": [
       "node",
-      "jest",
-      "@types/testing-library__react",
-      "@types/react"
+      "@types/react",
+      "vitest/globals"
     ],
     "plugins": [
       {
@@ -49,11 +48,20 @@
       "@/components/*": [
         "./components/*"
       ],
+      "@/providers/*": [
+        "./src/providers/*"
+      ],
       "@/types/*": [
         "./types/*"
       ],
       "@/app/*": [
         "./app/*"
+      ],
+      "@/features/*": [
+        "./src/features/*"
+      ],
+      "@/src/*": [
+        "./src/*"
       ]
     },
     "target": "ES2022"

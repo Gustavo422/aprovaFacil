@@ -137,7 +137,7 @@ export async function GET(_request: Request) {
       .select(
         `
         *,
-        flashcards (
+        cartoes-memorizacao (
           id,
           front,
           back,
@@ -154,7 +154,7 @@ export async function GET(_request: Request) {
       query = query.eq('status', status);
     }
 
-    // Filtrar por flashcards que precisam de revisão
+    // Filtrar por cartoes-memorizacao que precisam de revisão
     const agora = new Date().toISOString();
     query = query.lte('next_review', agora);
 

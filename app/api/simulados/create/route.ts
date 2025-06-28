@@ -63,7 +63,7 @@ export async function POST(request: Request) {
 
     // Iniciar transação
     const { data: simulado, error: simuladoError } = await supabase
-      .from('simulados')
+      .from('simulados-personalizados')
       .insert({
         title: validatedData.title,
         slug,
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
       
       // Reverter criação do simulado
       await supabase
-        .from('simulados')
+        .from('simulados-personalizados')
         .delete()
         .eq('id', simulado.id);
 
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
     await supabase.from('audit_logs').insert({
       user_id: user.id,
       action: 'SIMULADO_CREATED',
-      table_name: 'simulados',
+      table_name: 'simulados-personalizados',
       record_id: simulado.id,
       new_values: {
         title: validatedData.title,
