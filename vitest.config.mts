@@ -24,7 +24,6 @@ export default defineConfig({
       ],
       exclude: [
         'node_modules/',
-        'tests/',
         'coverage/',
         '.next/',
         '*.config.js',
@@ -36,10 +35,7 @@ export default defineConfig({
     include: [
       'src/**/*.test.ts',
       'src/**/*.test.tsx',
-      'tests/**/*.test.ts',
-      'tests/**/*.test.tsx',
     ],
-    setupFiles: ['tests/setup.ts'],
   },
   resolve: {
     alias: {
