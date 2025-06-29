@@ -41,4 +41,3 @@ export function QuestoesClient() {
   );
 }
 
-export default QuestoesClient;

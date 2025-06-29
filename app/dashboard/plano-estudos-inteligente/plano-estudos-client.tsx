@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import PlanoEstudosForm from '@/app/dashboard/plano-estudos-inteligente/plano-estudos-inteligente-form';
+import { PlanoEstudosForm } from '@/app/dashboard/plano-estudos-inteligente/plano-estudos-inteligente-form';
 import type { PlanoEstudo } from '@/src/core/database/types';
 
 export default function PlanoEstudosClient() {
