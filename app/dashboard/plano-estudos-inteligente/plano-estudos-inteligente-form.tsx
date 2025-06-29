@@ -272,4 +272,3 @@ export function PlanoEstudosInteligenteForm({
   );
 }
 
-export default PlanoEstudosInteligenteForm;

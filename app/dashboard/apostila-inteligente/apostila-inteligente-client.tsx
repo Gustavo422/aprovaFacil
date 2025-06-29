@@ -44,4 +44,3 @@ export function ApostilaInteligenteClient() {
   );
 }
 
-export default ApostilaInteligenteClient;

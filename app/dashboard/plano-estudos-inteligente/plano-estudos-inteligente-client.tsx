@@ -88,4 +88,3 @@ export function PlanoEstudosInteligenteClient() {
   );
 }
 
-export default PlanoEstudosInteligenteClient;

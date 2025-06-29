@@ -1,11 +1,39 @@
 import { Database } from '@/lib/database.types';
-
-// ========================================
-// TIPOS BASE DO BANCO DE DADOS
-// ========================================
+import type {
+  Concurso,
+  ConcursoInsert,
+  ConcursoUpdate,
+  Simulado,
+  SimuladoInsert,
+  SimuladoUpdate,
+  SimuladoQuestion,
+  SimuladoQuestionInsert,
+  SimuladoQuestionUpdate,
+  Flashcard,
+  FlashcardInsert,
+  FlashcardUpdate,
+  Apostila,
+  ApostilaInsert,
+  ApostilaUpdate,
+  MapaAssunto,
+  MapaAssuntoInsert,
+  MapaAssuntoUpdate,
+  UserConcursoPreference,
+  UserConcursoPreferenceInsert,
+  UserConcursoPreferenceUpdate,
+  ConcursoComCategoria,
+  CategoriaComDisciplinas
+  UserDisciplineStats,
+  UserDisciplineStatsInsert,
+  UserDisciplineStatsUpdate,
+  CacheConfig,
+  CacheConfigInsert,
+  CacheConfigUpdate
+} from '@/src/core/database/types';
 
 type Tables = Database['public']['Tables'];
 
+// Tipos específicos estendidos ou modificados
 // Categorias de Concurso
 export type ConcursoCategoria = Tables['concurso_categorias']['Row'] & {
   created_by?: string | null;
@@ -22,88 +50,7 @@ export type CategoriaDisciplina = Tables['categoria_disciplinas']['Row'] & {
 export type CategoriaDisciplinaInsert = Tables['categoria_disciplinas']['Insert'];
 export type CategoriaDisciplinaUpdate = Tables['categoria_disciplinas']['Update'];
 
-// Concursos
-export type Concurso = Tables['concursos']['Row'] & {
-  created_by?: string | null;
-  deleted_at?: string | null;
-};
-export type ConcursoInsert = Tables['concursos']['Insert'];
-export type ConcursoUpdate = Tables['concursos']['Update'];
-
-// Preferências do Usuário por Concurso
-export type UserConcursoPreference = Tables['user_concurso_preferences']['Row'] & {
-  expires_at?: string | null;
-};
-export type UserConcursoPreferenceInsert = Tables['user_concurso_preferences']['Insert'];
-export type UserConcursoPreferenceUpdate = Tables['user_concurso_preferences']['Update'];
-
-// ========================================
-// TIPOS DE CONTEÚDO FILTRADO
-// ========================================
-
-// Simulados
-export type Simulado = Tables['simulados']['Row'] & {
-  slug: string;
-  created_by?: string | null;
-  deleted_at?: string | null;
-};
-export type SimuladoInsert = Tables['simulados']['Insert'];
-export type SimuladoUpdate = Tables['simulados']['Update'];
-
-// Questões de Simulado
-export type SimuladoQuestion = Tables['simulado_questions']['Row'];
-export type SimuladoQuestionInsert = Tables['simulado_questions']['Insert'];
-export type SimuladoQuestionUpdate = Tables['simulado_questions']['Update'];
-
-// Flashcards (REFATORADO: front/back, disciplina/tema)
-export type Flashcard = Omit<Tables['flashcards']['Row'], 'pergunta' | 'resposta' | 'materia' | 'assunto'> & {
-  front: string;
-  back: string;
-  discipline: string;
-  tema: string;
-  created_by?: string | null;
-  deleted_at?: string | null;
-};
-export type FlashcardInsert = Omit<Tables['flashcards']['Insert'], 'pergunta' | 'resposta' | 'materia' | 'assunto'> & {
-  front: string;
-  back: string;
-  discipline: string;
-  tema: string;
-};
-export type FlashcardUpdate = Omit<Tables['flashcards']['Update'], 'pergunta' | 'resposta' | 'materia' | 'assunto'> & {
-  front?: string;
-  back?: string;
-  discipline?: string;
-  tema?: string;
-};
-
-// Apostilas
-export type Apostila = Tables['apostilas']['Row'] & {
-  slug: string;
-  created_by?: string | null;
-  deleted_at?: string | null;
-};
-export type ApostilaInsert = Tables['apostilas']['Insert'];
-export type ApostilaUpdate = Tables['apostilas']['Update'];
-
-// Mapa de Assuntos
-export type MapaAssunto = Tables['mapa_assuntos']['Row'];
-export type MapaAssuntoInsert = Tables['mapa_assuntos']['Insert'];
-export type MapaAssuntoUpdate = Tables['mapa_assuntos']['Update'];
-
-// ========================================
-// NOVAS TABELAS ADICIONADAS
-// ========================================
-
-// Estatísticas por Disciplina do Usuário
-export type UserDisciplineStats = Tables['user_discipline_stats']['Row'];
-export type UserDisciplineStatsInsert = Tables['user_discipline_stats']['Insert'];
-export type UserDisciplineStatsUpdate = Tables['user_discipline_stats']['Update'];
-
-// Configuração de Cache
-export type CacheConfig = Tables['cache_config']['Row'];
-export type CacheConfigInsert = Tables['cache_config']['Insert'];
-export type CacheConfigUpdate = Tables['cache_config']['Update'];
+// Tipos de UserConcursoPreference já importados de database/types.ts
 
 // ========================================
 // ENUMS E CONSTANTES
@@ -139,11 +86,6 @@ export type StatusAssunto = 'não_iniciado' | 'em_andamento' | 'concluído' | 'r
 // TIPOS DE RELACIONAMENTOS
 // ========================================
 
-// Concurso com Categoria
-export interface ConcursoComCategoria extends Concurso {
-  concurso_categorias: ConcursoCategoria;
-}
-
 // Simulado com Concurso
 export interface SimuladoComConcurso extends Simulado {
   concursos: ConcursoComCategoria | null;
@@ -168,11 +110,6 @@ export interface ApostilaComConcurso extends Apostila {
 // Mapa de Assunto com Concurso
 export interface MapaAssuntoComConcurso extends MapaAssunto {
   concursos: ConcursoComCategoria | null;
-}
-
-// Categoria com Disciplinas
-export interface CategoriaComDisciplinas extends ConcursoCategoria {
-  categoria_disciplinas: CategoriaDisciplina[];
 }
 
 // Concurso com Categoria e Disciplinas
