@@ -1,5 +1,16 @@
-// Mock implementation for @supabase/ssr
-const mockSupabaseClient = {
+import { jest } from '@jest/globals';
+import type { Session } from '@supabase/gotrue-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+// Define um tipo para o cliente Supabase mockado, usando tipos genéricos do Jest
+type MockSupabaseClient = {
+  [K in keyof SupabaseClient]: SupabaseClient[K] extends (...args: any[]) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+    ? jest.MockedFunction<SupabaseClient[K]>
+    : MockSupabaseClient[K];
+};
+
+// Cria um cliente Supabase mockado com tipos fortes
+export const mockSupabaseClient: MockSupabaseClient = {
   from: jest.fn().mockReturnThis(),
   select: jest.fn().mockReturnThis(),
   insert: jest.fn().mockReturnThis(),
@@ -15,22 +26,14 @@ const mockSupabaseClient = {
     signInWithPassword: jest.fn().mockResolvedValue({ data: { user: null }, error: null }),
     signUp: jest.fn().mockResolvedValue({ data: { user: null }, error: null }),
     signOut: jest.fn().mockResolvedValue({ error: null }),
-    onAuthStateChange: jest.fn().mockImplementation((event, callback) => {
-      // Return a cleanup function
-      return () => {};
-    }),
+    onAuthStateChange: jest.fn((_event: string, _callback: (event: string, session: Session | null) => void) => {
+      return {
+        data: { subscription: { unsubscribe: jest.fn() } },
+      };
+    }) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
   },
-  // Add other methods as needed
-};
+} as unknown as MockSupabaseClient;
 
-// Mock implementation for createBrowserClient
-const createBrowserClient = jest.fn(() => mockSupabaseClient);
-
-// Mock implementation for createServerClient
-const createServerClient = jest.fn(() => mockSupabaseClient);
-
-export {
-  createBrowserClient,
-  createServerClient,
-  mockSupabaseClient as supabaseClient
-};
+// Mock das funções de criação de cliente
+export const createBrowserClient = jest.fn(() => mockSupabaseClient);
+export const createServerClient = jest.fn(() => mockSupabaseClient);

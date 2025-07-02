@@ -17,7 +17,7 @@ import {
   Loader2,
   Info
 } from 'lucide-react';
-import { useToast } from '@/src/features/shared/hooks/use-toast';
+import { useToast } from '@/features/shared/hooks/use-toast';
 
 interface CacheStats {
   performanceCache: number;

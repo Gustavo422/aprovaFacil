@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, XCircle, HelpCircle, CheckCircle } from 'lucide-react';
-import type { Flashcard as FlashcardType } from '@/src/core/database/types';
+import type { Flashcard as FlashcardType } from '@/core/database/types';
 
 interface FlashcardProps {
   flashcard: FlashcardType;

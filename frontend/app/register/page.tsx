@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/src/features/shared/hooks/use-toast';
+import { useToast } from '@/features/shared/hooks/use-toast';
 import Link from 'next/link';
 
 const formSchema = z.object({

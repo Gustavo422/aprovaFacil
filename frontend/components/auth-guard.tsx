@@ -1,56 +1,41 @@
 'use client';
 
-import { useAuth } from '@/src/features/auth/hooks/use-auth';
+import { useAuth } from '@/features/auth/hooks/use-auth';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { useEffect } from 'react';
 
 interface AuthGuardProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
-  requireAuth?: boolean;
 }
 
-export function AuthGuard({ 
-  children, 
-  fallback, 
-  requireAuth = true 
-}: AuthGuardProps) {
+export function AuthGuard({ children, fallback }: AuthGuardProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const hasRedirected = useRef(false);
-  const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!loading && requireAuth && !user && !hasRedirected.current) {
-      hasRedirected.current = true;
-      
-      // Usar setTimeout para evitar problemas de navegação
-      redirectTimeoutRef.current = setTimeout(() => {
-        router.push('/login?redirectedFrom=' + encodeURIComponent(window.location.pathname));
-      }, 100);
+    if (!loading && !user) {
+      router.replace('/login');
     }
-  }, [user, loading, requireAuth, router]);
+  }, [user, loading, router]);
 
-  // Reset redirect flag when user changes
-  useEffect(() => {
-    if (user) {
-      hasRedirected.current = false;
-    }
-  }, [user]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (redirectTimeoutRef.current) {
-        clearTimeout(redirectTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  if (loading || (requireAuth && !user)) {
-    return fallback || <LoadingSpinner />;
+  // Mostrar loading enquanto verifica autenticação
+  if (loading) {
+    return fallback || (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-muted-foreground">Verificando autenticação...</p>
+        </div>
+      </div>
+    );
   }
 
+  // Se não estiver autenticado, não renderizar nada (será redirecionado)
+  if (!user) {
+    return null;
+  }
+
+  // Usuário autenticado, renderizar conteúdo
   return <>{children}</>;
 } 

@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthRetry } from '@/hooks/use-auth-retry';
-import { useToast } from '@/src/features/shared/hooks/use-toast';
+import { useToast } from '@/features/shared/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 
 export function RateLimitTest() {

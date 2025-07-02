@@ -1,3 +1,4 @@
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { formatDate } from '@/lib/formatDate';
 
 describe('formatDate', () => {
@@ -5,7 +6,7 @@ describe('formatDate', () => {
   const originalConsoleError = console.error;
   
   beforeAll(() => {
-    console.error = jest.fn();
+    console.error = vi.fn();
   });
   
   afterAll(() => {
@@ -14,7 +15,7 @@ describe('formatDate', () => {
 
   it('formats a valid ISO date string correctly', () => {
     // Note: Months are 0-indexed in JavaScript Date constructor
-    const date = new Date(2023, 0, 1); // January 1, 2023
+    const date = new Date(Date.UTC(2023, 0, 1)); // January 1, 2023
     const isoString = date.toISOString();
     
     const result = formatDate(isoString);

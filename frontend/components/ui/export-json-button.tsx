@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Download, FileJson } from 'lucide-react';
-import { useToast } from '@/src/features/shared/hooks/use-toast';
+import { useToast } from '@/features/shared/hooks/use-toast';
 import { logger } from '@/lib/logger';
 
 interface ExportJsonButtonProps {

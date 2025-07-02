@@ -22,11 +22,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/src/features/shared/hooks/use-toast';
+import { useToast } from '@/features/shared/hooks/use-toast';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/src/features/auth/hooks/use-auth';
+import { useAuth } from '@/features/auth/hooks/use-auth';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 
@@ -50,8 +50,8 @@ export default function LoginPage() {
   const [timeUntilReset, setTimeUntilReset] = useState(0);
   const { user, loading } = useAuth();
 
-  const redirectedFrom = searchParams.get('redirectedFrom');
-  const reason = searchParams.get('reason');
+  const redirectedFrom = searchParams?.get('redirectedFrom');
+  const reason = searchParams?.get('reason');
 
   // Redirecionar se já estiver logado
   useEffect(() => {

@@ -13,8 +13,7 @@ export function formatDate(dateString: string): string {
       month: 'long',
       day: 'numeric',
     }).format(date);
-  } catch (error) {
-    console.error('Error formatting date:', error);
+  } catch {
     return '';
   }
 }

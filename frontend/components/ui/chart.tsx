@@ -29,6 +29,13 @@ function useChart() {
   return context;
 }
 
+const getPayloadConfigFromPayload = (config: ChartConfig, key: string) => {
+  if (key in config) {
+    return config[key];
+  }
+  return undefined;
+};
+
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<'div'> & {
@@ -174,7 +181,7 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {payload.map((item, index) => {
+          {payload.map((item: any, index) => {
             const key = `${nameKey || item.name || item.dataKey || 'value'}`;
             const itemConfig = getPayloadConfigFromPayload(config, key);
             const indicatorColor = color || item.payload.fill || item.color;
@@ -265,14 +272,6 @@ const ChartLegend = React.forwardRef<
 });
 ChartLegend.displayName = 'ChartLegend';
 
-function getPayloadConfigFromPayload(
-  config: ChartConfig,
-  key: string
-) {
-  if (!key || !config[key as keyof typeof config]) {
-    return null;
-  }
-  return config[key as keyof typeof config];
-}
+
 
 export { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend };

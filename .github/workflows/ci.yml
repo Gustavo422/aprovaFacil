@@ -1,56 +1,55 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ main, develop ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
   pull_request:
     branches: [ main, develop ]
 
-defaults:
-  run:
-    working-directory: ./frontend
+# Permissões necessárias para o GitHub Actions
+permissions:
+  contents: read
+  pull-requests: read
+  checks: write
+
+# Ambiente padrão para todos os jobs
+env:
+  NODE_VERSION: '18.x'
+  WORKING_DIRECTORY: './frontend'
 
 jobs:
-  test:
-    name: Run Tests
+  # Job de Lint e Testes
+  lint-and-test:
+    name: Lint & Test
     runs-on: ubuntu-latest
     
-    services:
-      # Add any required services here (e.g., database for integration tests)
-      # postgres:
-      #   image: postgres:13
-      #   env:
-      #     POSTGRES_PASSWORD: postgres
-      #   ports:
-      #     - 5432:5432
-      #   options: >-
-      #     --health-cmd pg_isready
-      #     --health-interval 10s
-      #     --health-timeout 5s
-      #     --health-retries 5
-
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
-    - name: Use Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
     
     - name: Install Dependencies
+      working-directory: ${{ env.WORKING_DIRECTORY }}
       run: npm ci
     
     - name: Run Linter
+      working-directory: ${{ env.WORKING_DIRECTORY }}
       run: npm run lint
     
-    - name: Run Tests
+    - name: Run Unit Tests
+      working-directory: ${{ env.WORKING_DIRECTORY }}
       run: npm test -- --ci --coverage
       env:
-        # Add any required environment variables here
         NODE_ENV: test
-        NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        CI: true
     
     - name: Upload Test Results
       if: always()
@@ -58,14 +57,94 @@ jobs:
       with:
         name: test-results
         path: |
-          coverage/
-          junit.xml
+          ${{ env.WORKING_DIRECTORY }}/coverage
+          ${{ env.WORKING_DIRECTORY }}/junit.xml
     
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage/lcov.info
+        directory: ${{ env.WORKING_DIRECTORY }}/coverage
         flags: unittests
-        name: codecov-umbrella
         fail_ci_if_error: false
+  
+  # Job de Build
+  build:
+    name: Build
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install Dependencies
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: npm ci
+    
+    - name: Build Application
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: npm run build
+    
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build
+        path: ${{ env.WORKING_DIRECTORY }}/.next
+        retention-days: 5
+  
+  # Job de Deploy (exemplo para Vercel)
+  deploy:
+    name: Deploy
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build
+        path: ${{ env.WORKING_DIRECTORY }}/.next
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: Install Vercel CLI
+      run: npm install --global vercel@latest
+    
+    - name: Deploy to Vercel
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  # Notificação no Slack (opcional)
+  notify:
+    name: Notify
+    needs: [lint-and-test, build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Send Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_COLOR: ${{ job.status == 'success' && '#36a64f' || '#ff0000' }}
+        SLACK_TITLE: 'CI/CD Status: ${{ job.status }}'
+        SLACK_MESSAGE: 'Workflow: ${{ github.workflow }}\nJob: ${{ needs.*.result }}'
+        SLACK_USERNAME: GitHub Actions
