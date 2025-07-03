@@ -1,29 +1,66 @@
-# Dependências
+# ===================================================================
+# Editor & OS Specific
+# ===================================================================
+
+# Editor directories and files
+.idea/
+.vscode/
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.history/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===================================================================
+# Dependencies & Environment
+# ===================================================================
+
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
+pnpm-lock.yaml
 
-# Build e produção
-/.next/
-/out/
-/build/
-/dist/
-*.tsbuildinfo
-.next/
-.nuxt/
-.nitro/
-.cache/
-.temp/
-.tmp/
-.vercel/
-.vercel_build_output/
-.vercel_output/
-.netlify/
-
-# Ambiente e variáveis
+# Local Environment Variables
 .env
-.env.*
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Do not commit .env files, but keep a template
 !.env.example
+
+# ===================================================================
+# Project Output
+# ===================================================================
+
+# Build & Output
+/build
+/dist
+/out
+/.next
+/.nuxt
+/.nitro
+/.vercel
+.vite
+*.tsbuildinfo
 
 # Logs
 /logs
@@ -31,38 +68,22 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# IDEs e editores
-.idea/
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-*.vscode
-.history/
-*.code-workspace
-
-# Sistema operacional
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Testes
+# Testing
 /coverage
+/test-results
+/playwright-report
 .nyc_output/
+*.lcov
+test-results.xml
 
 # Cache
-.cache/
-.parcel-cache/
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
+/.cache
+/.parcel-cache
+/.rpt2_cache*
+/.rts2_cache*
 
 # Misc
 *.bak
@@ -75,59 +96,8 @@ $RECYCLE.BIN/
 *.swp
 *.vi
 *~
+*.tar
 
-# Frontend específico
-frontend/.next/
-frontend/out/
-frontend/.vercel
-frontend/.env.local
-
-# Backend específico
-backend/node_modules/
-backend/dist/
-backend/.env
-
-# Arquivos de configuração local
-*.local
-*.local.*
-!.env.example
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDE files
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# Build outputs
-dist/
-build/
-.next/
-
-# Cache
-.cache/
-.parcel-cache/
-
-# Coverage reports
-coverage/
-*.lcov
-
-# ESLint output
+# ESLint
 eslint_output.json
 eslint_fix_report.md
-
-# Test outputs
-test-results/
-playwright-report/
-test-results.xml
-
-# Local development
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-*.tar
