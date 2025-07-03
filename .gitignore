@@ -85,7 +85,10 @@ test-results.xml
 /.rpt2_cache*
 /.rts2_cache*
 
-# Misc
+# Misc & Backups
+*-temp/
+*.tar
+*.zip
 *.bak
 *.patch
 *.diff
@@ -96,7 +99,6 @@ test-results.xml
 *.swp
 *.vi
 *~
-*.tar
 
 # ESLint
 eslint_output.json
