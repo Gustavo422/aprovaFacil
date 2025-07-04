@@ -3,6 +3,9 @@
 import * as React from 'react';
 import * as RechartsPrimitive from 'recharts';
 
+
+
+
 import { cn } from '@/lib/utils';
 
 export type ChartConfig = {
@@ -129,6 +132,8 @@ const ChartTooltipContent = React.forwardRef<
   ) => {
     const { config } = useChart();
 
+
+
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !payload?.length) {
         return null;
@@ -181,6 +186,7 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {payload.map((item: any, index) => {
             const key = `${nameKey || item.name || item.dataKey || 'value'}`;
             const itemConfig = getPayloadConfigFromPayload(config, key);

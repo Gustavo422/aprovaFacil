@@ -1,13 +1,18 @@
 import { createServerSupabaseClient } from './supabase';
 import { logger } from '@/lib/logger';
 import { getAuditLogger } from './audit';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase.types';
 
 export class OwnershipValidator {
   private static instance: OwnershipValidator;
-  private supabase = createServerSupabaseClient();
-  private auditLogger = getAuditLogger();
+  private supabase: SupabaseClient<Database>;
+  private auditLogger: ReturnType<typeof getAuditLogger>;
 
-  private constructor() {}
+  private constructor() {
+    this.supabase = createServerSupabaseClient();
+    this.auditLogger = getAuditLogger(this.supabase);
+  }
 
   public static getInstance(): OwnershipValidator {
     if (!OwnershipValidator.instance) {

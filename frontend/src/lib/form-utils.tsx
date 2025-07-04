@@ -252,11 +252,7 @@ export function useFileUpload(
 
     try {
       await onSuccess(file);
-      if (process.env.NODE_ENV === 'development') {
-        console.log('File uploaded successfully:', file);
-      }
     } catch (error) {
-      console.error('File upload error:', error);
       onError?.(error instanceof Error ? error : new Error('Failed to upload file'));
     }
   };
@@ -356,7 +352,7 @@ export function createFieldProps<T extends FormValues>({
 }
 
 // Helper function to format form errors
-export function formatFormErrors(errors: any) {
+export function formatFormErrors(errors: FieldErrors) {
   return Object.entries(errors).reduce((acc, [key, value]) => {
     if (value && typeof value === 'object' && 'message' in value) {
       acc[key] = (value as { message: string }).message;

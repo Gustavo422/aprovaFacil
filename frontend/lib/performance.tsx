@@ -2,6 +2,8 @@ import { createServerSupabaseClient } from './supabase';
 import { logger } from '@/lib/logger';
 import { CacheManager } from './cache';
 import { getAuditLogger } from './audit';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { Database } from '@/types/supabase';
 
 export interface PerformanceStats {
   totalSimulados: number;
@@ -28,9 +30,33 @@ export interface DisciplinePerformance {
   progressPercentage: number;
 }
 
+interface SimuladoRow {
+  id: string;
+  score: number;
+  time_taken_minutes: number;
+  created_at: string;
+  answers?: Array<{ correct: boolean }>;
+}
+
+interface QuestaoSemanalRow {
+  id: string;
+  score: number;
+  answers?: Array<{ correct: boolean }>;
+  created_at: string;
+}
+
+interface DisciplineStatsRow {
+  disciplina: string;
+  total_questions: number;
+  correct_answers: number;
+  average_score: number;
+  study_time_minutes: number;
+  last_activity: string;
+}
+
 export class PerformanceCalculator {
   private static instance: PerformanceCalculator;
-  private supabase = createServerSupabaseClient();
+  private supabase: SupabaseClient<Database> = createServerSupabaseClient();
   private cache = CacheManager.getInstance();
   private auditLogger = getAuditLogger();
 
@@ -87,29 +113,41 @@ export class PerformanceCalculator {
     averageScore: number;
     totalTime: number;
   }> {
-    const { data, error } = await this.supabase
-      .from('user_simulado_progress')
-      .select('score, time_taken_minutes')
-      .eq('user_id', userId)
-      .is('deleted_at', null);
+    try {
+      const { data, error } = await this.supabase
+        .from('user_simulados')
+        .select('score, time_taken_minutes')
+        .eq('user_id', userId)
+        .is('deleted_at', null);
+      
+      if (error) {
+        throw error;
+      }
 
-    if (error) {
+      const simulados = data as SimuladoRow[] | null;
+
+      if (!simulados || simulados.length === 0) {
+        return { total: 0, averageScore: 0, totalTime: 0 };
+      }
+
+      const total = simulados.length;
+      const totalScore = simulados.reduce((acc, item) => acc + (item?.score || 0), 0);
+      const totalTime = simulados.reduce(
+        (acc, item) => acc + (item?.time_taken_minutes || 0),
+        0
+      );
+      const averageScore = total > 0 ? totalScore / total : 0;
+
+      return { total, averageScore, totalTime };
+    } catch (error) {
       logger.error('Erro ao calcular estatísticas de simulados:', {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
         details: error,
       });
       return { total: 0, averageScore: 0, totalTime: 0 };
     }
 
-    const total = data.length;
-    const totalScore = data.reduce((acc, item) => acc + item.score, 0);
-    const totalTime = data.reduce(
-      (acc, item) => acc + item.time_taken_minutes,
-      0
-    );
-    const averageScore = total > 0 ? totalScore / total : 0;
 
-    return { total, averageScore, totalTime };
   }
 
   /**
@@ -120,39 +158,48 @@ export class PerformanceCalculator {
     accuracyRate: number;
     totalTime: number;
   }> {
-    const { data, error } = await this.supabase
-      .from('user_questoes_semanais_progress')
-      .select('score, answers')
-      .eq('user_id', userId)
-      .is('deleted_at', null);
+    try {
+      const { data, error } = await this.supabase
+        .from('user_questoes_semanais_progress')
+        .select('score, answers')
+        .eq('user_id', userId)
+        .is('deleted_at', null);
+        
+      if (error) {
+        throw error;
+      }
+      
+      const questoes = data as QuestaoSemanalRow[] | null;
 
-    if (error) {
+      if (!questoes || questoes.length === 0) {
+        return { total: 0, accuracyRate: 0, totalTime: 0 };
+      }
+
+      const total = questoes.length;
+      let correctAnswers = 0;
+      let totalQuestions = 0;
+
+      // Calcular taxa de acerto baseada nas respostas
+      questoes.forEach(item => {
+        if (item.answers && Array.isArray(item.answers)) {
+          totalQuestions += item.answers.length;
+          correctAnswers += item.answers.filter(
+            (answer: Record<string, unknown>) => answer?.correct === true
+          ).length;
+        }
+      });
+
+      const accuracyRate = totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
+      const totalTime = total * 2; // Estimativa de 2 minutos por questão
+
+      return { total, accuracyRate, totalTime };
+    } catch (error) {
       logger.error('Erro ao calcular estatísticas de questões:', {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
         details: error,
       });
       return { total: 0, accuracyRate: 0, totalTime: 0 };
     }
-
-    const total = data.length;
-    let correctAnswers = 0;
-    let totalQuestions = 0;
-
-    // Calcular taxa de acerto baseada nas respostas
-    data.forEach(item => {
-      if (item.answers && Array.isArray(item.answers)) {
-        totalQuestions += item.answers.length;
-        correctAnswers += item.answers.filter(
-          (answer: Record<string, unknown>) => answer.correct === true
-        ).length;
-      }
-    });
-
-    const accuracyRate =
-      totalQuestions > 0 ? (correctAnswers / totalQuestions) * 100 : 0;
-    const totalTime = total * 2; // Estimativa de 2 minutos por questão
-
-    return { total, accuracyRate, totalTime };
   }
 
   /**
@@ -161,32 +208,42 @@ export class PerformanceCalculator {
   async calculateDisciplineStats(
     userId: string
   ): Promise<DisciplinePerformance[]> {
-    const { data, error } = await this.supabase
-      .from('user_discipline_stats')
-      .select('*')
-      .eq('user_id', userId)
-      .order('last_activity', { ascending: false });
+    try {
+      const { data, error } = await this.supabase
+        .from('user_discipline_stats')
+        .select('*')
+        .eq('user_id', userId)
+        .order('last_activity', { ascending: false });
+        
+      if (error) {
+        throw error;
+      }
+      
+      const stats = data as DisciplineStatsRow[] | null;
 
-    if (error) {
+      if (!stats || stats.length === 0) {
+        return [];
+      }
+
+      return stats.map((item) => ({
+        disciplina: item.disciplina,
+        totalQuestions: item.total_questions,
+        correctAnswers: item.correct_answers,
+        averageScore: item.average_score,
+        studyTime: item.study_time_minutes,
+        lastActivity: item.last_activity,
+        progressPercentage:
+          item.total_questions > 0
+            ? (item.correct_answers / item.total_questions) * 100
+            : 0,
+      }));
+    } catch (error) {
       logger.error('Erro ao calcular estatísticas por disciplina:', {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
         details: error,
       });
       return [];
     }
-
-    return data.map(item => ({
-      disciplina: item.disciplina,
-      totalQuestions: item.total_questions,
-      correctAnswers: item.correct_answers,
-      averageScore: item.average_score,
-      studyTime: item.study_time_minutes,
-      lastActivity: item.last_activity,
-      progressPercentage:
-        item.total_questions > 0
-          ? (item.correct_answers / item.total_questions) * 100
-          : 0,
-    }));
   }
 
   /**
@@ -198,80 +255,107 @@ export class PerformanceCalculator {
     studyTime: number;
     scoreImprovement: number;
   }> {
-    const weekAgo = new Date(
-      Date.now() - 7 * 24 * 60 * 60 * 1000
-    ).toISOString();
+    try {
+      const weekAgo = new Date(
+        Date.now() - 7 * 24 * 60 * 60 * 1000
+      ).toISOString();
 
-    // Buscar dados da semana atual
-    const [simuladosData, questoesData] = await Promise.all([
-      this.supabase
-        .from('user_simulado_progress')
-        .select('score, time_taken_minutes')
-        .eq('user_id', userId)
-        .gte('completed_at', weekAgo)
-        .is('deleted_at', null),
-      this.supabase
-        .from('user_questoes_semanais_progress')
-        .select('score')
-        .eq('user_id', userId)
-        .gte('completed_at', weekAgo)
-        .is('deleted_at', null),
-    ]);
+      // Buscar dados da semana atual
+      const [simuladosResult, questoesResult] = await Promise.all([
+        this.supabase
+          .from('user_simulados')
+          .select('score, time_taken_minutes')
+          .eq('user_id', userId)
+          .gte('created_at', weekAgo)
+          .is('deleted_at', null),
+        this.supabase
+          .from('user_questoes_semanais_progress')
+          .select('score')
+          .eq('user_id', userId)
+          .gte('created_at', weekAgo)
+          .is('deleted_at', null),
+      ]);
 
-    const simulados = simuladosData.data?.length || 0;
-    const questoes = questoesData.data?.length || 0;
-    const studyTime =
-      simuladosData.data?.reduce(
-        (acc, item) => acc + item.time_taken_minutes,
-        0
-      ) || 0;
+      if (simuladosResult.error) {
+        throw new Error(`Erro ao buscar simulados: ${simuladosResult.error.message}`);
+      }
 
-    // Calcular melhoria de pontuação (comparar com semana anterior)
-    const twoWeeksAgo = new Date(
-      Date.now() - 14 * 24 * 60 * 60 * 1000
-    ).toISOString();
-    const weekAgo2 = new Date(
-      Date.now() - 7 * 24 * 60 * 60 * 1000
-    ).toISOString();
+      if (questoesResult.error) {
+        throw new Error(`Erro ao buscar questões: ${questoesResult.error.message}`);
+      }
 
-    const [previousWeekData, currentWeekData] = await Promise.all([
-      this.supabase
-        .from('user_simulado_progress')
-        .select('score')
-        .eq('user_id', userId)
-        .gte('completed_at', twoWeeksAgo)
-        .lt('completed_at', weekAgo2)
-        .is('deleted_at', null),
-      this.supabase
-        .from('user_simulado_progress')
-        .select('score')
-        .eq('user_id', userId)
-        .gte('completed_at', weekAgo)
-        .is('deleted_at', null),
-    ]);
+      const simuladosData = simuladosResult.data as SimuladoRow[] | null;
+      const questoesData = questoesResult.data as QuestaoSemanalRow[] | null;
 
-    const previousWeekAvg =
-      previousWeekData.data && previousWeekData.data.length > 0
-        ? previousWeekData.data.reduce((acc, item) => acc + item.score, 0) /
-          previousWeekData.data.length
-        : 0;
-    const currentWeekAvg =
-      currentWeekData.data && currentWeekData.data.length > 0
-        ? currentWeekData.data.reduce((acc, item) => acc + item.score, 0) /
-          currentWeekData.data.length
-        : 0;
+      // Calcular melhoria de pontuação (comparar com semana anterior)
+      const twoWeeksAgo = new Date(
+        Date.now() - 14 * 24 * 60 * 60 * 1000
+      ).toISOString();
+      const weekAgo2 = new Date(
+        Date.now() - 7 * 24 * 60 * 60 * 1000
+      ).toISOString();
 
-    const scoreImprovement =
-      previousWeekAvg > 0
-        ? ((currentWeekAvg - previousWeekAvg) / previousWeekAvg) * 100
-        : 0;
+      const [previousWeekResult, currentWeekResult] = await Promise.all([
+        this.supabase
+          .from('user_simulados')
+          .select('score')
+          .eq('user_id', userId)
+          .gte('created_at', twoWeeksAgo)
+          .lt('created_at', weekAgo2)
+          .is('deleted_at', null),
+        this.supabase
+          .from('user_simulados')
+          .select('score')
+          .eq('user_id', userId)
+          .gte('created_at', weekAgo)
+          .is('deleted_at', null),
+      ]);
 
-    return {
-      simulados,
-      questoes,
-      studyTime,
-      scoreImprovement,
-    };
+      if (previousWeekResult.error) {
+        throw new Error(`Erro ao buscar dados da semana anterior: ${previousWeekResult.error.message}`);
+      }
+
+      if (currentWeekResult.error) {
+        throw new Error(`Erro ao buscar dados da semana atual: ${currentWeekResult.error.message}`);
+      }
+
+      const previousWeekData = previousWeekResult.data as Array<{ score: number }> | null;
+      const currentWeekData = currentWeekResult.data as Array<{ score: number }> | null;
+
+      const previousWeekAvg =
+        previousWeekData && previousWeekData.length > 0
+          ? previousWeekData.reduce((acc, item) => acc + (item.score || 0), 0) /
+            previousWeekData.length
+          : 0;
+      const currentWeekAvg =
+        currentWeekData && currentWeekData.length > 0
+          ? currentWeekData.reduce((acc, item) => acc + (item.score || 0), 0) /
+            currentWeekData.length
+          : 0;
+
+      const scoreImprovement =
+        previousWeekAvg > 0
+          ? ((currentWeekAvg - previousWeekAvg) / previousWeekAvg) * 100
+          : 0;
+
+      return {
+        simulados: simuladosData?.length || 0,
+        questoes: questoesData?.length || 0,
+        studyTime: simuladosData?.reduce((acc, item) => acc + (item.time_taken_minutes || 0), 0) || 0,
+        scoreImprovement,
+      };
+    } catch (error) {
+      logger.error('Erro ao calcular progresso semanal:', {
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
+        details: error,
+      });
+      return {
+        simulados: 0,
+        questoes: 0,
+        studyTime: 0,
+        scoreImprovement: 0,
+      };
+    }
   }
 
   /**

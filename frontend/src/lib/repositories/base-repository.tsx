@@ -1,68 +1,84 @@
 import { supabase } from '@/lib/supabase/client';
-import { Database } from '@/types/supabase';
+import type { Database } from '@/types/supabase';
 
-type TableName = keyof Database['public']['Tables'];
+type TableName = keyof Database['public']['Tables'] & string;
 
 export abstract class BaseRepository<T extends TableName> {
   protected tableName: T;
+  protected client = supabase;
 
   constructor(tableName: T) {
     this.tableName = tableName;
   }
 
   // Basic CRUD operations
-  async findById(id: string | number) {
-    const { data, error } = await supabase
-      .from(this.tableName)
+  async findById(id: string | number): Promise<Database['public']['Tables'][T]['Row'] | null> {
+    const { data, error } = await this.client
+      .from(this.tableName as string)
       .select('*')
       .eq('id', id)
       .single();
 
-    if (error) throw error;
-    return data;
+    if (error) {
+      if (error.code === 'PGRST116') { // Nenhum registro encontrado
+        return null;
+      }
+      throw error;
+    }
+    return data as Database['public']['Tables'][T]['Row'];
   }
 
-  async findAll(filters?: Record<string, any>) {
-    let query = supabase.from(this.tableName).select('*');
-    
+  async findAll(
+    filters?: Partial<Database['public']['Tables'][T]['Row']>
+  ): Promise<Database['public']['Tables'][T]['Row'][]> {
+    let query = this.client
+      .from(this.tableName as string)
+      .select('*');
+
     if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        query = query.eq(key, value);
-      });
+      query = query.match(filters);
     }
 
     const { data, error } = await query;
     if (error) throw error;
-    
-    return data;
+
+    return data as Database['public']['Tables'][T]['Row'][];
   }
 
-  async create(data: Database['public']['Tables'][T]['Insert']) {
-    const { data: result, error } = await supabase
-      .from(this.tableName)
+  async create(
+    data: Database['public']['Tables'][T]['Insert']
+  ): Promise<Database['public']['Tables'][T]['Row']> {
+    const { data: result, error } = await this.client
+      .from(this.tableName as string)
       .insert(data)
       .select()
       .single();
 
     if (error) throw error;
-    return result;
+    return result as Database['public']['Tables'][T]['Row'];
   }
 
-  async update(id: string | number, data: Partial<Database['public']['Tables'][T]['Update']>) {
-    const { data: result, error } = await supabase
-      .from(this.tableName)
-      .update(data)
+  async update(
+    id: string | number, 
+    data: Partial<Database['public']['Tables'][T]['Update']>
+  ): Promise<Database['public']['Tables'][T]['Row']> {
+    const { data: result, error } = await this.client
+      .from(this.tableName as string)
+      .update({
+        ...data,
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', id)
       .select()
       .single();
 
     if (error) throw error;
-    return result;
+    return result as Database['public']['Tables'][T]['Row'];
   }
 
-  async delete(id: string | number) {
-    const { error } = await supabase
-      .from(this.tableName)
+  async delete(id: string | number): Promise<boolean> {
+    const { error } = await this.client
+      .from(this.tableName as string)
       .delete()
       .eq('id', id);
 
@@ -71,34 +87,44 @@ export abstract class BaseRepository<T extends TableName> {
   }
 
   // Soft delete implementation
-  async softDelete(id: string | number) {
-    return this.update(id, { deleted_at: new Date().toISOString() } as any);
+  async softDelete(id: string | number): Promise<Database['public']['Tables'][T]['Row']> {
+    return this.update(id, {
+      deleted_at: new Date().toISOString(),
+    } as unknown as Partial<Database['public']['Tables'][T]['Update']>);
   }
 
   // Pagination support
-  async paginate(page: number = 1, pageSize: number = 10, filters?: Record<string, any>) {
+  async paginate(
+    page: number = 1,
+    pageSize: number = 10,
+    filters?: Partial<Database['public']['Tables'][T]['Row']>
+  ): Promise<{
+    data: Database['public']['Tables'][T]['Row'][];
+    count: number | null;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  }> {
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    let query = supabase
-      .from(this.tableName)
+    let query = this.client
+      .from(this.tableName as string)
       .select('*', { count: 'exact' });
 
     if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined) {
-          query = query.eq(key, value);
-        }
-      });
+      query = query.match(filters);
     }
 
     const { data, count, error } = await query.range(from, to);
 
     if (error) throw error;
 
+    const totalPages = count ? Math.ceil(count / pageSize) : 0;
+
     return {
-      data,
-      total: count || 0,
+      data: data as Database['public']['Tables'][T]['Row'][],
+      count,
       page,
       pageSize,
       totalPages: Math.ceil((count || 0) / pageSize),
