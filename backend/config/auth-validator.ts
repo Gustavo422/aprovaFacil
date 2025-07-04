@@ -1,8 +1,12 @@
-import { createRouteHandlerClient } from '@/lib/supabase';
-import { NextResponse } from 'next/server';
+/*
+// TODO: Corrigir import de '@/lib/supabase' para caminho relativo ou remover se não for usado.
+// import { createRouteHandlerClient } from '@/lib/supabase';
+// TODO: Remover dependência de Next.js (NextResponse) para backend puro.
+// import { NextResponse } from 'next/server';
 
 export async function validateAuth() {
   try {
+    // TODO: Refatorar para backend puro. Bloco comentado por depender de Next.js ou imports quebrados.
     const supabase = await createRouteHandlerClient();
 
     const {
@@ -43,12 +47,16 @@ export async function validateAuth() {
       user,
       session,
     };
+    
   } catch {
     return false;
   }
 }
 
+
 export function createAuthErrorResponse(message: string = 'Não autorizado', status: number = 401) {
+  // TODO: Refatorar para backend puro. Bloco comentado por depender de Next.js ou imports quebrados.
+
   return NextResponse.json(
     { 
       success: false, 
@@ -67,3 +75,4 @@ export function createAuthErrorResponse(message: string = 'Não autorizado', sta
     }
   );
 } 
+*/

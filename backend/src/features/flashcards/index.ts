@@ -1,17 +1,6 @@
-// Services
-export { FlashcardsService } from './services/flashcards-service';
+// Estrutura inicial para refatoração backend puro seguindo SOLID
+// Exports de Service, Repository e DTO (a serem implementados)
 
-// Components
-export { Flashcard } from './components/flashcard';
-
-// Hooks
-export { useFlashcards, useFlashcardStudy } from './hooks/use-flashcards';
-
-// Types (re-export from central types)
-export type {
-  FlashcardData,
-  FlashcardProgressData,
-  FlashcardFilters,
-  FlashcardInsert,
-  FlashcardUpdate,
-} from '../../core/database/types'; 
+export * from './flashcards.service';
+export * from './flashcards.repository';
+export * from '../../types/flashcards.dto';

@@ -1,4 +1,6 @@
-import { Database } from '@/lib/database.types';
+/*
+// TODO: Corrigir import de '@/src/core/database/types' para caminho relativo ou remover se não for usado.
+// import { Database } from '@/src/core/database/types';
 import type {
   Simulado,
   SimuladoQuestion,
@@ -482,3 +484,4 @@ export interface UserPermissions {
   permissions_granted_at: string;
   permissions_expire_at?: string;
 }
+*/
