@@ -1,0 +1,6 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Gustavo422/frontend-aprovafacil
+[submodule "backend"]
+	path = backend
+	url = https://github.com/Gustavo422/backend-aprovafacil
