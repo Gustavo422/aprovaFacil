@@ -1,8 +1,4 @@
 # ===================================================================
-# APROVA FÁCIL - GITIGNORE PRINCIPAL
-# ===================================================================
-
-# ===================================================================
 # Editor & OS Specific
 # ===================================================================
 
@@ -10,9 +6,6 @@
 .idea/
 .vscode/
 !.vscode/extensions.json
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
 *.suo
 *.ntvs*
 *.njsproj
@@ -38,11 +31,10 @@ $RECYCLE.BIN/
 # ===================================================================
 
 # Dependencies
-node_modules/
+/node_modules
 /.pnp
 .pnp.js
 pnpm-lock.yaml
-yarn.lock
 
 # Local Environment Variables
 .env
@@ -56,7 +48,7 @@ yarn.lock
 !.env.example
 
 # ===================================================================
-# Project Output & Build
+# Project Output
 # ===================================================================
 
 # Build & Output
@@ -86,8 +78,6 @@ lerna-debug.log*
 .nyc_output/
 *.lcov
 test-results.xml
-test-results.json
-test-results.html
 
 # Cache
 /.cache
@@ -95,11 +85,7 @@ test-results.html
 /.rpt2_cache*
 /.rts2_cache*
 
-# ===================================================================
-# Temporary Files & Reports
-# ===================================================================
-
-# Temporary files
+# Misc & Backups
 *-temp/
 *.tar
 *.zip
@@ -114,139 +100,6 @@ test-results.html
 *.vi
 *~
 
-# TypeScript reports
-tsc-*.txt
-tsc-*.json
-ts-files.txt
-saida-tsc.txt
-
-# ESLint reports
+# ESLint
 eslint_output.json
 eslint_fix_report.md
-eslint-*.txt
-
-# Test reports
-test-results.*
-html.meta.json.gz
-vitest-debug.log
-
-# ===================================================================
-# Database & Migration Files
-# ===================================================================
-
-# Temporary migration files
-temp_migration.sql
-migration_*.sql
-validate_*.sql
-
-# ===================================================================
-# IDE & Editor Specific
-# ===================================================================
-
-# Cursor
-.cursor/
-
-# ===================================================================
-# Package Managers
-# ===================================================================
-
-# npm
-package-lock.json
-
-# yarn
-yarn.lock
-
-# pnpm
-pnpm-lock.yaml
-
-# ===================================================================
-# Development Tools
-# ===================================================================
-
-# Turbo
-.turbo
-
-# Vite
-.vite
-
-# Next.js
-.next/
-out/
-
-# ===================================================================
-# OS & System Files
-# ===================================================================
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
-._*
-
-# Linux
-*~
-.fuse_hidden*
-.directory
-.Trash-*
-.nfs*
-
-# ===================================================================
-# Security & Sensitive Files
-# ===================================================================
-
-# Certificates
-*.pem
-*.key
-*.crt
-*.p12
-*.pfx
-
-# SSH
-.ssh/
-id_rsa
-id_rsa.pub
-
-# ===================================================================
-# Backup & Archive Files
-# ===================================================================
-
-# Archives
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-
-# ===================================================================
-# Project Specific
-# ===================================================================
-
-# Node version files
-node_version.txt
-
-# Cypress
-cypress.config.js
-
-# Lighthouse
-.lighthouserc.js
-
-# Docker
-Dockerfile
-docker-compose.yml
-.dockerignore
-
-# Turbo
-turbo.json
-
-# Components config
-components.json

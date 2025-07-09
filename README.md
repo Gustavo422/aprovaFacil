@@ -1,4 +1,4 @@
-# 📚 AprovaJá - Plataforma de Estudos para Concursos
+# 📚 AprovaFacil - Plataforma de Estudos para Concursos
 
 Uma plataforma completa, moderna e open source para preparação de concursos públicos, desenvolvida com Next.js 15, TypeScript, Tailwind CSS e Supabase.
 
@@ -65,7 +65,7 @@ Uma plataforma completa, moderna e open source para preparação de concursos p�
 
 ```bash
 git clone <url-do-repositorio>
-cd aprovaJa-main
+cd AprovaFacil-main
 ```
 
 ### 2. Instale as dependências
@@ -128,7 +128,7 @@ Acesse [http://localhost:3000](http://localhost:3000) para ver o projeto.
 ## 🏗️ Estrutura do Projeto
 
 ```
-aprovaJa-main/
+AprovaFacil-main/
 ├── app/                       # App Router (Next.js 15)
 │   ├── actions/               # Server Actions
 │   ├── admin/                 # Páginas administrativas (monitoramento, validação, etc)
