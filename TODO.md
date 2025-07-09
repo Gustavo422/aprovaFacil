@@ -1,322 +1,353 @@
-# 📋 TODO - AprovaFácil 2.0
+# 📋 TODO - AprovaFácil 2.0 — Guia Completo de Evolução e Boas Práticas
 
-## 🚨 **PROBLEMAS CRÍTICOS**
-
-### 1. **Backend Express.js Inoperante**
-- [x] **CRÍTICO**: Backend não está conectado ao Supabase
-- [x] **CRÍTICO**: Rotas do backend completamente comentadas
-- [x] **CRÍTICO**: Falta configuração de banco de dados no backend
-- [x] **CRÍTICO**: DTOs do backend muito simplificados vs schema real
-
-### 2. **Arquitetura Confusa**
-- [ ] **CRÍTICO**: Duplicação de API routes (frontend vs backend)
-- [ ] **CRÍTICO**: Frontend faz tudo direto no Supabase, backend não usado
-- [ ] **CRÍTICO**: Falta decisão clara sobre arquitetura (Next.js+Supabase vs Express+PostgreSQL)
-
-## 🔧 **INTEGRAÇÃO BACKEND-FRONTEND-BANCO**
-
-### 3. **Configuração do Backend**
-- [x] Configurar Supabase no backend Express.js
-- [x] Implementar middleware de autenticação
-- [x] Criar sistema de validação de dados
-- [x] Implementar logging estruturado
-- [x] Configurar CORS adequadamente
-
-### 4. **Sincronização de Tipos**
-- [x] Atualizar DTOs do backend para corresponder ao schema real
-- [x] Criar tipos compartilhados entre frontend e backend
-- [x] Implementar validação com Zod
-- [ ] Gerar tipos automaticamente do schema do banco
-
-### 5. **API Routes**
-- [x] Descomentar e refatorar rotas do backend
-- [x] Implementar todas as operações CRUD
-- [x] Adicionar paginação
-- [x] Implementar filtros e busca
-- [ ] Adicionar cache de resposta
-
-## 🗄️ **BANCO DE DADOS**
-
-### 6. **Otimizações de Performance**
-- [ ] Revisar índices existentes
-- [ ] Implementar cache de consultas frequentes
-- [ ] Otimizar queries complexas
-- [ ] Configurar autovacuum adequadamente
-
-### 7. **Auditoria e Logs**
-- [ ] Verificar se triggers de auditoria estão funcionando
-- [ ] Implementar limpeza automática de logs antigos
-- [ ] Criar dashboard de auditoria
-- [ ] Configurar alertas para atividades suspeitas
-
-## 🧪 **TESTES**
-
-### 8. **Testes de Integração**
-- [ ] Testes E2E para fluxos completos
-- [ ] Testes de API com dados reais
-- [ ] Testes de performance
-- [ ] Testes de segurança
-
-### 9. **Testes de Banco**
-- [ ] Testes de migração
-- [ ] Testes de constraints
-- [ ] Testes de triggers
-- [ ] Testes de performance de queries
-
-## 🔒 **SEGURANÇA**
-
-### 10. **Autenticação e Autorização**
-- [ ] Implementar RLS (Row Level Security) no Supabase
-- [ ] Configurar políticas de acesso
-- [ ] Implementar rate limiting
-- [ ] Adicionar validação de entrada
-
-### 11. **Auditoria de Segurança**
-- [ ] Log de tentativas de acesso
-- [ ] Monitoramento de atividades suspeitas
-- [ ] Backup automático
-- [ ] Criptografia de dados sensíveis
-
-## 📊 **MONITORAMENTO**
-
-### 12. **Logs e Métricas**
-- [ ] Implementar logging estruturado
-- [ ] Configurar métricas de performance
-- [ ] Dashboard de monitoramento
-- [ ] Alertas automáticos
-
-### 13. **Performance**
-- [ ] Monitoramento de queries lentas
-- [ ] Cache de resposta
-- [ ] Otimização de imagens
-- [ ] Lazy loading
-
-## 🚀 **DEPLOYMENT**
-
-### 14. **Infraestrutura**
-- [ ] Configurar CI/CD
-- [ ] Ambiente de staging
-- [ ] Rollback automático
-- [ ] Monitoramento de produção
-
-### 15. **Documentação**
-- [ ] Documentação da API
-- [ ] Guia de desenvolvimento
-- [ ] Documentação de deployment
-- [ ] Troubleshooting guide
-
-## 🎯 **MELHORIAS DE UX**
-
-### 16. **Interface**
-- [ ] Loading states
-- [ ] Error boundaries
-- [ ] Feedback visual
-- [ ] Responsividade
-
-### 17. **Funcionalidades**
-- [ ] Busca avançada
-- [ ] Filtros dinâmicos
-- [ ] Exportação de dados
-- [ ] Notificações em tempo real
-
-## 📝 **CÓDIGO**
-
-### 18. **Refatoração**
-- [ ] Remover código duplicado
-- [ ] Padronizar nomenclatura
-- [ ] Implementar design patterns
-- [ ] Melhorar organização de arquivos
-
-### 19. **Qualidade**
-- [ ] Configurar ESLint adequadamente
-- [ ] Implementar Prettier
-- [ ] Adicionar Husky hooks
-- [ ] Code review automático
-
-## 🔄 **PRÓXIMOS PASSOS**
-
-### **Fase 1 - Crítica (Esta Semana)**
-1. [x] Decidir arquitetura (Next.js+Supabase vs Express+PostgreSQL)
-2. [x] Configurar backend adequadamente
-3. [x] Sincronizar tipos entre frontend e backend
-4. [x] Implementar autenticação
-
-### **Fase 2 - Integração (Próximas 2 Semanas)**
-1. [ ] Implementar todas as APIs
-2. [ ] Testes de integração
-3. [ ] Documentação da API
-4. [ ] Monitoramento básico
-
-### **Fase 3 - Otimização (Próximo Mês)**
-1. [ ] Performance e cache
-2. [ ] Segurança avançada
-3. [ ] UX melhorias
-4. [ ] Deploy em produção
+> **Este documento é o centro de comando do projeto. Use-o para acompanhar, planejar, revisar e aprender. Cada seção traz contexto, critérios de aceitação, dicas e links úteis.**
 
 ---
 
-## 📊 **STATUS ATUAL**
+## 🤝 ALINHAMENTO TOTAL: FRONTEND, BACKEND E BANCO DE DADOS
 
-- **Banco de Dados**: ✅ Excelente
-- **Frontend**: ✅ Funcionando bem
-- **Backend**: ✅ APIs principais implementadas
-- **Integração**: ⚠️ Em progresso
-- **Testes**: ⚠️ Parcial
-- **Documentação**: ⚠️ Parcial
+> **Todos os módulos do sistema devem "falar a mesma língua" e ir na mesma direção.**
 
-## 🎯 **PRIORIDADE**
+- **Contratos e Tipos Compartilhados:**
+  - Garanta que os tipos TypeScript, DTOs, schemas de validação e contratos de API estejam sincronizados entre frontend, backend e banco.
+  - Use geração automática de tipos a partir do schema do banco sempre que possível.
+  - **Critério de aceitação:** Mudanças no banco refletem nos tipos do backend e frontend sem divergências.
 
-**ALTA**: Resolver problemas críticos de integração
-**MÉDIA**: Melhorar performance e UX
-**BAIXA**: Funcionalidades avançadas 
+- **Padronização de Respostas e Erros:**
+  - Todas as APIs devem retornar respostas padronizadas (ex: `{ success, data, error }`).
+  - Mensagens de erro e status HTTP devem ser consistentes em toda a stack.
 
-## ✅ CONCLUÍDO
+- **Nomenclatura e Semântica:**
+  - Use nomes de campos, tabelas, endpoints e variáveis consistentes em todos os módulos.
+  - Documente convenções de nomenclatura (camelCase, snake_case, PascalCase) e siga-as rigorosamente.
 
-### 🔧 Integração e Configuração
-- [x] Configurar Supabase no backend
-- [x] Criar middlewares de autenticação JWT
-- [x] Implementar validação com Zod
-- [x] Configurar logging estruturado com Winston
-- [x] Implementar rate limiting
-- [x] Configurar CORS
-- [x] Criar arquivo de exemplo de variáveis de ambiente
-- [x] Implementar health check
-- [x] Configurar graceful shutdown
+- **Direção Única de Evolução:**
+  - Antes de criar novas features, alinhe requisitos e contratos entre as equipes de frontend, backend e banco.
+  - Use reuniões rápidas de alinhamento e PRs de documentação para evitar retrabalho.
 
-### 📚 APIs Implementadas
-- [x] **Concursos**: CRUD completo com relacionamentos
-- [x] **Apostilas**: CRUD completo + conteúdo de apostilas
-- [x] **Flashcards**: CRUD completo + progresso do usuário
-- [x] **Simulados**: CRUD completo + questões + progresso do usuário
-- [x] **Mapa de Assuntos**: CRUD completo + status do usuário
-- [x] **Plano de Estudos**: CRUD completo + itens do plano
-- [x] **Questões Semanais**: CRUD completo + progresso do usuário
-- [x] **Estatísticas**: Relatórios e métricas completas
-- [x] **Usuários**: Gestão de perfis e preferências
-- [x] Validação completa com Zod para todas as entidades
+---
+
+## 🎨 UX/UI E PADRONIZAÇÃO DO FRONTEND
+
+- **Experiência do Usuário (UX):**
+  - Priorize feedback visual claro (spinners, skeletons, toasts, mensagens de erro).
+  - Teste fluxos críticos em dispositivos reais e simuladores (mobile, tablet, desktop).
+  - Use componentes reutilizáveis e acessíveis (ex: Radix UI, Headless UI).
+  - **Critério de aceitação:** Usuário nunca fica sem feedback em ações assíncronas.
+
+- **Padronização Visual e de Código:**
+  - Siga um design system (cores, espaçamentos, tipografia, ícones).
+  - Use ESLint, Prettier e Storybook para garantir padronização de código e UI.
+  - Documente padrões de componentes e estilos.
+
+---
+
+## 🔑 FLUXO DE LOGIN — ESTABILIZAÇÃO E PADRONIZAÇÃO
+
+> **O login é a porta de entrada do sistema. Instabilidades ou inconsistências afetam toda a experiência.**
+
+- **Problema Atual:**
+  - O fluxo de login apresenta instabilidades (ex: erros intermitentes, mensagens pouco claras, UX inconsistente).
+
+- **Ações para estabilizar:**
+  1. **Padronizar contratos de autenticação:**
+     - Backend deve sempre retornar `{ success, data, error }` com status HTTP correto.
+     - Mensagens de erro devem ser claras e amigáveis.
+  2. **Sincronizar tipos e validação:**
+     - Use Zod ou Yup para validar dados no frontend e backend.
+     - Tipos de usuário, tokens e erros devem ser idênticos em toda a stack.
+  3. **UX/UI do login:**
+     - Adicione loading states, feedback de erro, e bloqueio de múltiplos submits.
+     - Mensagens de erro devem ser exibidas de forma destacada e acessível.
+     - Teste o fluxo em diferentes navegadores e dispositivos.
+  4. **Testes automatizados:**
+     - Crie testes E2E cobrindo login válido, inválido, bloqueio por rate limit, e recuperação de senha.
+  5. **Documentação:**
+     - Documente o fluxo de login, exemplos de resposta e possíveis erros.
+
+- **Critérios de aceitação para o login:**
+  - Login nunca falha silenciosamente.
+  - Mensagens de erro são claras e padronizadas.
+  - Não há divergência de tipos entre frontend, backend e banco.
+  - Testes automatizados cobrem todos os cenários principais.
+  - Usuário recebe feedback imediato em qualquer situação.
+
+---
+
+## 📊 PROGRESSO DO PROJETO
+
+- **APIs principais:** 100% concluídas
+- **Cobertura de testes:** ~60% (meta: 80%)
+- **Integração frontend-backend:** ~80% (resta eliminar acesso direto ao Supabase)
+- **RLS e segurança:** ~60% (migração criada, falta aplicar e validar)
+- **Monitoramento e observabilidade:** 70%
+- **Documentação:** 60%
+- **Infraestrutura/CI/CD:** 40%
+- **UX e frontend:** 80%
+- **Média geral estimada:** **~69% concluído**
+
+> **Falta aproximadamente 31% para o projeto atingir o nível de "MVP robusto e seguro".**
+
+---
+
+## 🚀 COMANDOS ÚTEIS PARA DESENVOLVEDORES
+
+### Testes automatizados
+
+- **Rodar todos os testes unitários/integrados:**
+  ```bash
+  # Backend
+  cd backend && npm run test
+  # Frontend
+  cd frontend && npm run test
+  ```
+- **Cobertura de testes:**
+  ```bash
+  # Backend
+  cd backend && npm run test:coverage
+  # Frontend
+  cd frontend && npm run test:coverage
+  ```
+- **Testes E2E:**
+  ```bash
+  # Frontend (Playwright)
+  cd frontend && npm run test:playwright
+  # Backend (Vitest E2E)
+  cd backend && npm run test:e2e
+  ```
+- **Modo watch:**
+  ```bash
+  npm run test:watch
+  ```
+
+### Lint e formatação
+
+- **Checar lint:**
+  ```bash
+  # Backend
+  cd backend && npm run lint
+  # Frontend
+  cd frontend && npm run lint
+  ```
+- **Corrigir lint automaticamente:**
+  ```bash
+  npm run lint:fix
+  ```
+- **Checar formatação Prettier:**
+  ```bash
+  npm run format
+  ```
+
+### Typecheck (TypeScript)
+
+- **Checar tipos sem emitir arquivos:**
+  ```bash
+  # Backend
+  cd backend && npx tsc --noEmit
+  # Frontend
+  cd frontend && npx tsc --noEmit
+  ```
+
+### Outras dicas
+
+- **Executar build de produção:**
+  ```bash
+  npm run build
+  ```
+- **Rodar localmente:**
+  ```bash
+  npm run dev
+  ```
+- **Verificar status de endpoints e monitoramento:**
+  ```bash
+  # Backend
+  cd backend && npm run status
+  ```
+
+---
+
+## 🚨 **PROBLEMAS CRÍTICOS & DIRETRIZES DE ARQUITETURA**
+
+### 1. **Arquitetura e Integração (Prioridade Máxima)**
+- [ ] **CRÍTICO**: Eliminar duplicidade de acesso ao Supabase
+  - **Por quê?** Garante segurança, centralização de regras de negócio, logging e políticas de acesso.
+  - **Como resolver:**
+    - Refatore todos os serviços do frontend para consumir apenas endpoints do backend (Express/Next.js API routes).
+    - Use hooks customizados para abstrair chamadas HTTP.
+    - **Ferramentas:** TanStack Query, React Query, SWR.
+    - **Critério de aceitação:** Nenhum arquivo do frontend deve importar ou instanciar o client do Supabase diretamente.
+- [ ] **CRÍTICO**: Aplicar migração de RLS no Supabase e validar políticas
+  - **Por quê?** RLS (Row Level Security) é essencial para garantir que cada usuário só acesse seus próprios dados.
+  - **Como resolver:**
+    - Execute a migração SQL no painel do Supabase ou via CLI.
+    - Teste todas as queries com diferentes perfis de usuário.
+    - **Links úteis:** [Supabase RLS Docs](https://supabase.com/docs/guides/auth/row-level-security)
+    - **Critério de aceitação:** Nenhuma query retorna dados de outro usuário; testes automatizados cobrem cenários de acesso negado.
+- [ ] **CRÍTICO**: Garantir que todas as features do frontend usem APIs do backend
+  - **Checklist:**
+    - [ ] CRUD de concursos, apostilas, simulados, flashcards, plano de estudos, etc.
+    - [ ] Autenticação, preferências, progresso, estatísticas.
+    - [ ] Upload/download de arquivos (usar endpoints do backend para proxy se necessário).
+
+---
+
+## 🔧 **INTEGRAÇÃO BACKEND-FRONTEND-BANCO**
+
+### 2. **Configuração do Backend**
+- [x] Supabase configurado no backend Express.js
+- [x] Middleware de autenticação JWT implementado
+- [x] Sistema de validação de dados (Zod)
+- [x] Logging estruturado (Winston)
+- [x] CORS configurado
+- [x] Health check e graceful shutdown
+- **Dica:** Use middlewares para logging, validação e autenticação em todas as rotas. Centralize erros com um error handler global.
+
+### 3. **Sincronização de Tipos**
+- [x] DTOs do backend atualizados conforme schema real
+- [x] Tipos compartilhados entre frontend e backend
+- [x] Validação com Zod
+- [ ] Gerar tipos automaticamente do schema do banco (automatizar via script)
+  - **Ferramentas:** [openapi-typescript](https://github.com/drwpow/openapi-typescript), [supabase gen types](https://supabase.com/docs/guides/database/api/generating-types)
+  - **Critério de aceitação:** Mudanças no schema do banco refletem automaticamente nos tipos do backend e frontend.
+
+### 4. **API Routes**
+- [x] Rotas do backend refatoradas e descomentadas
+- [x] CRUD completo para entidades principais
 - [x] Paginação e filtros avançados
-- [x] Relacionamentos com categorias e concursos
-- [x] Autenticação e autorização por rota
+- [ ] Adicionar cache de resposta (backend e frontend)
+  - **Dica:** Use Redis para cache de queries frequentes e TanStack Query para cache no frontend.
+  - **Critério de aceitação:** Endpoints críticos retornam em <200ms para dados já cacheados.
 
-### 🎨 Frontend e UX
-- [x] **Correção de Hidratação**: Resolvido problema de hidratação do Next.js
-- [x] **Componente HydrationSafe**: Criado para evitar problemas de SSR/CSR
-- [x] **Componente BrowserExtensionSafe**: Criado para lidar com extensões do navegador
-- [x] **Layout Otimizado**: Adicionado suppressHydrationWarning no body
-- [x] **UserNav Seguro**: Envolvido com HydrationSafe para dados de usuário
-- [x] **Script de Correção**: Criado script automatizado para limpar cache
-- [x] **Scripts Windows**: Criados scripts PowerShell e Batch para Windows
-- [x] **Documentação**: Criado guia completo de correção de hidratação
-- [x] **Guia Extensões**: Criado guia para lidar com extensões problemáticas
+---
 
-### 🧪 Testes e Qualidade
-- [x] Script de teste de integração
-- [x] Validação de schema do banco
-- [x] Teste de conexão com Supabase
-- [x] Verificação de tabelas e relacionamentos
+## 🗄️ **BANCO DE DADOS & SEGURANÇA**
 
-### 📖 Documentação
-- [x] Documentação de integração (INTEGRATION_STATUS.md)
-- [x] DTOs atualizados para corresponder ao schema real
-- [x] Middlewares de validação documentados
-- [x] Exemplos de uso das APIs
-
-## 🚧 EM ANDAMENTO
-
-### 🔄 Próximas APIs a Implementar
-- [x] **Simulados**: CRUD + questões + progresso do usuário
-- [x] **Mapa de Assuntos**: CRUD + status do usuário
-- [x] **Plano de Estudos**: CRUD + itens do plano
-- [x] **Questões Semanais**: CRUD + progresso do usuário
-- [x] **Estatísticas**: APIs de relatórios e métricas
-- [x] **Usuários**: Gestão de perfis e preferências
-
-## 📋 PENDENTE
-
-### 🔐 Segurança e Autenticação
-- [ ] Implementar refresh tokens
-- [ ] Adicionar 2FA (autenticação de dois fatores)
-- [ ] Implementar auditoria completa (audit_logs)
-- [ ] Adicionar validação de entrada mais rigorosa
-- [ ] Implementar rate limiting por usuário
-- [ ] Adicionar headers de segurança adicionais
-
-### 🗄️ Banco de Dados
+### 5. **Segurança e Políticas**
 - [x] Migração de RLS criada (20241217000000_enable_rls_policies.sql)
 - [ ] Aplicar migração de RLS no Supabase
-- [ ] Criar índices otimizados para consultas frequentes
-- [ ] Implementar backup automático
-- [ ] Adicionar triggers para auditoria
-- [ ] Otimizar queries complexas
-- [ ] Implementar cache com Redis
+- [ ] Validar e revisar políticas RLS para todas as tabelas
+- [ ] Adicionar triggers de auditoria
+  - **Dica:** Use triggers para popular tabela `audit_logs` em inserts/updates/deletes críticos.
+  - **Critério de aceitação:** Toda alteração sensível gera um log de auditoria.
 
-### 🧪 Testes Automatizados
-- [x] Configuração do Vitest com cobertura
-- [x] Testes de autenticação (parcial)
-- [x] Testes de APIs de concursos (parcial)
-- [x] Testes de APIs de apostilas (parcial)
-- [x] Script de execução de testes com relatórios
-- [ ] Correção de problemas de relacionamentos no banco
-- [ ] Correção de problemas de RLS
-- [ ] Testes de integração end-to-end
-- [ ] Testes de performance
-- [ ] Testes de segurança
+### 6. **Performance e Otimização**
+- [ ] Revisar índices existentes (use EXPLAIN ANALYZE nas queries mais lentas)
+- [ ] Implementar cache de consultas frequentes (ex: Redis)
+- [ ] Otimizar queries complexas (evite N+1, use joins e views)
+- [ ] Configurar autovacuum
+  - **Links úteis:** [Postgres Indexing Best Practices](https://www.cybertec-postgresql.com/en/indexing-in-postgresql/)
+
+---
+
+## 🧪 **TESTES E QUALIDADE**
+
+### 7. **Testes Automatizados**
+- [x] Testes unitários e integração (Vitest)
+- [x] Testes E2E (Playwright, Vitest)
 - [ ] Cobertura de código > 80%
-- [ ] Testes de carga
+- [ ] Testes de performance e carga (ex: k6, Artillery)
+- [ ] Testes de segurança (autorização, RLS, XSS, CSRF)
+  - **Dica:** Use scripts de seed para popular o banco em ambiente de teste.
+  - **Critério de aceitação:** PRs só são aceitos se não reduzirem cobertura e todos os testes passarem no CI.
 
-### 📊 Monitoramento e Logs
-- [ ] Implementar APM (Application Performance Monitoring)
-- [ ] Configurar alertas automáticos
-- [ ] Dashboard de métricas em tempo real
-- [ ] Logs estruturados para análise
-- [ ] Monitoramento de saúde do banco
-- [ ] Rastreamento de erros
+---
 
-### 🚀 Deploy e Infraestrutura
-- [ ] Configurar CI/CD pipeline
-- [ ] Deploy automatizado para produção
-- [ ] Configurar load balancer
-- [ ] Implementar blue-green deployment
-- [ ] Configurar CDN para assets estáticos
-- [ ] Backup automático de dados
+## 🔒 **SEGURANÇA AVANÇADA**
 
-### 🎨 Frontend e UX
-- [ ] Integrar APIs do backend no frontend
-- [ ] Implementar cache no cliente
-- [ ] Adicionar loading states
-- [ ] Implementar error boundaries
-- [ ] Otimizar performance do frontend
-- [ ] Adicionar PWA features
+### 8. **Autenticação e Autorização**
+- [x] Autenticação JWT e validação de sessão
+- [ ] Implementar refresh tokens (expiração curta + refresh seguro)
+- [ ] Adicionar 2FA (autenticação de dois fatores)
+- [ ] Rate limiting por usuário (ex: express-rate-limit)
+- [ ] Headers de segurança adicionais (ex: helmet, CORS restritivo)
+  - **Critério de aceitação:** Testes automatizados cobrem tentativas de acesso não autorizado e brute force.
 
-### 📱 Funcionalidades Avançadas
-- [ ] Gamificação (pontos, badges, rankings)
-- [ ] Relatórios avançados e analytics
+### 9. **Auditoria e Logs**
+- [x] Logging estruturado backend (Winston, JSON logs)
+- [ ] Implementar auditoria completa (audit_logs)
+- [ ] Limpeza automática de logs antigos (ex: cron job)
+- [ ] Dashboard de auditoria (visualização dos logs, alertas)
+  - **Dica:** Use dashboards como Grafana, Kibana ou até um painel customizado.
+
+---
+
+## 📊 **MONITORAMENTO E OBSERVABILIDADE**
+
+### 10. **Observabilidade**
+- [x] Dashboard web de monitoramento (backend)
+- [x] Endpoints de métricas e health
+- [ ] APM (Application Performance Monitoring) — ex: Sentry, Datadog, NewRelic
+- [ ] Alertas automáticos (ex: UptimeRobot, StatusCake)
+- [ ] Monitoramento de queries lentas (pg_stat_statements, logs do Supabase)
+  - **Critério de aceitação:** Alertas automáticos para downtime, lentidão e erros críticos.
+
+---
+
+## 🚀 **DEPLOYMENT & INFRAESTRUTURA**
+
+### 11. **Infraestrutura**
+- [ ] Configurar CI/CD pipeline (ex: GitHub Actions, GitLab CI)
+- [ ] Deploy automatizado para produção (verificar rollback)
+- [ ] Ambiente de staging (espelho da produção para testes)
+- [ ] Rollback automático (ex: via CI/CD ou scripts)
+- [ ] Backup automático de dados (cron jobs, Supabase backups)
+  - **Links úteis:** [GitHub Actions Docs](https://docs.github.com/en/actions)
+
+### 12. **Documentação**
+- [x] Documentação Swagger/OpenAPI gerada
+- [ ] Guia de desenvolvimento atualizado (exemplos de uso, setup local, troubleshooting)
+- [ ] Documentação de deploy (passo a passo, variáveis de ambiente, scripts)
+- [ ] Troubleshooting guide (FAQ, erros comuns, links de suporte)
+  - **Critério de aceitação:** Qualquer dev novo consegue rodar o projeto e entender a arquitetura em 1h.
+
+---
+
+## 🎨 **FRONTEND, UX & ACESSIBILIDADE**
+
+### 13. **Interface e Experiência**
+- [x] Loading states e feedback visual (spinners, skeletons, toasts)
+- [x] Error boundaries (tratamento global de erros)
+- [x] Responsividade (testar em mobile/tablet/desktop)
+- [ ] Otimizar performance do frontend (lazy loading, code splitting, compressão)
+- [ ] Implementar cache no cliente (TanStack Query, SWR)
+- [ ] Adicionar PWA features (manifest, offline, push)
+  - **Critério de aceitação:** Lighthouse score >90 em performance e acessibilidade.
+
+### 14. **Funcionalidades Avançadas**
+- [ ] Busca avançada (filtros, autocomplete)
+- [ ] Filtros dinâmicos (por categoria, status, etc)
 - [ ] Exportação de dados (PDF, Excel)
+- [ ] Notificações em tempo real (WebSocket, Supabase Realtime)
+- [ ] Gamificação (pontos, badges, rankings)
+  - **Dica:** Use bibliotecas como react-pdf, xlsx, socket.io.
 
-### 🔧 Otimizações
-- [ ] Implementar cache Redis
-- [ ] Otimizar queries do banco
-- [ ] Compressão de respostas
-- [ ] Lazy loading de dados
-- [ ] Implementar GraphQL
-- [ ] Otimizar bundle size
+---
 
-### 📚 Documentação
-- [ ] Documentação completa da API (Swagger)
-- [ ] Guia de desenvolvimento
-- [ ] Documentação de deploy
-- [ ] Troubleshooting guide
-- [ ] Vídeos tutoriais
+## 📝 **CÓDIGO, PADRÕES E QUALIDADE**
 
-## 🎯 PRÓXIMOS PASSOS IMEDIATOS
+### 15. **Refatoração e Qualidade**
+- [x] ESLint e Prettier configurados (padronização automática)
+- [x] Husky hooks (pre-commit, pre-push)
+- [ ] Remover código duplicado (DRY)
+- [ ] Padronizar nomenclatura (camelCase, PascalCase, snake_case onde apropriado)
+- [ ] Implementar design patterns (Service, Repository, Factory, etc)
+- [ ] Code review automático (ex: SonarCloud, CodeClimate)
+  - **Critério de aceitação:** Nenhum code smell crítico, PRs revisados por pelo menos 1 dev.
 
-1. **✅ Implementar APIs restantes** (Estatísticas, Usuários) - CONCLUÍDO
-2. **Configurar RLS no Supabase** para segurança
-3. **Implementar testes automatizados** com Vitest
-4. **Integrar APIs no frontend** Next.js
-5. **Configurar monitoramento** e alertas
+---
 
-## 📈 MÉTRICAS DE SUCESSO
+## 🔄 **PRÓXIMOS PASSOS IMEDIATOS**
+
+1. [ ] Aplicar migração de RLS no Supabase e validar políticas
+2. [ ] Eliminar acesso direto ao Supabase no frontend (usar apenas backend)
+3. [ ] Aumentar cobertura de testes (>80%) e incluir testes de segurança
+4. [ ] Implementar cache de resposta e otimizações de performance
+5. [ ] Configurar CI/CD e deploy automatizado
+6. [ ] Atualizar documentação e guias de desenvolvimento
+
+---
+
+## 📈 **MÉTRICAS DE SUCESSO**
 
 - [x] 100% das APIs principais implementadas
 - [ ] Cobertura de testes > 80%
@@ -324,18 +355,10 @@
 - [ ] Uptime > 99.9%
 - [ ] Zero vulnerabilidades de segurança críticas
 - [ ] Documentação 100% completa
+- [ ] Onboarding de devs em <1h
 
-## 🔄 ATUALIZAÇÕES
+---
 
-**2024-12-17 - Correção de Problemas Críticos**
-- ✅ **Corrigida migração de RLS**: Removidas referências a tabelas inexistentes
-- ✅ **Corrigidos testes de apostilas**: Ajustados nomes de campos (title/description vs titulo/descricao)
-- ✅ **Corrigidos testes de concursos**: Ajustados campos e relacionamentos
-- ✅ **Identificados problemas principais**: 
-  - Tabela `simulado_questions` existe mas migração RLS estava correta
-  - Campos de tabelas não correspondiam aos testes (title vs titulo)
-  - Problemas de relacionamentos entre tabelas
-  - Tabela `audit_logs` pode não existir ou ter constraints incorretas
+**Status:** Backend e monitoramento avançados, integração frontend-backend em progresso, RLS pendente de aplicação, testes e cobertura parciais, documentação Swagger disponível.
 
-**Status**: ✅ Migração de RLS corrigida, testes parcialmente corrigidos
-**Próxima revisão**: Aplicar migração de RLS no Supabase e finalizar correção dos testes 
+> **Dica final:** Revise este documento a cada sprint. Use-o como referência para onboarding, retrospectivas e planejamento. Marque o que for concluído, adicione links, exemplos e aprendizados ao longo do tempo. O TODO.md é vivo! 
