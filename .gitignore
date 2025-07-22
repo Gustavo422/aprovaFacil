@@ -1,105 +1,49 @@
-# ===================================================================
-# Editor & OS Specific
-# ===================================================================
-
-# Editor directories and files
-.idea/
-.vscode/
-!.vscode/extensions.json
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.history/
-*.sublime-project
-*.sublime-workspace
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# ===================================================================
-# Dependencies & Environment
-# ===================================================================
-
-# Dependencies
-/node_modules
-/.pnp
-.pnp.js
-pnpm-lock.yaml
-
-# Local Environment Variables
-.env
-.env.local
-.env.*.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Do not commit .env files, but keep a template
-!.env.example
-
-# ===================================================================
-# Project Output
-# ===================================================================
-
-# Build & Output
-/build
-/dist
-/out
-/.next
-/.nuxt
-/.nitro
-/.vercel
-.vite
-*.tsbuildinfo
-
-# Logs
-/logs
-*.log
+# Node
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-# Testing
-/coverage
-/test-results
-/playwright-report
-.nyc_output/
-*.lcov
-test-results.xml
+# Environment
+.env
+.env.*
 
-# Cache
-/.cache
-/.parcel-cache
-/.rpt2_cache*
-/.rts2_cache*
+# Logs
+logs/
+*.log
 
-# Misc & Backups
-*-temp/
-*.tar
-*.zip
-*.bak
-*.patch
-*.diff
-*.err
-*.orig
-*.rej
-*.swo
+# Build
+build/
+dist/
+.next/
+coverage/
+
+# IDEs
+.vscode/
+.kiro/
+.idea/
+.DS_Store
 *.swp
-*.vi
-*~
+*.swo
 
-# ESLint
-eslint_output.json
-eslint_fix_report.md
+# OS
+Thumbs.db
+Desktop.ini
+
+# Test/coverage
+coverage/
+*.lcov
+
+# Submodules (não ignore as pastas frontend/ e backend/)
+!/frontend/
+!/backend/
+
+# Outros
+.env
+.env.example.txt
+# Supabase
+supabase/.temp/
+supabase/.output/ 
+
+z_sqls/

@@ -1,388 +1,293 @@
-# 📚 AprovaFacil - Plataforma de Estudos para Concursos
+# AprovaFácil - Sistema de Estudos para Concursos Públicos
 
-Uma plataforma completa, moderna e open source para preparação de concursos públicos, desenvolvida com Next.js 15, TypeScript, Tailwind CSS e Supabase.
+## 🎯 Versão 2.0 - Refatoração Completa
 
-## 🚀 Funcionalidades
+Este projeto foi completamente refatorado seguindo os princípios SOLID e boas práticas de desenvolvimento, com foco em escalabilidade, manutenibilidade e organização do código.
 
-### ✨ Recursos Principais
+## 🏗️ Arquitetura
 
-- **Dashboard Unificado**: Visão geral do seu progresso, atividades recentes e estatísticas consolidadas.
-- **Simulados Personalizados**: Crie simulados por matéria, com timer, correção automática e relatórios detalhados.
-- **Questões Semanais**: Pratique com questões selecionadas semanalmente, com feedback imediato e estatísticas de acerto.
-- **Plano de Estudos Inteligente**: Geração automática e dinâmica de planos, baseado no seu tempo disponível e progresso.
-- **Flashcards com Repetição Espaçada**: Memorize conteúdos com algoritmo inteligente, categorização e progresso individual.
-- **Mapa de Assuntos**: Visualize e acompanhe o domínio dos tópicos mais importantes.
-- **Apostilas Modulares**: Materiais de estudo completos, organizados por disciplina e concurso.
-- **Configurações Avançadas**: Personalize sua experiência, preferências e notificações.
-- **Monitoramento e Validação do Banco**: Ferramentas administrativas para análise de uso, integridade e performance do banco de dados.
-- **Cache Inteligente**: Sistema de cache em memória e persistente para performance otimizada.
-- **Logs e Auditoria**: Registro centralizado de eventos, erros e ações administrativas.
+### Backend (Pasta `/backend`)
+- **Arquitetura em Camadas**: Separação clara entre controladores, serviços, repositórios e utilitários
+- **Princípios SOLID**: Cada classe tem uma responsabilidade única e bem definida
+- **Injeção de Dependências**: Facilita testes e manutenção
+- **Sistema de Cache**: Cache em memória e persistente para otimização
+- **Logs Estruturados**: Sistema completo de auditoria e monitoramento
+- **Tratamento de Erros**: Classes de erro personalizadas e tratamento centralizado
 
-### 🎨 Interface Moderna
+### Frontend (Pasta `/frontend`)
+- Mantém a estrutura original
+- Pronto para integração com o novo backend
 
-- Design responsivo e acessível
-- Tema claro/escuro
-- Interface intuitiva e moderna
-- Componentes reutilizáveis com Radix UI
+## 🚀 Principais Funcionalidades Implementadas
 
-## 🛠️ Tecnologias Utilizadas
+### 🎓 Guru da Aprovação
+Sistema inteligente que analisa o progresso do usuário e fornece:
+- **Métricas Detalhadas**: Questões respondidas, proficiência em flashcards, progresso em apostilas
+- **Prognóstico de Aprovação**: Estimativa de tempo para aprovação baseada no desempenho
+- **Recomendações Personalizadas**: Sugestões específicas para melhorar o desempenho
+- **Análise por Disciplina**: Identificação de pontos fortes e fracos
 
-### Frontend
+### 🛠️ Painel Administrativo Consolidado
+Sistema completo para gestão de todo o conteúdo:
 
-- **Next.js 15** - Framework React com App Router
-- **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Framework CSS utilitário
-- **Radix UI** - Componentes acessíveis e customizáveis
-- **React Hook Form** - Gerenciamento de formulários
-- **Zod** - Validação de schemas
-- **Lucide React** - Ícones modernos
+#### Gestão de Estrutura
+- **Categorias de Concursos**: Organização hierárquica dos concursos
+- **Disciplinas por Categoria**: Mapeamento de disciplinas específicas
+- **Concursos**: CRUD completo com metadados avançados
 
-### Backend & Banco de Dados
+#### Gestão de Conteúdo
+- **Simulados**: Criação, edição e gestão de simulados
+- **Questões de Simulados**: Gestão individual de questões
+- **Questões Semanais**: Sistema de questões periódicas
+- **Flashcards**: Gestão de cartões de memorização
+- **Apostilas**: Sistema completo de apostilas modulares
+- **Conteúdo de Apostilas**: Gestão de módulos e conteúdo
 
-- **Supabase** - Backend-as-a-Service
-  - Autenticação
-  - Banco de dados PostgreSQL
-  - Storage para arquivos
-  - Edge Functions
+#### Funcionalidades Avançadas
+- **Operações em Lote**: Importação e exportação de dados
+- **Validação de JSON**: Validação automática de estruturas de dados
+- **Sistema de Backup**: Backup e restauração completos
+- **Relatórios**: Estatísticas detalhadas do sistema
+- **Monitoramento**: Logs, métricas e testes automatizados
 
-### Ferramentas de Desenvolvimento
+### 🔐 Sistema de Autenticação Robusto
+- **JWT com Refresh Tokens**: Segurança avançada
+- **Recuperação de Senha**: Sistema completo de reset
+- **Middleware de Autorização**: Controle granular de acesso
+- **Auditoria de Acesso**: Log de todas as ações de usuários
 
-- **ESLint** - Linting de código
-- **PostCSS** - Processamento CSS
-- **Autoprefixer** - Prefixos CSS automáticos
-- **CacheManager** - Cache em memória e persistente
-- **Logger** - Logging estruturado
+### 📊 Sistema de Cache Inteligente
+- **Cache em Memória**: Para dados frequentemente acessados
+- **Cache Persistente**: Para dados que precisam sobreviver a reinicializações
+- **Invalidação Automática**: Limpeza inteligente do cache
+- **Configuração Dinâmica**: Configurações de cache via admin
 
-## 📦 Instalação
-
-### Pré-requisitos
-
-- Node.js 18+
-- npm, yarn ou pnpm
-- Conta no Supabase
-
-### 1. Clone o repositório
-
-```bash
-git clone <url-do-repositorio>
-cd AprovaFacil-main
-```
-
-### 2. Instale as dependências
-
-```bash
-npm install
-# ou
-yarn install
-# ou
-pnpm install
-```
-
-### 3. Configure as variáveis de ambiente
-
-Crie um arquivo `.env.local` na raiz do projeto:
-
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=sua_url_do_supabase
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anonima_do_supabase
-SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role_do_supabase
-
-# Next.js
-NEXTAUTH_SECRET=seu_secret_para_nextauth
-NEXTAUTH_URL=http://localhost:3000
-```
-
-### 4. Configure o banco de dados
-
-Execute os scripts SQL na ordem correta:
-
-```bash
-# 1. Schema do banco (obrigatório)
-psql -h seu_host -U seu_usuario -d seu_banco -f docs/database/database_schema.sql
-
-# 2. Triggers e índices (obrigatório)
-psql -h seu_host -U seu_usuario -d seu_banco -f docs/database/add_triggers_and_indexes.sql
-
-# 3. Dados de exemplo (opcional)
-psql -h seu_host -U seu_usuario -d seu_banco -f docs/database/sample_data.sql
-```
-
-**Alternativa usando Supabase Dashboard:**
-1. Acesse [supabase.com](https://supabase.com)
-2. Abra o SQL Editor do seu projeto
-3. Execute o arquivo `docs/database/database_setup_complete.sql` (contém todos os scripts)
-
-### 5. Execute o projeto
-
-```bash
-npm run dev
-# ou
-yarn dev
-# ou
-pnpm dev
-```
-
-Acesse [http://localhost:3000](http://localhost:3000) para ver o projeto.
-
-## 🏗️ Estrutura do Projeto
+## 📁 Estrutura de Arquivos
 
 ```
-AprovaFacil-main/
-├── app/                       # App Router (Next.js 15)
-│   ├── actions/               # Server Actions
-│   ├── admin/                 # Páginas administrativas (monitoramento, validação, etc)
-│   ├── api/                   # Rotas de API (REST)
-│   ├── dashboard/             # Dashboard do usuário (apostilas, simulados, flashcards, etc)
-│   ├── forgot-password/       # Recuperação de senha
-│   ├── login/                 # Login
-│   ├── register/              # Registro
-│   ├── reset-password/        # Redefinição de senha
-│   ├── selecionar-concurso/   # Seleção de concurso
-│   ├── client-layout.tsx      # Layout de cliente
-│   ├── globals.css            # Estilos globais
-│   ├── layout.tsx             # Layout principal
-│   ├── loading.tsx            # Tela de loading
-│   ├── not-found.tsx          # Página 404
-│   └── page.tsx               # Landing page
-├── components/                # Componentes React reutilizáveis
-│   ├── ui/                    # Componentes base (Radix UI customizados)
-│   ├── onboarding/            # Componentes de onboarding
-│   ├── auth-guard.tsx         # Proteção de rotas
-│   ├── auth-status.tsx        # Status de autenticação
-│   ├── error-boundary.tsx     # Boundary de erro
-│   ├── flashcard.tsx          # Flashcard
-│   ├── question-player.tsx    # Player de questões
-│   ├── rate-limit-info.tsx    # Info de rate limit
-│   ├── session-monitor.tsx    # Monitor de sessão
-│   ├── sidebar-nav.tsx        # Navegação lateral
-│   └── user-nav.tsx           # Navegação do usuário
-├── contexts/                  # Contextos React (ex: ConcursoContext)
-├── docs/                      # Documentação
-│   ├── database/              # Scripts SQL e docs do banco
-│   └── development/           # Guias de desenvolvimento e arquitetura
-├── lib/                       # Utilitários, tipos e configuração
-│   ├── repositories/          # Repositórios de acesso a dados (legado)
-│   ├── supabase.ts            # Cliente Supabase
-│   ├── database.types.ts      # Tipos do banco
-│   ├── utils.ts               # Funções utilitárias
-│   ├── cache.ts               # CacheManager
-│   ├── logger.ts              # Logger centralizado
-│   └── ...                    # Outros helpers
-├── middleware/                # Middlewares customizados
-├── public/                    # Arquivos estáticos (imagens, etc)
-├── scripts/                   # Scripts de automação e manutenção
-│   └── maintenance/           # Scripts de limpeza/manutenção de cache
-├── src/                       # Código fonte organizado por domínio
-│   ├── core/                  # Lógica central (erros, database, utils)
-│   └── features/              # Funcionalidades de domínio (apostilas, auth, dashboard, flashcards, simulados, etc)
-├── styles/                    # Estilos globais
-├── tests/                     # Testes automatizados (unitários, smoke, e2e)
-│   ├── app/                   # Testes de páginas e rotas do app
-│   ├── components/            # Testes de componentes
-│   ├── lib/                   # Testes de utilitários
-│   ├── src/                   # Testes do core/features
-│   └── setup.ts               # Setup global de testes
-├── package.json               # Dependências e scripts
-├── tsconfig.json              # Configuração TypeScript
-└── README.md                  # Este arquivo
+aprovaFacil-main/
+├── backend/                    # Backend refatorado
+│   ├── src/
+│   │   ├── core/              # Núcleo do sistema
+│   │   │   ├── database/      # Configuração do Supabase
+│   │   │   ├── errors/        # Classes de erro personalizadas
+│   │   │   ├── interfaces/    # Interfaces e contratos
+│   │   │   └── utils/         # Utilitários (logs, cache)
+│   │   ├── modules/           # Módulos de negócio
+│   │   │   ├── auth/          # Autenticação
+│   │   │   ├── usuarios/      # Gestão de usuários
+│   │   │   ├── guru-aprovacao/ # Sistema Guru da Aprovação
+│   │   │   └── admin/         # Painel administrativo
+│   │   ├── routes/            # Rotas da API
+│   │   ├── shared/            # Tipos compartilhados
+│   │   ├── app.ts             # Aplicação principal
+│   │   └── index.ts           # Ponto de entrada
+│   ├── package.json           # Dependências atualizadas
+│   └── tsconfig.json          # Configuração TypeScript
+├── frontend/                   # Frontend original
+├── novo_schema.sql            # Novo schema em português
+├── dados_exemplo.sql          # Dados de exemplo
+├── schema_original.sql        # Schema original para referência
+└── README.md                  # Esta documentação
 ```
-
-- **Observação:**
-  - O projeto está modularizado por domínio e responsabilidade (DDD).
-  - Os testes cobrem páginas, componentes, hooks, utilitários e integrações principais.
-  - Ferramentas administrativas e de monitoramento estão disponíveis na área /admin.
-  - A estrutura pode crescer conforme novas features forem adicionadas.
-
-## 🎯 Funcionalidades Detalhadas
-
-### Autenticação e Segurança
-- Registro e login com email/senha
-- Autenticação via Supabase Auth
-- Proteção de rotas e middleware de autenticação
-- Políticas de acesso por tipo de conteúdo
-
-### Dashboard Principal
-- Visão geral do progresso consolidado
-- Estatísticas de estudo por domínio (simulados, flashcards, apostilas)
-- Atividades recentes e progresso diário
-- Gráficos de desempenho e evolução
-
-### Simulados
-- Criação e resolução de simulados personalizados
-- Timer configurável e correção automática
-- Relatórios detalhados e histórico de tentativas
-- Estatísticas por disciplina e desempenho
-
-### Questões Semanais
-- 100 questões selecionadas semanalmente
-- Dificuldade progressiva e feedback imediato
-- Estatísticas de acerto e progresso
-
-### Plano de Estudos
-- Geração automática de planos de estudo
-- Ajuste dinâmico conforme progresso
-- Lembretes e notificações
-
-### Flashcards
-- Algoritmo de repetição espaçada
-- Categorização por matéria e tema
-- Progresso individual e modo de revisão
-- Estatísticas de acerto e revisão
-
-### Apostilas
-- Materiais completos por disciplina e concurso
-- Progresso de leitura e acompanhamento
-- Conteúdo modular e atualizado
-
-### Mapa de Assuntos
-- Visualização dos tópicos cobrados
-- Acompanhamento do domínio por tema
-- Integração com plano de estudos
-
-### Configurações
-- Preferências de usuário
-- Notificações e personalização
-
-### Ferramentas Administrativas
-- Monitoramento e validação do banco de dados
-- Limpeza e manutenção de cache
-- Logs de auditoria e erros
-- Estatísticas do sistema (em breve)
-- Gerenciamento de usuários (em breve)
-- Configurações globais (em breve)
-
-## 🔧 Scripts Disponíveis
-
-```bash
-# Desenvolvimento
-npm run dev          # Inicia o servidor de desenvolvimento
-
-# Produção
-npm run build        # Build para produção
-npm run start        # Inicia o servidor de produção
-
-# Qualidade de código
-npm run lint         # Executa o ESLint
-npm run lint:fix     # Corrige problemas de linting automaticamente
-
-# Testes
-npm run test         # Executa os testes
-npm run test:watch   # Executa testes em modo watch
-```
-
-## 🧪 Testando o Sistema
-
-### Páginas de Teste Disponíveis
-
-- **`/teste-sistema`** - Testa conexão com banco e APIs
-- **`/teste-selecao`** - Testa contexto global de concursos
-- **`/test-auth`** - Testa sistema de autenticação
-
-### Verificações Importantes
-
-1. **Banco de Dados**: Verifique se todas as tabelas foram criadas
-2. **APIs**: Teste os endpoints principais
-3. **Autenticação**: Teste login/logout
-4. **Contexto**: Verifique se o sistema de concursos funciona
 
 ## 🗄️ Banco de Dados
 
-### Tabelas Principais
+### Novo Schema (novo_schema.sql)
+O banco de dados foi completamente reestruturado em português com:
+- **Nomenclatura Clara**: Todos os nomes em português
+- **Relacionamentos Otimizados**: Foreign keys bem definidas
+- **Índices Estratégicos**: Para melhor performance
+- **Campos de Auditoria**: created_at, updated_at em todas as tabelas
+- **Soft Delete**: Exclusão lógica com campo 'ativo'
 
-- **`concurso_categorias`** - Categorias de concursos
-- **`concursos`** - Concursos específicos
-- **`categoria_disciplinas`** - Disciplinas por categoria
-- **`simulados`** - Simulados de questões
-- **`simulado_questions`** - Questões dos simulados
-- **`flashcards`** - Flashcards de estudo
-- **`apostilas`** - Apostilas de estudo
-- **`user_simulado_progress`** - Progresso em simulados
-- **`user_flashcard_progress`** - Progresso em flashcards
-- **`user_apostila_progress`** - Progresso em apostilas
-- **`mapa_assuntos`** - Tópicos e temas
-- **`user_performance_cache`** - Cache de performance
-- **`audit_logs`** - Logs de auditoria
+### Principais Tabelas
+- `usuarios` - Gestão de usuários
+- `categorias_concursos` - Categorização de concursos
+- `concursos` - Concursos disponíveis
+- `simulados` - Simulados e provas
+- `questoes_simulado` - Questões dos simulados
+- `questoes_semanais` - Questões semanais
+- `cartoes_memorizacao` - Flashcards
+- `apostilas` - Apostilas de estudo
+- `conteudo_apostila` - Conteúdo modular das apostilas
+- `progresso_usuario_*` - Tabelas de progresso do usuário
 
-### Scripts SQL Disponíveis
+## 🚀 Como Executar
 
-- `docs/database/database_schema.sql` - Schema completo
-- `docs/database/database_setup_complete.sql` - Setup completo
-- `docs/database/sample_data.sql` - Dados de exemplo
-- `docs/database/add_triggers_and_indexes.sql` - Triggers e índices
+### Backend
+```bash
+cd backend
+npm install
+npm run dev        # Executa com tsx
+npm run dev:ts-node # Executa com ts-node (alternativa)
 
-## 🌐 Deploy
+# Para ativar logs de debug
+# No Windows (CMD)
+set DEBUG=app:backend:* & npm run dev
 
-### Vercel (Recomendado)
+# No Windows (PowerShell)
+$env:DEBUG="app:backend:*"; npm run dev
 
-1. Conecte seu repositório ao Vercel
-2. Configure as variáveis de ambiente
-3. Deploy automático a cada push
+# No Linux/macOS
+DEBUG=app:backend:* npm run dev
+```
 
-### Outras plataformas
+### Frontend
+```bash
+cd frontend
+npm install
+npm start
 
-- Netlify
-- Railway
-- Render
-- DigitalOcean App Platform
+# Para ativar logs de debug no navegador, abra o console e execute:
+localStorage.debug = 'app:frontend:*'
+```
 
-## 🐛 Solução de Problemas
+## 🔧 Configuração
 
-### Problemas Comuns
+### Variáveis de Ambiente (.env)
+```env
+# Supabase
+SUPABASE_URL=sua_url_do_supabase
+SUPABASE_ANON_KEY=sua_chave_anonima
+SUPABASE_SERVICE_ROLE_KEY=sua_chave_de_servico
 
-1. **Erro de conexão com banco**
-   - Verifique as variáveis de ambiente
-   - Confirme se o Supabase está online
-   - Execute os scripts SQL necessários
+# JWT
+JWT_SECRET=sua_chave_secreta_jwt
+JWT_EXPIRES_IN=24h
 
-2. **Tabelas não existem**
-   - Execute `docs/database/database_setup_complete.sql`
-   - Verifique se as foreign keys foram criadas
+# Admin
+ADMIN_EMAILS=admin@aprovafacil.com,outro@admin.com
 
-3. **Erro de autenticação**
-   - Verifique as chaves do Supabase
-   - Confirme se o email foi confirmado
-   - Teste em `/test-auth`
+# Frontend
+FRONTEND_URL=http://localhost:3000
 
-### Logs e Debug
+# Servidor
+PORT=5000
+NODE_ENV=development
 
-- Use `npm run dev` para ver logs detalhados
-- Verifique o console do navegador
-- Use as páginas de teste para diagnóstico
-- Consulte logs de auditoria na área administrativa
+# Debug (opcional)
+DEBUG=app:backend:*  # Ativa todos os logs de debug no backend
+```
 
-## 📚 Documentação Adicional
+### Ferramentas de Debugging
 
-- **`docs/development/`** - Guias de desenvolvimento e arquitetura
-- **`docs/database/`** - Documentação do banco de dados
-- **`docs/deployment/`** - Guias de deploy
+O projeto inclui várias ferramentas para facilitar o desenvolvimento, debugging e testes:
 
-## 🤝 Contribuição
+- **Biblioteca `debug`**: Logs detalhados e categorizados para backend e frontend
+  - Permite ativar/desativar categorias específicas de log via variáveis de ambiente ou localStorage
+  - Estrutura de namespaces hierárquica (`app:backend:*` e `app:frontend:*`)
+  - Suporte para diferentes níveis de log (info, warn, error)
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/SuaFeature`)
-3. Commit suas mudanças (`git commit -m 'feat: SuaFeature'`)
-4. Push para a branch (`git push origin feature/SuaFeature`)
-5. Abra um Pull Request
+- **Ferramenta `ts-node`**: Execução direta de arquivos TypeScript sem compilação prévia
+  - Alternativa ao `tsx` com melhor suporte para debugging
+  - Configurada para respeitar as opções do tsconfig.json
+  - Scripts npm dedicados: `npm run dev:ts-node`
 
-## 📝 Licença
+- **Plugin `eslint-plugin-vitest`**: Regras de linting específicas para testes Vitest
+  - Detecta problemas comuns em testes antes da execução
+  - Garante boas práticas como asserções em todos os testes
+  - Previne testes focados acidentalmente (it.only, describe.only)
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Estas ferramentas foram adicionadas como dependências de desenvolvimento e configuradas para trabalhar em harmonia com as ferramentas existentes, permitindo que os desenvolvedores escolham as abordagens que melhor se adequam ao seu fluxo de trabalho.
 
-## 📞 Suporte
+Para documentação detalhada sobre como usar cada uma dessas ferramentas, incluindo exemplos práticos e melhores práticas, consulte a [documentação completa de debugging](docs/debugging-tools.md).
 
-- 📧 Email: [seu-email@exemplo.com]
-- 💬 Discord: [link-do-discord]
-- 🐛 Issues: [GitHub Issues]
+## 📋 Endpoints da API
 
-## 🙏 Agradecimentos
+### Autenticação
+- `POST /api/auth/login` - Login
+- `POST /api/auth/recuperar-senha` - Recuperação de senha
+- `POST /api/auth/redefinir-senha` - Redefinição de senha
+- `POST /api/auth/alterar-senha` - Alteração de senha
 
-- [Next.js](https://nextjs.org/) - Framework React
-- [Supabase](https://supabase.com/) - Backend-as-a-Service
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS
-- [Radix UI](https://www.radix-ui.com/) - Componentes acessíveis
-- [Lucide](https://lucide.dev/) - Ícones
+### Usuário (Protegidas)
+- `GET /api/protected/usuario/perfil` - Perfil do usuário
+- `PUT /api/protected/usuario/perfil` - Atualizar perfil
+- `GET /api/protected/usuario/estatisticas` - Estatísticas do usuário
+- `POST /api/protected/usuario/configuracao-inicial` - Configuração inicial
+
+### Guru da Aprovação (Protegidas)
+- `GET /api/protected/guru/metricas` - Métricas do usuário
+- `GET /api/protected/guru/prognostico` - Prognóstico de aprovação
+- `GET /api/protected/guru/analise-detalhada` - Análise detalhada
+- `POST /api/protected/guru/atualizar` - Atualizar métricas
+
+### Administrativas (Requer Admin)
+- `GET /api/admin/estatisticas` - Estatísticas do sistema
+- `POST /api/admin/concursos` - Criar concurso
+- `POST /api/admin/simulados` - Criar simulado
+- `POST /api/admin/questoes-semanais` - Criar questões semanais
+- `POST /api/admin/flashcards` - Criar flashcards
+- `POST /api/admin/apostilas` - Criar apostila
+- `GET /api/admin/usuarios` - Listar usuários
+- `POST /api/admin/usuarios` - Criar usuário
+- E muitas outras...
+
+## 🧪 Testes
+
+```bash
+# Executar testes
+npm test
+
+# Testes com cobertura
+npm run test:coverage
+
+# Testes em modo watch
+npm run test:watch
+
+# Executar testes com interface visual (Vitest UI)
+npm run test:ui
+```
+
+O projeto utiliza o `eslint-plugin-vitest` para garantir a qualidade dos testes. Para mais informações, consulte a [documentação de debugging](docs/debugging-tools.md#plugin-eslint-plugin-vitest).
+
+## 📊 Monitoramento
+
+### Health Check
+- `GET /api/health` - Status do sistema
+
+### Métricas
+- `GET /api/admin/metricas` - Métricas detalhadas
+- `GET /api/admin/logs` - Logs do sistema
+
+## 🔒 Segurança
+
+- **Helmet**: Proteção de cabeçalhos HTTP
+- **CORS**: Configuração adequada de CORS
+- **Rate Limiting**: Limitação de requisições
+- **JWT**: Tokens seguros com expiração
+- **Bcrypt**: Hash seguro de senhas
+- **Validação**: Validação rigorosa de entrada
+
+## 🎯 Principais Melhorias Implementadas
+
+1. **Arquitetura SOLID**: Código mais limpo e manutenível
+2. **Painel Admin Consolidado**: Todos os inserts centralizados
+3. **Guru da Aprovação**: Sistema inteligente de análise
+4. **Cache Inteligente**: Performance otimizada
+5. **Logs Estruturados**: Monitoramento completo
+6. **Tratamento de Erros**: Respostas consistentes
+7. **Validação Robusta**: Dados sempre íntegros
+8. **Documentação**: Código bem documentado
+
+## 📝 Próximos Passos
+
+1. **Testes Unitários**: Implementar cobertura completa
+2. **Documentação API**: Swagger/OpenAPI
+3. **CI/CD**: Pipeline de deploy automatizado
+4. **Monitoramento**: Métricas em tempo real
+5. **Performance**: Otimizações adicionais
+
+## 👥 Equipe
+
+Desenvolvido pela equipe AprovaFácil com foco em qualidade, escalabilidade e experiência do usuário.
 
 ---
 
-**Desenvolvido com ❤️ para ajudar na preparação de concursos públicos**
+**Versão**: 2.0.0  
+**Data**: 2025  
+**Licença**: MIT
+
+
+
