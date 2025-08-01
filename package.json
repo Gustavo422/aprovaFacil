@@ -112,7 +112,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "jest": "^30.0.3",
-    "knip": "5.61.3",
+    "knip": "^5.61.3",
     "nodemailer": "^7.0.5",
     "openapi-types": "^12.1.3",
     "postcss": "^8.5",
