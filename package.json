@@ -27,7 +27,8 @@
     "supabase:unified:update": "node scripts/update-supabase-imports.cjs",
     "supabase:unified:update:backend": "node scripts/update-backend-supabase.cjs",
     "supabase:unified:test": "node scripts/test-supabase-unified.cjs",
-    "phase3:complete": "npm run supabase:unified:update && npm run supabase:unified:test"
+    "phase3:complete": "npm run supabase:unified:update && npm run supabase:unified:test",
+    "debug:test": "node scripts/test-debug-system.js"
   },
   "dependencies": {
     "@hookform/resolvers": "latest",

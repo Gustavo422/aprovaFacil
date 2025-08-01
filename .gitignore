@@ -8,6 +8,7 @@ pnpm-debug.log*
 # Environment
 .env
 .env.*
+.cursor
 
 # Logs
 logs/
@@ -48,3 +49,8 @@ supabase/.output/
 
 z_sqls/
 todo.md
+todo2.md
+DEBUG_IMPLEMENTATION_SUMMARY.md
+FASE5_RESUMO_IMPLEMENTACAO.md
+knip-analysis-clean.json
+knip-analysis-current.json
