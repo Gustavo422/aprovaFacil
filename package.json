@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "cd frontend && next dev --turbo",
+    "dev:full": "node scripts/start-full.js",
     "dev:no-turbo": "next dev",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
@@ -28,7 +29,15 @@
     "supabase:unified:update:backend": "node scripts/update-backend-supabase.cjs",
     "supabase:unified:test": "node scripts/test-supabase-unified.cjs",
     "phase3:complete": "npm run supabase:unified:update && npm run supabase:unified:test",
-    "debug:test": "node scripts/test-debug-system.js"
+    "debug:test": "node scripts/test-debug-system.js",
+    "supabase:types:backend:local": "supabase gen types typescript --local --schema public > backend/src/types/supabase.ts",
+    "supabase:types:frontend:local": "supabase gen types typescript --local --schema public > frontend/src/lib/supabase/types.ts",
+    "supabase:types:all:local": "npm run supabase:types:backend:local && npm run supabase:types:frontend:local",
+    "schema:validate": "node --loader ts-node/esm backend/scripts/schema-validator.ts",
+    "supabase:types:backend": "supabase gen types typescript --project-id $env:SUPABASE_PROJECT_REF --schema public > backend/src/types/supabase.ts",
+    "supabase:types:frontend": "supabase gen types typescript --project-id $env:SUPABASE_PROJECT_REF --schema public > frontend/src/lib/supabase/types.ts",
+    "supabase:types:all": "npm run supabase:types:backend && npm run supabase:types:frontend",
+    "ci:db:types-and-drift": "npm run supabase:types:all && npm run schema:validate"
   },
   "dependencies": {
     "@hookform/resolvers": "latest",

@@ -190,6 +190,18 @@ export class PerformanceMetricsService {
 - **API**: requisições, tempo de resposta, erros
 - **Sistema**: uptime, memória, versão do Node
 
+### **Observabilidade mínima (Guru)**
+- Propagação de `x-correlation-id` do frontend.
+- Middleware de request logging inclui `x-request-id` e mede `responseTime`.
+- Operações do módulo Guru registram performance via `LogService` (ex.: `guru.enhanced-stats`).
+
+### **Guia de migração de schema (Guru)**
+1. Crie migrations com defaults/índices/RLS no Supabase.
+2. Atualize views `v_guru_*`/MVs `mv_guru_*` com refresh atômico.
+3. Atualize repositórios com seleções explícitas e DTOs (campos novos opcionais inicialmente).
+4. Atualize OpenAPI e versionamento (`/api/guru/v1/...`).
+5. Atualize contratos do frontend e rode testes + smoke test (`npm --prefix backend run smoke-test`).
+
 ### **Alertas Automáticos**
 - **Autenticação lenta** (>1 segundo)
 - **Consulta de banco lenta** (>500ms)

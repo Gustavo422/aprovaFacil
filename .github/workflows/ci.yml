@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint --silent || npm run lint
+
+      - name: Unit/Integration tests
+        run: npm run test:run
+
+      - name: Export OpenAPI
+        run: npm run openapi:export
+
+      - name: Validate OpenAPI (swagger-cli)
+        run: npm run openapi:validate
+
+      - name: Lint OpenAPI (Spectral)
+        run: npm run openapi:spectral
+
+      - name: Knip (dead code scan)
+        run: npx knip -c knip.json
+
+  frontend:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint --silent || npm run lint
+
+      - name: Unit tests
+        run: npm run test:ci
+
+      - name: Knip (dead code scan)
+        run: npx knip -c knip.json || npx knip -c ../backend/config/knip.json
+
+
