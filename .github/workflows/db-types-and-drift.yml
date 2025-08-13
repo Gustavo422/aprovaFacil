@@ -1,0 +1,51 @@
+name: DB Types and Drift
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  db-types-and-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Install dependencies (root)
+        run: npm ci
+
+      - name: Install dependencies (backend)
+        run: npm ci
+        working-directory: backend
+
+      - name: Install dependencies (frontend)
+        run: npm ci
+        working-directory: frontend
+
+      - name: Generate Supabase types (backend/frontend)
+        env:
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          mkdir -p backend/src/types frontend/src/lib/supabase
+          supabase gen types typescript --project-id "$SUPABASE_PROJECT_REF" --schema public > backend/src/types/supabase.ts
+          supabase gen types typescript --project-id "$SUPABASE_PROJECT_REF" --schema public > frontend/src/lib/supabase/types.ts
+
+      - name: Validate schema drift
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          npm run schema:validate

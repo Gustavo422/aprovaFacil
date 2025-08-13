@@ -5,6 +5,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Package managers / caches
+.yarn/
+.pnp
+.pnp.*
+pnpm-store/
+node_modules/.cache/
+.cache/
+.eslintcache
+
 # Environment
 .env
 .env.*
@@ -18,7 +27,9 @@ logs/
 build/
 dist/
 .next/
-coverage/
+.turbo/
+.vercel/
+**/.vite/
 
 # IDEs
 .vscode/
@@ -34,7 +45,16 @@ Desktop.ini
 
 # Test/coverage
 coverage/
+.nyc_output/
 *.lcov
+junit.xml
+jest-junit.xml
+playwright-report/
+test-results/
+**/cypress/screenshots/
+**/cypress/videos/
+**/cypress/downloads/
+*.tsbuildinfo
 
 # Submodules (não ignore as pastas frontend/ e backend/)
 !/frontend/
